@@ -112,6 +112,7 @@ ul {
   color: #111;
   font-weight: bold;
   cursor: pointer;
+  border-radius: 20px;
   transition: background 0.3s;
 }
 

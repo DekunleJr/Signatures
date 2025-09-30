@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import "./home.css";
 
 import hero1 from "../assets/hero-1.jpg";
@@ -40,7 +41,9 @@ export default function Home() {
             Transforming spaces with modern and elegant interior decoration
             solutions.
           </p>
-          <button className="btn-primary">Get Started</button>
+          <Link to="/portfolio">
+            <button className="btn-primary">Check Out Our Projects</button>
+          </Link>
         </div>
       </section>
 
@@ -93,6 +96,9 @@ export default function Home() {
             <div className="portfolio-item" style={{ backgroundImage: `url(${hero2})` }}></div>
             <div className="portfolio-item" style={{ backgroundImage: `url(${hero3})` }}></div>
           </div>
+          <Link to="/portfolio">
+            <button className="btn-primary">View More...</button>
+          </Link>
         </div>
       </section>
 
@@ -100,7 +106,9 @@ export default function Home() {
       <section className="cta">
         <div className="container">
           <h2>Ready to Transform Your Space?</h2>
-          <button className="btn-primary">Contact Us</button>
+          <Link to="/contact">
+            <button className="btn-primary">Contact Us</button>
+          </Link>
         </div>
       </section>
     </div>

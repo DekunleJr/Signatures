@@ -11,6 +11,11 @@ export default function Navbar() {
         <li><Link to="/portfolio">Portfolio</Link></li>
         <li><Link to="/contact">Contact</Link></li>
       </ul>
+      <div className="nav-buttons">
+        <Link to="/login">
+          <button className="btn">Login</button>
+        </Link>
+      </div>
     </nav>
   );
 }
