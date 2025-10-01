@@ -27,6 +27,8 @@ class UserLogin(BaseModel):
 class Token(BaseModel):
     access_token: str
     token_type: str
+    is_admin: bool
+    first_name: str
 
 class TokenData(BaseModel):
     id: Optional[str] = None

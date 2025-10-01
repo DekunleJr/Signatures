@@ -18,7 +18,7 @@ def login(user: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid password Credentials")
 
     access_token = oauth2.create_access_token(data={"user_id": db_user.id})
-    return {"access_token": access_token, "token_type": "bearer"}
+    return {"access_token": access_token, "token_type": "bearer", "is_admin": db_user.is_admin, "first_name": db_user.first_name}
 
 @router.post('/signup', status_code=status.HTTP_201_CREATED, response_model=schemas.UserOut)
 def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
