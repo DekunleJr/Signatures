@@ -24,12 +24,15 @@ function Portfolio() {
           <p>Loading projects...</p>
         ) : (
           projects.map((project) => (
-            <div key={project.id} className="portfolio-item">
-              <img src={project.image} alt={project.title} />
-              <div className="portfolio-info">
-                <h3>{project.title}</h3>
-                <p>{project.description}</p>
-              </div>
+            <div
+              key={project.id}
+              className="portfolio-item"
+              style={{ backgroundImage: `url(${project.img_url})` }}
+            >
+              
+              <h3>{project.title}</h3>
+              <p>{project.description}</p>
+              
             </div>
           ))
         )}

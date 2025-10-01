@@ -22,7 +22,26 @@
   line-height: 1.6;
 }
 
-
+.footer-contacts {
+  width: 80%;               /* take 80% of screen */
+  margin: 0 auto;           /* center horizontally */
+  /* display: flex;            use flexbox */
+  justify-content: center;  /* center child divs horizontally */
+  align-items: center;      /* center child divs vertically */
+  gap: 2rem;                /* space between child divs */
+  padding: 2rem 0;
+  text-align: center;       /* center text inside */
+  background-color: #d4af37;
+}
+.footer-contacts h3 {
+  font-size: 3rem;
+  color: #111;
+  margin-bottom: 0.5rem;
+}
+.footer-contacts p {
+  color: #fff;
+  margin-bottom: 1rem;
+}
 
 .footer-contact p {
   margin: 0.4rem 0;

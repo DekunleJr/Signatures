@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from . import models
 from .database import engine
-from .routers import auth
+from .routers import auth, work, service
 from .config import settings
 
 models.Base.metadata.create_all(bind=engine)
@@ -21,6 +21,8 @@ app.add_middleware(
 )
 
 app.include_router(auth.router)
+app.include_router(work.router)
+app.include_router(service.router)
 
 @app.get("/api")
 def read_root():

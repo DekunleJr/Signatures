@@ -32,3 +32,27 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     id: Optional[str] = None
+
+class Work(BaseModel):
+    id: int
+    title: str
+    description: str
+    img_url: str
+    created_at: datetime
+
+class WorkCreate(BaseModel):
+    title: str
+    description: str
+    img_url: str
+
+class Service(BaseModel):
+    id: int
+    title: str
+    description: str
+    img_url: str
+    created_at: datetime
+
+class ServiceCreate(BaseModel):
+    title: str
+    description: str
+    img_url: str

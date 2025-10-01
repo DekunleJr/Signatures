@@ -32,9 +32,11 @@ function Services() {
         ) : (
           services.map((svc) => (
             <div key={svc.id} className="service-card">
-              <div className="service-icon">
-                {/* If svc.icon or image URL is provided */}
-                <img src={svc.icon || svc.image} alt={svc.title} />
+              <div
+                className="service-icon"
+                style={{ backgroundImage: `url(${svc.img_url})` }}
+              >
+                {/* Background image applied via style */}
               </div>
               <h3>{svc.title}</h3>
               <p>{svc.description}</p>

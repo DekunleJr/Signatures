@@ -21,14 +21,65 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+@media (min-width: 992px) {
+  .portfolio-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 .portfolio-item {
+  position: relative;
   background: #1a1a1a;
   border: 1px solid #333;
   border-radius: 8px;
   overflow: hidden;
   transition: transform 0.3s;
+  height: 300px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+}
+
+/* Overlay base (transparent at first) */
+.portfolio-item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0); /* fully transparent */
+  transition: background 0.3s ease;
+  z-index: 1;
+}
+
+/* Show overlay on hover */
+.portfolio-item:hover::before {
+  background: rgba(0, 0, 0, 0.6); /* black overlay */
+}
+
+.portfolio-item h3,
+.portfolio-item p {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2; /* make sure text stays above overlay */
+}
+
+.portfolio-item:hover h3,
+.portfolio-item:hover p {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
 }
 
 .portfolio-item:hover {
@@ -36,15 +87,11 @@
   border-color: #d4af37;
 }
 
-.portfolio-item img {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-}
-
 .portfolio-info {
   padding: 1rem;
   text-align: left;
+  position: relative;
+  z-index: 2; /* above overlay */
 }
 
 .portfolio-info h3 {

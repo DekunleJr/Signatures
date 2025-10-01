@@ -26,9 +26,17 @@
 /* Cards container */
 .services-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); /* Default for smaller screens */
   gap: 2.5rem;
   align-items: stretch;
+  max-width: 1200px; /* Limit overall width to help control number of columns */
+  margin: 0 auto; /* Center the grid */
+}
+
+@media (min-width: 992px) { /* For larger screens, enforce max 3 columns */
+  .services-cards {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 /* Individual card */
@@ -51,16 +59,14 @@
 }
 
 .service-icon {
-  width: 60px;
-  height: 60px;
+  width: 100px; /* Increased size for background image */
+  height: 100px; /* Increased size for background image */
   margin: 0 auto 1.5rem;
-}
-
-.service-icon img {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  /* Optionally, you can tint the icon with CSS if it's monochrome */
+  background-size: cover; /* Cover the entire div */
+  background-position: center; /* Center the image */
+  background-repeat: no-repeat; /* Do not repeat the image */
+  border-radius: 50%; /* Optional: make it circular */
+  background-color: #222; /* Fallback background color */
 }
 
 /* Title & description */

@@ -10,6 +10,7 @@ const heroImages = [hero1, hero2, hero3];
 
 export default function Home() {
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [recentProjects, setRecentProjects] = useState([]);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -19,6 +20,19 @@ export default function Home() {
     }, 5000); // Change image every 5 seconds
 
     return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    fetch("http://localhost:8000/api/portfolio")
+      .then((res) => res.json())
+      .then((data) => {
+        // Sort by created_at in descending order and take the last 3
+        const sortedProjects = data
+          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+          .slice(0, 3);
+        setRecentProjects(sortedProjects);
+      })
+      .catch((err) => console.error("Error fetching recent projects:", err));
   }, []);
 
   return (
@@ -92,13 +106,28 @@ export default function Home() {
         <div className="container">
           <h2>Recent Projects</h2>
           <div className="portfolio-grid">
-            <div className="portfolio-item" style={{ backgroundImage: `url(${hero1})` }}></div>
-            <div className="portfolio-item" style={{ backgroundImage: `url(${hero2})` }}></div>
-            <div className="portfolio-item" style={{ backgroundImage: `url(${hero3})` }}></div>
+            {recentProjects.length === 0 ? (
+              <p>Loading recent projects...</p>
+            ) : (
+              recentProjects.map((project) => (
+                <div
+                  key={project.id}
+                  className="portfolio-item"
+                  style={{ backgroundImage: `url(${project.img_url})` }}
+                >
+                  <div className="portfolio-info">
+                    <h3>{project.title}</h3>
+                    <p>{project.description}</p>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
-          <Link to="/portfolio">
-            <button className="btn-primary">View More...</button>
-          </Link>
+          <div className="pro_btn">
+            <Link to="/portfolio">
+              <button className="btn-primary">View More...</button>
+            </Link>
+          </div>
         </div>
       </section>
 
