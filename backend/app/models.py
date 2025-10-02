@@ -14,7 +14,7 @@ class User(Base):
     first_name = Column(String, nullable=False)
     last_name = Column(String, nullable=False)
     phone_number = Column(String, unique=True)
-    password = Column(String, nullable=False)
+    password = Column(String)
     is_admin = Column(Boolean, default=False, nullable=False)
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('now()'))
 

@@ -3,6 +3,12 @@ from datetime import datetime
 from typing import Optional, Literal
 
 
+class GoogleUserCreate(BaseModel):
+    email: EmailStr
+    first_name: str
+    last_name: str
+    phone_number: Optional[str] = None
+    google_id_token: str
 
 
 class UserCreate(BaseModel):
