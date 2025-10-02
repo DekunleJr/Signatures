@@ -13,7 +13,7 @@
   border-radius: 8px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
   width: 100%;
-  max-width: 400px;
+  max-width: 800px; /* Adjusted max-width for signup form */
   text-align: center;
   border: 1px solid #222;
 }
@@ -81,4 +81,16 @@
 .success-message {
   color: green;
   margin-bottom: 1rem;
+}
+
+/* Styles for two fields per line */
+.form-row {
+  display: flex;
+  gap: 20px; /* Space between fields */
+  margin-bottom: 1.5rem;
+}
+
+.form-row .form-group {
+  flex: 1; /* Each form-group takes equal space */
+  margin-bottom: 0; /* Remove bottom margin from individual groups in a row */
 }

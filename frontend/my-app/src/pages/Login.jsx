@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { Link } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
 import { jwtDecode } from 'jwt-decode';
 import './Login.css';
@@ -72,21 +73,17 @@ export default function Login() {
       const data = await response.json();
 
       if (response.ok) {
-        console.log('Google Login successful:', data);
         login(data.access_token, { first_name: data.first_name, is_admin: data.is_admin });
         navigate('/'); // Redirect to home page
       } else {
-        console.error('Google Login failed:', data.detail);
         setError(data.detail || 'Google login failed. Please try again.');
       }
     } catch (error) {
-      console.error('Error during Google login:', error);
       setError('An error occurred during Google login. Please try again later.');
     }
   };
 
   const handleGoogleLoginError = () => {
-    console.error('Google Login Failed');
     setError('Google login failed. Please try again.');
   };
 
@@ -123,6 +120,9 @@ export default function Login() {
             useOneTap
           />
         </div>
+        <p className="signup-link-container">
+          Don't have an account? <Link to="/signup">Sign Up</Link>
+        </p>
       </form>
     </div>
   );

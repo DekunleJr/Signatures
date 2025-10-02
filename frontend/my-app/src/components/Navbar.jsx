@@ -1,9 +1,11 @@
+import { useState } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from '../context/AuthContext';
 import './Navbar.css';
 
 
 export default function Navbar() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
 
@@ -12,24 +14,31 @@ export default function Navbar() {
     navigate('/login');
   };
 
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   return (
     <nav className="navbar">
       <div className="logo">Signature</div>
-      <ul className="nav-links">
-        <li><Link to="/">Home</Link></li>
-        <li><Link to="/about">About</Link></li>
-        <li><Link to="/services">Services</Link></li>
-        <li><Link to="/portfolio">Portfolio</Link></li>
-        <li><Link to="/contact">Contact</Link></li>
+      <button className="menu-toggle" onClick={toggleMenu}>
+        &#9776; {/* Hamburger icon */}
+      </button>
+      <ul className={`nav-links ${isMenuOpen ? 'open' : ''}`}>
+        <li><Link to="/" onClick={() => setIsMenuOpen(false)}>Home</Link></li>
+        <li><Link to="/about" onClick={() => setIsMenuOpen(false)}>About</Link></li>
+        <li><Link to="/services" onClick={() => setIsMenuOpen(false)}>Services</Link></li>
+        <li><Link to="/portfolio" onClick={() => setIsMenuOpen(false)}>Portfolio</Link></li>
+        <li><Link to="/contact" onClick={() => setIsMenuOpen(false)}>Contact</Link></li>
       </ul>
-      <div className="nav-buttons">
+      <div className={`nav-buttons ${isMenuOpen ? 'open' : ''}`}>
         {user ? (
           <>
             <span className="welcome-message">Welcome, {user.first_name}!</span>
             <button className="btn" onClick={handleLogout}>Logout</button>
           </>
         ) : (
-          <Link to="/login">
+          <Link to="/login" onClick={() => setIsMenuOpen(false)}>
             <button className="btn">Login</button>
           </Link>
         )}
