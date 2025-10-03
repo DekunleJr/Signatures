@@ -66,7 +66,7 @@ export default function Signup() {
 
   return (
     <div className="login-container"> {/* Reusing login-container class */}
-      <form className="login-form" onSubmit={handleSubmit}> {/* Reusing login-form class */}
+      <form className="signup-form" onSubmit={handleSubmit}> {/* Reusing login-form class */}
         <h2>Sign Up</h2>
         {error && <p className="error-message">{error}</p>}
         {success && <p className="success-message">{success}</p>}

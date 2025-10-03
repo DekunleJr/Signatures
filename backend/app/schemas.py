@@ -1,6 +1,8 @@
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
-from typing import Optional, Literal
+from typing import Optional, Literal, List
+from fastapi import UploadFile, File
+from pydantic import Field
 
 
 class GoogleUserCreate(BaseModel):
@@ -44,12 +46,14 @@ class Work(BaseModel):
     title: str
     description: str
     img_url: str
+    other_image_urls: List[str] = Field(default_factory=list) # New field for other image URLs
     created_at: datetime
 
 class WorkCreate(BaseModel):
     title: str
     description: str
-    img_url: str
+    # img_url will be handled as a file upload in the router, not directly in the schema
+    # other_images will be handled as a list of file uploads in the router
 
 class Service(BaseModel):
     id: int

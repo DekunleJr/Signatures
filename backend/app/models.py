@@ -1,5 +1,5 @@
 from .database import Base
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, JSON
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.sqltypes import TIMESTAMP
 from sqlalchemy.sql.expression import text
@@ -35,4 +35,5 @@ class Work(Base):
     title = Column(String, nullable=False)
     description = Column(String)
     img_url = Column(String)
+    other_image_urls = Column(JSON, nullable=True) # New field for other image URLs
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('now()'))

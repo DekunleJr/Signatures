@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import "./Portfolio.css";
 
 function Portfolio() {
@@ -32,7 +33,9 @@ function Portfolio() {
               
               <h3>{project.title}</h3>
               <p>{project.description}</p>
-              
+              <Link to={`/portfolio/${project.id}`}>
+                <button className="btn view-details-btn">View Details</button>
+              </Link>
             </div>
           ))
         )}

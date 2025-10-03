@@ -103,3 +103,31 @@
   color: #aaa;
   font-size: 0.95rem;
 }
+
+.view-details-btn {
+  background-color: #d4af37;
+  color: #333;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+  margin-top: 1rem; /* Add some space above the button */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
+}
+
+.view-details-btn:hover {
+  background-color: #e0c26e;
+}
+
+.portfolio-item:hover .view-details-btn {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}

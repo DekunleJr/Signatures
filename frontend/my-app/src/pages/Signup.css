@@ -7,7 +7,7 @@
   padding: 2rem;
 }
 
-.login-form {
+.signup-form {
   background-color: #fff;
   padding: 3rem;
   border-radius: 8px;
@@ -18,7 +18,7 @@
   border: 1px solid #222;
 }
 
-.login-form h2 {
+.signup-form h2 {
   color: #d4af37;
   margin-bottom: 2rem;
   font-size: 2rem;
