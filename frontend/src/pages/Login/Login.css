@@ -1,0 +1,84 @@
+.login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #0a0a0a;
+  padding: 2rem;
+}
+
+.login-form {
+  background-color: #fff;
+  padding: 3rem;
+  border-radius: 8px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  max-width: 400px;
+  text-align: center;
+  border: 1px solid #222;
+}
+
+.login-form h2 {
+  color: var(--color-primary);
+  margin-bottom: 2rem;
+  font-size: 2rem;
+}
+
+.form-group {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.form-group label {
+  display: block;
+  color: #111;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+}
+
+.form-group input[type="email"],
+.form-group input[type="firstName"],
+.form-group input[type="text"],
+.form-group input[type="phoneNumber"],
+.form-group input[type="password"] {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #333;
+  border-radius: 5px;
+  background-color: #fff;
+  color: #111;
+  font-size: 1rem;
+  box-sizing: border-box; /* Ensures padding doesn't increase width */
+}
+
+.form-group input[type="text"]:focus,
+.form-group input[type="lastName"]:focus,
+.form-group input[type="text"]:focus,
+.form-group input[type="phoneNumber"]:focus,
+.form-group input[type="password"]:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--box-shadow);
+}
+
+.login-form .btn-primary {
+  width: 100%;
+  padding: 12px;
+  font-size: 1.1rem;
+  margin-top: 1rem;
+  margin-bottom: 2rem;
+}
+
+.signup-link-container {
+  color: #000;
+}
+
+.error-message {
+  color: red;
+  margin-bottom: 1rem;
+}
+
+.success-message {
+  color: green;
+  margin-bottom: 1rem;
+}

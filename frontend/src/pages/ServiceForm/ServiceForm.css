@@ -1,0 +1,148 @@
+.service-form-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  color: #333;
+}
+
+.service-form-container h1 {
+  font-size: 2.2rem;
+  color: var(--color-primary);
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+
+.service-form .form-group {
+  margin-bottom: 1.5rem;
+  text-align: left;
+}
+
+.service-form .form-group label {
+  display: block;
+  color: #111;
+  margin-bottom: 0.5rem;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.service-form .form-group input[type="text"],
+.service-form .form-group textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  color: #111;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.service-form .form-group textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+.service-form .form-group input[type="file"] {
+  width: 100%;
+  padding: 10px 0;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f9f9f9;
+  color: #111;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+.service-form .form-group input:focus,
+.service-form .form-group textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+  box-shadow: var(--box-shadow);
+}
+
+.service-form .btn-primary {
+  width: 100%;
+  padding: 12px;
+  font-size: 1.1rem;
+  margin-top: 1.5rem;
+  background-color: var(--color-primary);
+  color: #333;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.service-form .btn-primary:hover:not(:disabled) {
+  background-color: var(--color-primary-light);
+}
+
+.service-form .btn-primary:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.form-buttons {
+  display: flex;
+  justify-content: flex-end; /* Align buttons to the right */
+  gap: 1rem; /* Space between buttons */
+  margin-top: 1.5rem;
+}
+
+.form-buttons .btn-secondary {
+  background-color: #6c757d; /* A neutral color for cancel */
+  color: white;
+  border: none;
+  padding: 12px;
+  font-size: 1.1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  flex: 1; /* Allow buttons to grow */
+  max-width: 150px; /* Limit width */
+}
+
+.form-buttons .btn-secondary:hover {
+  background-color: #5a6268;
+}
+
+.form-buttons .btn-primary {
+  flex: 1; /* Allow buttons to grow */
+  max-width: 150px; /* Limit width */
+  margin-top: 0; /* Reset margin-top from general .btn-primary */
+}
+
+.error-message {
+  color: red;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.success-message {
+  color: green;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+.existing-thumbnail {
+  width: 80px;
+  height: 60px;
+  object-fit: cover;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .service-form-container {
+    padding: 1rem;
+    margin: 1rem auto;
+  }
+
+  .service-form-container h1 {
+    font-size: 1.8rem;
+  }
+}
