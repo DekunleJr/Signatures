@@ -5,6 +5,7 @@ import "./home.css";
 import hero1 from "../assets/hero-1.jpg";
 import hero2 from "../assets/hero-2.jpg";
 import hero3 from "../assets/hero-3.jpg";
+import { customAxios } from "../utils/customAxios";
 
 const heroImages = [hero1, hero2, hero3];
 
@@ -23,23 +24,21 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    const url = import.meta.env.VITE_API_URL;
-    fetch(`${url}/api/portfolio`)
-      .then((res) => res.json())
-      .then((data) => {
-        // Sort by created_at in descending order and take the last 3
-        const sortedProjects = data
-          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-          .slice(0, 3);
-        setRecentProjects(sortedProjects);
-      })
-      .catch((err) => console.error("Error fetching recent projects:", err));
+    try {
+      const { data } = customAxios.get("/portfolio");
+      const sortedProjects = data
+        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+        .slice(0, 3);
+      setRecentProjects(sortedProjects);
+    } catch (error) {
+      console.error("Error fetching recent projects:", error);
+    }
   }, []);
 
   return (
-    <div className="home">
+    <div className='home'>
       {/* Hero Section */}
-      <section className="hero">
+      <section className='hero'>
         {heroImages.map((image, index) => (
           <div
             key={index}
@@ -49,43 +48,47 @@ export default function Home() {
             style={{ backgroundImage: `url(${image})` }}
           />
         ))}
-        <div className="hero-overlay" />
-        <div className="hero-content">
+        <div className='hero-overlay' />
+        <div className='hero-content'>
           <h1>Creative Interior Design</h1>
           <p>
             Transforming spaces with modern and elegant interior decoration
             solutions.
           </p>
-          <Link to="/portfolio">
-            <button className="btn-primary">Check Out Our Projects</button>
+          <Link to='/portfolio'>
+            <button className='btn-primary'>Check Out Our Projects</button>
           </Link>
         </div>
       </section>
 
       {/* Services Section */}
-      <section className="services">
-        <div className="container">
+      <section className='services'>
+        <div className='container'>
           <h2>Our Services</h2>
-          <div className="service-grid">
-            <div className="service-card">
-              <i className="fas fa-home"></i>
+          <div className='service-grid'>
+            <div className='service-card'>
+              <i className='fas fa-home'></i>
               <h3>Residential Design</h3>
               <p>
-                We create beautiful and functional living spaces that reflect your personal style. From concept to completion, we handle everything.
+                We create beautiful and functional living spaces that reflect
+                your personal style. From concept to completion, we handle
+                everything.
               </p>
             </div>
-            <div className="service-card">
-              <i className="fas fa-building"></i>
+            <div className='service-card'>
+              <i className='fas fa-building'></i>
               <h3>Commercial Design</h3>
               <p>
-                Our commercial design solutions create inspiring environments that enhance productivity and brand identity.
+                Our commercial design solutions create inspiring environments
+                that enhance productivity and brand identity.
               </p>
             </div>
-            <div className="service-card">
-              <i className="fas fa-comments"></i>
+            <div className='service-card'>
+              <i className='fas fa-comments'></i>
               <h3>Consultation</h3>
               <p>
-                Get expert advice on your design projects. We help you make the right decisions to bring your vision to life.
+                Get expert advice on your design projects. We help you make the
+                right decisions to bring your vision to life.
               </p>
             </div>
           </div>
@@ -93,30 +96,35 @@ export default function Home() {
       </section>
 
       {/* Brand Philosophy Section */}
-      <section className="brand-philosophy">
-        <div className="container">
+      <section className='brand-philosophy'>
+        <div className='container'>
           <h2>Our Brand Philosophy</h2>
           <p>
-            At Signatures, we believe that great design is about more than just aesthetics. It's about creating spaces that are a true reflection of your personality and lifestyle. Our philosophy is centered around three core principles: creativity, quality, and sustainability. We are passionate about crafting unique and timeless interiors that you will love for years to come.
+            At Signatures, we believe that great design is about more than just
+            aesthetics. It's about creating spaces that are a true reflection of
+            your personality and lifestyle. Our philosophy is centered around
+            three core principles: creativity, quality, and sustainability. We
+            are passionate about crafting unique and timeless interiors that you
+            will love for years to come.
           </p>
         </div>
       </section>
 
       {/* Portfolio Section */}
-      <section className="portfolio">
-        <div className="container">
+      <section className='portfolio'>
+        <div className='container'>
           <h2>Recent Projects</h2>
-          <div className="portfolio-grid">
+          <div className='portfolio-grid'>
             {recentProjects.length === 0 ? (
               <p>Loading recent projects...</p>
             ) : (
               recentProjects.map((project) => (
                 <div
                   key={project.id}
-                  className="portfolio-item"
+                  className='portfolio-item'
                   style={{ backgroundImage: `url(${project.img_url})` }}
                 >
-                  <div className="portfolio-info">
+                  <div className='portfolio-info'>
                     <h3>{project.title}</h3>
                     <p>{project.description}</p>
                   </div>
@@ -124,20 +132,20 @@ export default function Home() {
               ))
             )}
           </div>
-          <div className="pro_btn">
-            <Link to="/portfolio">
-              <button className="btn-primary">View More...</button>
+          <div className='pro_btn'>
+            <Link to='/portfolio'>
+              <button className='btn-primary'>View More...</button>
             </Link>
           </div>
         </div>
       </section>
 
       {/* Call To Action */}
-      <section className="cta">
-        <div className="container">
+      <section className='cta'>
+        <div className='container'>
           <h2>Ready to Transform Your Space?</h2>
-          <Link to="/contact">
-            <button className="btn-primary">Contact Us</button>
+          <Link to='/contact'>
+            <button className='btn-primary'>Contact Us</button>
           </Link>
         </div>
       </section>
