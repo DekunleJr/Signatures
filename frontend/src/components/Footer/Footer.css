@@ -2,7 +2,7 @@
   background: #111;
   color: #ccc;
   padding: 2rem 2rem 1rem;
-  border-top: 2px solid #d4af37;
+  border-top: 2px solid var(--color-primary);
 }
 
 .footer-container {
@@ -14,7 +14,7 @@
 
 .footer h3,
 .footer h4 {
-  color: #d4af37;
+  color: var(--color-primary);
   margin-bottom: 0.75rem;
 }
 
@@ -23,15 +23,16 @@
 }
 
 .footer-contacts {
-  width: 80%;               /* take 80% of screen */
-  margin: 0 auto;           /* center horizontally */
+  width: 80%; /* take 80% of screen */
+  margin: 0 auto; /* center horizontally */
   /* display: flex;            use flexbox */
-  justify-content: center;  /* center child divs horizontally */
-  align-items: center;      /* center child divs vertically */
-  gap: 2rem;                /* space between child divs */
+  justify-content: center; /* center child divs horizontally */
+  align-items: center; /* center child divs vertically */
+  gap: 2rem; /* space between child divs */
   padding: 2rem 0;
-  text-align: center;       /* center text inside */
-  background-color: #d4af37;
+  text-align: center; /* center text inside */
+  background-color: var(--color-primary);
+  border-radius: 8px;
 }
 .footer-contacts h3 {
   font-size: 3rem;

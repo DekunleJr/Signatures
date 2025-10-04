@@ -10,7 +10,7 @@
 
 .service-form-container h1 {
   font-size: 2.2rem;
-  color: #d4af37;
+  color: var(--color-primary);
   margin-bottom: 1.5rem;
   text-align: center;
 }
@@ -59,8 +59,8 @@
 .service-form .form-group input:focus,
 .service-form .form-group textarea:focus {
   outline: none;
-  border-color: #d4af37;
-  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3);
+  border-color: var(--color-primary);
+  box-shadow: var(--box-shadow);
 }
 
 .service-form .btn-primary {
@@ -68,7 +68,7 @@
   padding: 12px;
   font-size: 1.1rem;
   margin-top: 1.5rem;
-  background-color: #d4af37;
+  background-color: var(--color-primary);
   color: #333;
   border: none;
   border-radius: 5px;
@@ -77,7 +77,7 @@
 }
 
 .service-form .btn-primary:hover:not(:disabled) {
-  background-color: #e0c26e;
+  background-color: var(--color-primary-light);
 }
 
 .service-form .btn-primary:disabled {

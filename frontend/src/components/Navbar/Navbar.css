@@ -13,7 +13,7 @@
 .logo {
   font-size: 1.8rem;
   font-weight: bold;
-  color: #d4af37;
+  color: var(--color-primary);
 }
 
 .nav-links {
@@ -35,7 +35,7 @@
 }
 
 .nav-links a:hover {
-  color: #d4af37;
+  color: var(--color-primary);
 }
 
 .nav-buttons {
@@ -50,7 +50,7 @@
 }
 
 .btn {
-  background-color: #d4af37;
+  background-color: var(--color-primary);
   color: #333;
   border: none;
   padding: 0.7rem 1.2rem;
@@ -61,7 +61,7 @@
 }
 
 .btn:hover {
-  background-color: #e0c26e;
+  background-color: var(--color-primary-light);
 }
 
 .menu-toggle {
@@ -113,7 +113,7 @@
     pointer-events: auto;
     height: auto; /* Restore height when open */
     padding: 1rem 0; /* Restore padding when open */
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Restore shadow when open */
+    box-shadow: var(--box-shadow-dark); /* Restore shadow when open */
     border-top: 1px solid #444; /* Restore border when open */
   }
 
@@ -131,7 +131,8 @@
     text-align: center;
   }
 
-  .nav-buttons.open { /* Apply margin only when open */
+  .nav-buttons.open {
+    /* Apply margin only when open */
     margin-top: 1rem;
   }
 

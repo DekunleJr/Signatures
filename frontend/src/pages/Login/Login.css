@@ -19,7 +19,7 @@
 }
 
 .login-form h2 {
-  color: #d4af37;
+  color: var(--color-primary);
   margin-bottom: 2rem;
   font-size: 2rem;
 }
@@ -57,8 +57,8 @@
 .form-group input[type="phoneNumber"]:focus,
 .form-group input[type="password"]:focus {
   outline: none;
-  border-color: #d4af37;
-  box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.3);
+  border-color: var(--color-primary);
+  box-shadow: var(--box-shadow);
 }
 
 .login-form .btn-primary {

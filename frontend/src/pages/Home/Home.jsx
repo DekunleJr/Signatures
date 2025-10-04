@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import "./home.css";
 
-import hero1 from "../assets/hero-1.jpg";
-import hero2 from "../assets/hero-2.jpg";
-import hero3 from "../assets/hero-3.jpg";
-import { customAxios } from "../utils/customAxios";
+import hero1 from "../../assets/hero-1.jpg";
+import hero2 from "../../assets/hero-2.jpg";
+import hero3 from "../../assets/hero-3.jpg";
+import { customAxios } from "../../utils/customAxios";
 
 const heroImages = [hero1, hero2, hero3];
 
@@ -27,8 +27,8 @@ export default function Home() {
     try {
       const { data } = customAxios.get("/portfolio");
       const sortedProjects = data
-        .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-        .slice(0, 3);
+        ?.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+        ?.slice(0, 3);
       setRecentProjects(sortedProjects);
     } catch (error) {
       console.error("Error fetching recent projects:", error);
@@ -115,10 +115,10 @@ export default function Home() {
         <div className='container'>
           <h2>Recent Projects</h2>
           <div className='portfolio-grid'>
-            {recentProjects.length === 0 ? (
+            {recentProjects?.length === 0 ? (
               <p>Loading recent projects...</p>
             ) : (
-              recentProjects.map((project) => (
+              recentProjects?.map((project) => (
                 <div
                   key={project.id}
                   className='portfolio-item'

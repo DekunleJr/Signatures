@@ -8,7 +8,7 @@
 
 /* Hero Section */
 .hero {
-  height: 100vh;
+  height: 70vh;
   position: relative;
   display: flex;
   align-items: center;
@@ -65,7 +65,7 @@
 .hero h1 {
   font-size: 3.5rem;
   margin-bottom: 1rem;
-  color: #d4af37;
+  color: var(--color-primary);
   font-weight: 700;
 }
 
@@ -78,7 +78,7 @@
 }
 
 .btn-primary {
-  background: #d4af37;
+  background: var(--color-primary);
   border: none;
   padding: 15px 30px;
   color: #000;
@@ -86,12 +86,12 @@
   font-weight: bold;
   cursor: pointer;
   border-radius: 50px;
-  border: 1px solid #b89a3a;
+  border: 1px solid var(--color-primary-dark);
   transition: background-color 0.3s, transform 0.3s;
 }
 
 .btn-primary:hover {
-  background: #b89a3a;
+  background: var(--color-primary-dark);
   transform: translateY(-3px);
   border: none;
 }
@@ -103,7 +103,7 @@
 }
 
 .services h2 {
-  color: #d4af37;
+  color: var(--color-primary);
   margin-bottom: 3rem;
   font-size: 2.5rem;
 }
@@ -124,19 +124,19 @@
 
 .service-card i {
   font-size: 2.5rem;
-  color: #d4af37;
+  color: var(--color-primary);
   margin-bottom: 1.5rem;
 }
 
 .service-card h3 {
-  color: #d4af37;
+  color: var(--color-primary);
   margin-bottom: 1rem;
 }
 
 .service-card:hover {
   transform: translateY(-10px);
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-  border-color: #d4af37;
+  border-color: var(--color-primary);
 }
 
 /* Brand Philosophy Section */
@@ -147,7 +147,7 @@
 }
 
 .brand-philosophy h2 {
-  color: #d4af37;
+  color: var(--color-primary);
   margin-bottom: 2rem;
   font-size: 2.5rem;
 }
@@ -166,7 +166,7 @@
 }
 
 .portfolio h2 {
-  color: #d4af37;
+  color: var(--color-primary);
   margin-bottom: 3rem;
   font-size: 2.5rem;
 }
@@ -200,7 +200,7 @@
 /* Call To Action */
 .cta {
   padding: 5rem 0;
-  background: #d4af37;
+  background: var(--color-primary);
   color: #000;
 }
 

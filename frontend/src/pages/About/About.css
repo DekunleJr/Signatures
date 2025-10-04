@@ -65,11 +65,11 @@
 
 .value-box:hover {
   transform: translateY(-5px);
-  border-color: #d4af37;
+  border-color: var(--color-primary);
 }
 
 .value-box h3 {
-  color: #d4af37;
+  color: var(--color-primary);
   margin-bottom: 0.75rem;
   font-size: 1.4rem;
 }

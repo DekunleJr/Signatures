@@ -12,9 +12,9 @@
 
 .not-found-container h1 {
   font-size: 8rem;
-  color: #d4af37;
+  color: var(--color-primary);
   margin-bottom: 1rem;
-  text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+  text-shadow: var(--box-shadow);
 }
 
 .not-found-container h2 {
@@ -31,7 +31,7 @@
 
 .home-link {
   display: inline-block;
-  background-color: #d4af37;
+  background-color: var(--color-primary);
   color: #000;
   padding: 12px 25px;
   border-radius: 5px;
@@ -41,6 +41,6 @@
 }
 
 .home-link:hover {
-  background-color: #b89a3a;
+  background-color: var(--color-primary-dark);
   transform: translateY(-3px);
 }

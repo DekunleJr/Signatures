@@ -6,7 +6,7 @@
 .portfolio h2 {
   font-size: 2.2rem;
   margin-bottom: 1rem;
-  color: #d4af37;
+  color: var(--color-primary);
 }
 
 .portfolio .intro {
@@ -17,7 +17,7 @@
 }
 
 .add-new-work-btn {
-  background-color: #d4af37;
+  background-color: var(--color-primary);
   color: #333;
   border: none;
   padding: 0.8rem 1.5rem;
@@ -29,7 +29,7 @@
 }
 
 .add-new-work-btn:hover {
-  background-color: #e0c26e;
+  background-color: var(--color-primary-light);
 }
 
 .add-work-button-container {
@@ -107,7 +107,7 @@
 
 .portfolio-item:hover {
   transform: translateY(-5px);
-  border-color: #d4af37;
+  border-color: var(--color-primary);
 }
 
 .portfolio-info {
@@ -118,7 +118,7 @@
 }
 
 .portfolio-info h3 {
-  color: #d4af37;
+  color: var(--color-primary);
   margin: 0 0 0.5rem;
 }
 
@@ -128,7 +128,7 @@
 }
 
 .view-details-btn {
-  background-color: #d4af37;
+  background-color: var(--color-primary);
   color: #333;
   border: none;
   padding: 0.7rem 1.2rem;
@@ -146,7 +146,7 @@
 }
 
 .view-details-btn:hover {
-  background-color: #e0c26e;
+  background-color: var(--color-primary-light);
 }
 
 .portfolio-item:hover .view-details-btn {
