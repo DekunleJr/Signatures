@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Link } from 'react-router-dom';
 import { GoogleLogin } from '@react-oauth/google';
@@ -11,7 +11,9 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
+  const from = location.state?.from?.pathname || '/';
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -36,7 +38,7 @@ export default function Login() {
       if (response.ok) {
         console.log('Login successful:', data);
         login(data.access_token, { first_name: data.first_name, is_admin: data.is_admin });
-        navigate('/'); // Redirect to home page
+        navigate(from, { replace: true }); // Redirect to previous page
       } else {
         console.error('Login failed:', data.detail);
         setError(data.detail || 'Login failed. Please check your credentials.');
@@ -74,7 +76,7 @@ export default function Login() {
 
       if (response.ok) {
         login(data.access_token, { first_name: data.first_name, is_admin: data.is_admin });
-        navigate('/'); // Redirect to home page
+        navigate(from, { replace: true }); // Redirect to previous page
       } else {
         setError(data.detail || 'Google login failed. Please try again.');
       }

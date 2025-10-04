@@ -59,8 +59,6 @@ def google_signup_login(google_user: schemas.GoogleUserCreate, db: Session = Dep
     user_email = idinfo['email']
     user_first_name = idinfo.get('given_name', '')
     user_last_name = idinfo.get('family_name', '')
-    print(idinfo)
-    print("google: ", google_user)
     user_phone_number = google_user.phone_number # Use phone number from the request if provided
 
     db_user = db.query(models.User).filter(models.User.email == user_email).first()

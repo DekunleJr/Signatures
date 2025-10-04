@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from '../context/AuthContext';
 import './Navbar.css';
 
@@ -8,10 +8,12 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    // User remains on the current page after logout
+    // navigate(location.pathname, { replace: true }); // No explicit navigation needed, AuthContext handles state
   };
 
   const toggleMenu = () => {
@@ -38,7 +40,7 @@ export default function Navbar() {
             <button className="btn" onClick={handleLogout}>Logout</button>
           </>
         ) : (
-          <Link to="/login" onClick={() => setIsMenuOpen(false)}>
+          <Link to="/login" state={{ from: location }} onClick={() => setIsMenuOpen(false)}>
             <button className="btn">Login</button>
           </Link>
         )}

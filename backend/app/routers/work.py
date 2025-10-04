@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, status, HTTPException, UploadFile, File,
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
-from .. import schemas, models
+from .. import schemas, models, oauth2
 from ..database import get_db
 from ..cloudinary_utils import upload_image, upload_multiple_images
 
@@ -15,7 +15,8 @@ async def create_work(
     description: str = Form(...),
     img_url: UploadFile = File(...),
     other_images: Optional[List[UploadFile]] = File(None),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(oauth2.get_current_admin_user)
 ):
     db_title = db.query(models.Work).filter(models.Work.title == title).first()
     if db_title:
@@ -51,7 +52,7 @@ def get_work(work_id: int, db: Session = Depends(get_db)):
     return db_work
 
 @router.delete("/{work_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_work(work_id: int, db: Session = Depends(get_db)):
+async def delete_work(work_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(oauth2.get_current_admin_user)):
     db_work = db.query(models.Work).filter(models.Work.id == work_id).first()
     if not db_work:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Work not found")
@@ -66,7 +67,8 @@ async def update_work(
     description: str = Form(...),
     img_url: Optional[UploadFile] = File(None),
     other_images: Optional[List[UploadFile]] = File(None),
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(oauth2.get_current_admin_user)
 ):
     db_work = db.query(models.Work).filter(models.Work.id == work_id).first()
     if not db_work:

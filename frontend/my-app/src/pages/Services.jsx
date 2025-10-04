@@ -1,8 +1,12 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useAuth } from '../context/AuthContext';
 import "./Services.css";
 
 function Services() {
   const [services, setServices] = useState([]);
+  const { user } = useAuth();
+  const isAdmin = user && user.is_admin;
 
   useEffect(() => {
     // Fetch from your backend
@@ -25,6 +29,14 @@ function Services() {
           We offer you tailored interior design services that blend aesthetics and function.
         </p>
       </div>
+
+      {isAdmin && (
+        <div className="add-service-button-container">
+          <Link to="/services/add">
+            <button className="btn add-new-service-btn">Add New Service</button>
+          </Link>
+        </div>
+      )}
 
       <div className="services-cards">
         {services.length === 0 ? (

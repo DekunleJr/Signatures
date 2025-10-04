@@ -16,6 +16,29 @@
   line-height: 1.6;
 }
 
+.add-new-work-btn {
+  background-color: #d4af37;
+  color: #333;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  transition: background-color 0.3s ease;
+}
+
+.add-new-work-btn:hover {
+  background-color: #e0c26e;
+}
+
+.add-work-button-container {
+  position: fixed;
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 100;
+}
+
 /* Grid layout */
 .portfolio-grid {
   display: grid;

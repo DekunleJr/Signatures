@@ -18,6 +18,8 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import WorkDetail from "./pages/WorkDetail";
+import WorkForm from "./pages/WorkForm";
+import ServiceForm from "./pages/ServiceForm";
 
 
 function App() {
@@ -43,7 +45,11 @@ function App() {
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/portfolio/add" element={<WorkForm />} />
+          <Route path="/portfolio/edit/:work_id" element={<WorkForm />} />
           <Route path="/portfolio/:work_id" element={<WorkDetail />} />
+          <Route path="/services/add" element={<ServiceForm />} />
+          <Route path="/services/edit/:service_id" element={<ServiceForm />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
         <Footer />
