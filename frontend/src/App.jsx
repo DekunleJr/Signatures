@@ -22,22 +22,27 @@ function App() {
     <AuthProvider>
       <Router>
         <Navbar />
-        <Routes>
-          <Route path='/' element={<Home />} />
-          <Route path='/about' element={<About />} />
-          <Route path='/services' element={<Services />} />
-          <Route path='/portfolio' element={<Portfolio />} />
-          <Route path='/contact' element={<Contact />} />
-          <Route path='/login' element={<Login />} />
-          <Route path='/signup' element={<Signup />} />
-          <Route path='/portfolio/add' element={<WorkForm />} />
-          <Route path='/portfolio/edit/:work_id' element={<WorkForm />} />
-          <Route path='/portfolio/:work_id' element={<WorkDetail />} />
-          <Route path='/services/add' element={<ServiceForm />} />
-          <Route path='/services/edit/:service_id' element={<ServiceForm />} />
-          <Route path='*' element={<NotFound />} />
-        </Routes>
-        <Footer />
+        <div className='app-content__wrapper'>
+          <Routes>
+            <Route path='/' element={<Home />} />
+            <Route path='/about' element={<About />} />
+            <Route path='/services' element={<Services />} />
+            <Route path='/portfolio' element={<Portfolio />} />
+            <Route path='/contact' element={<Contact />} />
+            <Route path='/login' element={<Login />} />
+            <Route path='/signup' element={<Signup />} />
+            <Route path='/portfolio/add' element={<WorkForm />} />
+            <Route path='/portfolio/edit/:work_id' element={<WorkForm />} />
+            <Route path='/portfolio/:work_id' element={<WorkDetail />} />
+            <Route path='/services/add' element={<ServiceForm />} />
+            <Route
+              path='/services/edit/:service_id'
+              element={<ServiceForm />}
+            />
+            <Route path='*' element={<NotFound />} />
+          </Routes>
+          <Footer />
+        </div>
       </Router>
     </AuthProvider>
   );

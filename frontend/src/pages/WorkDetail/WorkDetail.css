@@ -1,11 +1,10 @@
 .work-detail-container {
-  max-width: 1000px;
   margin: 2rem auto;
   padding: 1.5rem;
-  background-color: #fff;
   border-radius: 8px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
   color: #333;
+  width: 100%;
 }
 
 .work-title {
@@ -13,6 +12,7 @@
   color: var(--color-primary);
   margin-bottom: 1rem;
   text-align: center;
+  text-transform: capitalize;
 }
 
 .work-description {
@@ -21,6 +21,10 @@
   margin: 0 auto 2rem auto; /* Center the description */
   text-align: center; /* Center the text */
   max-width: 800px; /* Limit width for better readability when centered */
+  color: #fff;
+}
+.work-description::first-letter {
+  text-transform: uppercase;
 }
 
 .slideshow-container {

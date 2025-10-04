@@ -34,6 +34,17 @@ html,
   flex-direction: column;
 }
 
+.app-content__wrapper {
+  display: grid;
+  grid-template-rows: 1fr max-content;
+  min-height: calc(100vh - 80px);
+}
+@media screen and (max-width: 768px) {
+  .app-content__wrapper {
+    min-height: calc(100vh - 130px);
+  }
+}
+
 /* Navbar */
 .navbar {
   display: flex;
@@ -88,7 +99,8 @@ ul {
   transition: color 0.3s;
 }
 
-.navbar li a:hover {
+.navbar li a:hover,
+.navbar li a.active {
   color: var(--color-primary);
 }
 
@@ -155,4 +167,9 @@ ul {
   text-align: center;
   border-top: 2px solid var(--color-primary);
   color: #aaa;
+}
+
+/* CONTACT PAGE */
+.contact-form > * {
+  border-radius: 5px;
 }

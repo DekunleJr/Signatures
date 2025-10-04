@@ -27,27 +27,47 @@ export default function Navbar() {
       </button>
       <ul className={`nav-links ${isMenuOpen ? "open" : ""}`}>
         <li>
-          <Link to='/' onClick={() => setIsMenuOpen(false)}>
+          <Link
+            to='/'
+            className={location.pathname === "/" ? "active" : ""}
+            onClick={() => setIsMenuOpen(false)}
+          >
             Home
           </Link>
         </li>
         <li>
-          <Link to='/about' onClick={() => setIsMenuOpen(false)}>
+          <Link
+            to='/about'
+            className={location.pathname === "/about" ? "active" : ""}
+            onClick={() => setIsMenuOpen(false)}
+          >
             About
           </Link>
         </li>
         <li>
-          <Link to='/services' onClick={() => setIsMenuOpen(false)}>
+          <Link
+            to='/services'
+            className={location.pathname === "/services" ? "active" : ""}
+            onClick={() => setIsMenuOpen(false)}
+          >
             Services
           </Link>
         </li>
         <li>
-          <Link to='/portfolio' onClick={() => setIsMenuOpen(false)}>
+          <Link
+            to='/portfolio'
+            className={location.pathname === "/portfolio" ? "active" : ""}
+            onClick={() => setIsMenuOpen(false)}
+          >
             Portfolio
           </Link>
         </li>
         <li>
-          <Link to='/contact' onClick={() => setIsMenuOpen(false)}>
+          <Link
+            to='/contact'
+            className={location.pathname === "/contact" ? "active" : ""}
+            onClick={() => setIsMenuOpen(false)}
+          >
             Contact
           </Link>
         </li>

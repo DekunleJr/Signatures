@@ -5,7 +5,8 @@
   background-color: #333;
   padding: 1rem 2rem;
   color: white;
-  position: relative;
+  position: sticky;
+  top: 0;
   z-index: 1000;
   min-height: 60px;
 }

@@ -14,10 +14,7 @@ export default function WorkDetail() {
   useEffect(() => {
     (async () => {
       try {
-        const { data, status } = customAxios.get(`/portfolio/${work_id}`);
-        if (status !== 200) {
-          throw new Error(`HTTP error! status: ${status}`);
-        }
+        const { data } = await customAxios.get(`/portfolio/${work_id}`);
 
         setWork(data);
       } catch (err) {

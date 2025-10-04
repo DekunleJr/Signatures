@@ -24,10 +24,8 @@
 }
 
 .add-service-button-container {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  z-index: 100;
+  margin: 0 auto 2rem;
+  width: max-content;
 }
 
 .add-new-service-btn {

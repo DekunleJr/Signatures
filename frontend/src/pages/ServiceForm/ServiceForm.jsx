@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./ServiceForm.css"; // Will create this CSS file next
-import { customAxios } from "../../utils/customAxios";
+import { customAxios, customFormAxios } from "../../utils/customAxios";
 import { useAuth } from "../../context/AuthContext";
 
 export default function ServiceForm() {
@@ -23,25 +23,21 @@ export default function ServiceForm() {
       const fetchService = async () => {
         setLoading(true);
         try {
-          const { data, status } = await customAxios.get(
-            `/services/${service_id}`
-          );
-          if (status !== 200) {
-            throw new Error(`HTTP error! status: ${status}`);
-          }
-
+          const { data } = await customAxios.get(`/services/${service_id}`);
           setTitle(data.title);
           setDescription(data.description);
           setExistingMainImageUrl(data.img_url);
+          toast.success();
         } catch (err) {
           setError(err.message);
+          toast.error(err.message);
         } finally {
           setLoading(false);
         }
       };
       fetchService();
     }
-  }, [service_id, isEditMode]);
+  }, [service_id, isEditMode, toast]);
 
   const handleMainImageChange = (e) => {
     setMainImage(e.target.files[0]);
@@ -71,23 +67,21 @@ export default function ServiceForm() {
     }
 
     try {
-      const { data, status } = await (isEditMode
-        ? customAxios.put(`/services/${service_id}`, formData)
-        : customAxios.post("/services", formData));
+      await (isEditMode
+        ? customFormAxios.put(`/services/${service_id}`, formData)
+        : customFormAxios.post("/services", formData));
 
-      if (status === 200) {
-        setSuccess(`Service ${isEditMode ? "updated" : "added"} successfully!`);
-        setTimeout(() => {
-          navigate("/services"); // Redirect to services page
-        }, 1500);
-      } else {
-        setError(
-          data.detail || `Failed to ${isEditMode ? "update" : "add"} service.`
-        );
-      }
+      setSuccess(`Service ${isEditMode ? "updated" : "added"} successfully!`);
+      toast.success(
+        `Service ${isEditMode ? "updated" : "added"} successfully!`
+      );
+      setTimeout(() => {
+        navigate("/services"); // Redirect to services page
+      }, 1500);
     } catch (err) {
       console.error("Submission error:", err);
       setError("An unexpected error occurred. Please try again.");
+      toast.error("An unexpected error occurred. Please try again.");
     } finally {
       setLoading(false);
     }

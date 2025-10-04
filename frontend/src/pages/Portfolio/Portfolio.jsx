@@ -10,12 +10,14 @@ function Portfolio() {
   const isAdmin = user && user.is_admin;
 
   useEffect(() => {
-    try {
-      const { data } = customAxios.get("/portfolio");
-      setProjects(data);
-    } catch (error) {
-      console.error("Error fetching portfolio:", error);
-    }
+    (async () => {
+      try {
+        const { data } = await customAxios.get("/portfolio");
+        setProjects(data);
+      } catch (error) {
+        console.error("Error fetching portfolio:", error);
+      }
+    })();
   }, []);
 
   return (
