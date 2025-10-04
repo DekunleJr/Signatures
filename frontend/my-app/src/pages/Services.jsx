@@ -10,7 +10,8 @@ function Services() {
 
   useEffect(() => {
     // Fetch from your backend
-    fetch("http://localhost:8000/api/services")
+    const url = import.meta.env.VITE_API_URL;
+    fetch(`${url}/api/services`)
       .then((res) => res.json())
       .then((data) => {
         setServices(data);

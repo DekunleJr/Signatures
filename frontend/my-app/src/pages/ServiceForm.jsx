@@ -22,7 +22,7 @@ export default function ServiceForm() {
       const fetchService = async () => {
         setLoading(true);
         try {
-          const url = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+          const url = import.meta.env.VITE_API_URL;
           const response = await fetch(`${url}/api/services/${service_id}`);
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

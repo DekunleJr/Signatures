@@ -24,7 +24,7 @@ export default function WorkForm() {
       const fetchWork = async () => {
         setLoading(true);
         try {
-          const url = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+          const url = import.meta.env.VITE_API_URL;
           const response = await fetch(`${url}/api/portfolio/${work_id}`);
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

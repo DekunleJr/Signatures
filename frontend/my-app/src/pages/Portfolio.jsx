@@ -9,7 +9,8 @@ function Portfolio() {
   const isAdmin = user && user.is_admin;
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/portfolio")
+    const url = import.meta.env.VITE_API_URL;
+    fetch(`${url}/api/portfolio`)
       .then((res) => res.json())
       .then((data) => setProjects(data))
       .catch((err) => console.error("Error fetching portfolio:", err));

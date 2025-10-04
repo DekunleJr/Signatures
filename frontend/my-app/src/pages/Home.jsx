@@ -23,7 +23,8 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    fetch("http://localhost:8000/api/portfolio")
+    const url = import.meta.env.VITE_API_URL;
+    fetch(`${url}/api/portfolio`)
       .then((res) => res.json())
       .then((data) => {
         // Sort by created_at in descending order and take the last 3
