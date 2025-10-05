@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-// import { useAuth } from "../../context/AuthContext"; // Import useAuth
+import { useAuth } from "../../context/AuthContext"; // Import useAuth
 import "./WorkForm.css"; // Will create this CSS file next
 import { customAxios, customFormAxios } from "../../utils/customAxios";
 
@@ -8,6 +8,7 @@ export default function WorkForm() {
   const { work_id } = useParams(); // Will be undefined for 'add' mode
   const navigate = useNavigate();
   const [title, setTitle] = useState("");
+  const { toast } = useAuth(); // Get token from AuthContext
   const [description, setDescription] = useState("");
   const [mainImage, setMainImage] = useState(null); // File object
   const [otherImages, setOtherImages] = useState([]); // List of File objects
@@ -25,10 +26,7 @@ export default function WorkForm() {
       const fetchWork = async () => {
         setLoading(true);
         try {
-          const { data, status } = customAxios.get(`/portfolio/${work_id}`);
-          if (status !== 200) {
-            throw new Error(`HTTP error! status: ${status}`);
-          }
+          const { data } = customAxios.get(`/portfolio/${work_id}`);
 
           setTitle(data.title);
           setDescription(data.description);
@@ -77,22 +75,18 @@ export default function WorkForm() {
     // backend should handle keeping them or clearing if an empty array is sent.
 
     try {
-      const { data, status } = await (isEditMode
+      await (isEditMode
         ? customFormAxios.put(`/portfolio/${work_id}`, formData)
         : customFormAxios.post("/portfolio", formData));
 
-      if (status === 200) {
-        setSuccess(`Work ${isEditMode ? "updated" : "added"} successfully!`);
-        setTimeout(() => {
-          navigate("/portfolio"); // Redirect to portfolio page
-        }, 1500);
-      } else {
-        setError(
-          data.detail || `Failed to ${isEditMode ? "update" : "add"} work.`
-        );
-      }
+      setSuccess(`Work ${isEditMode ? "updated" : "added"} successfully!`);
+      toast.success(`Work ${isEditMode ? "updated" : "added"} successfully!`);
+      setTimeout(() => {
+        navigate("/portfolio"); // Redirect to portfolio page
+      }, 1500);
     } catch (err) {
       console.error("Submission error:", err);
+      toast.error(err.message);
       setError("An unexpected error occurred. Please try again.");
     } finally {
       setLoading(false);
