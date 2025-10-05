@@ -45,6 +45,7 @@
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
   max-width: 1200px;
+  width: calc(100vw - 64px);
   margin: 0 auto;
 }
 

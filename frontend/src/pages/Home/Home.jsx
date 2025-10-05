@@ -24,15 +24,17 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    try {
-      const { data } = customAxios.get("/portfolio");
-      const sortedProjects = data
-        ?.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-        ?.slice(0, 3);
-      setRecentProjects(sortedProjects);
-    } catch (error) {
-      console.error("Error fetching recent projects:", error);
-    }
+    (async () => {
+      try {
+        const { data } = await customAxios.get("/portfolio");
+        const sortedProjects = data
+          ?.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+          ?.slice(0, 3);
+        setRecentProjects(sortedProjects);
+      } catch (error) {
+        console.error("Error fetching recent projects:", error);
+      }
+    })();
   }, []);
 
   return (

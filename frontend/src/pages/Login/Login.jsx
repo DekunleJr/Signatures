@@ -26,25 +26,16 @@ export default function Login() {
 
     try {
       const url = import.meta.env.VITE_API_URL;
-      const { data, status } = await axios.post(
-        `${url}/login`,
-        formData.toString(),
-        {
-          "Content-Type": "application/x-www-form-urlencoded",
-        }
-      );
+      const { data } = await axios.post(`${url}/login`, formData.toString(), {
+        "Content-Type": "application/x-www-form-urlencoded",
+      });
 
-      if (status === 200) {
-        console.log("Login successful:", data);
-        login(data.access_token, {
-          first_name: data.first_name,
-          is_admin: data.is_admin,
-        });
-        navigate(from, { replace: true }); // Redirect to previous page
-      } else {
-        console.error("Login failed:", data.detail);
-        setError(data.detail || "Login failed. Please check your credentials.");
-      }
+      console.log("Login successful:", data);
+      login(data.access_token, {
+        first_name: data.first_name,
+        is_admin: data.is_admin,
+      });
+      navigate(from, { replace: true }); // Redirect to previous page
     } catch (error) {
       console.error("Error during login:", error);
       setError("An error occurred during login. Please try again later.");
@@ -67,7 +58,7 @@ export default function Login() {
     try {
       const url = import.meta.env.VITE_API_URL || "http://localhost:8000";
 
-      const { data, status } = await axios.post(
+      const { data } = await axios.post(
         `${url}/google-signup-login`,
         googleUserData,
         {
@@ -77,15 +68,11 @@ export default function Login() {
         }
       );
 
-      if (status === 200) {
-        login(data.access_token, {
-          first_name: data.first_name,
-          is_admin: data.is_admin,
-        });
-        navigate(from, { replace: true }); // Redirect to previous page
-      } else {
-        setError(data.detail || "Google login failed. Please try again.");
-      }
+      login(data.access_token, {
+        first_name: data.first_name,
+        is_admin: data.is_admin,
+      });
+      navigate(from, { replace: true }); // Redirect to previous page
     } catch (error) {
       console.log(error);
       setError(
