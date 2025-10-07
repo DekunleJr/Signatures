@@ -16,6 +16,7 @@ import Signup from "./pages/Signup/Signup";
 import WorkDetail from "./pages/WorkDetail/WorkDetail";
 import WorkForm from "./pages/WorkForm/WorkForm";
 import ServiceForm from "./pages/ServiceForm/ServiceForm";
+import Dashboard from "./pages/Dashboard/Dashboard";
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
               path='/services/edit/:service_id'
               element={<ServiceForm />}
             />
+            <Route path='/dashboard' element={<Dashboard />} />
             <Route path='*' element={<NotFound />} />
           </Routes>
           <Footer />

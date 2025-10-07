@@ -12,6 +12,12 @@ class GoogleUserCreate(BaseModel):
     phone_number: Optional[str] = None
     google_id_token: str
 
+class UserUpdate(BaseModel):
+    email: Optional[EmailStr] = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    phone_number: Optional[str] = None
+    password: Optional[str] = None
 
 class UserCreate(BaseModel):
     email: EmailStr
@@ -25,6 +31,7 @@ class UserOut(BaseModel):
     email: EmailStr
     first_name: str
     last_name: str
+    phone_number: Optional[str] = None
     created_at: datetime
 
 class UserLogin(BaseModel):
@@ -66,3 +73,11 @@ class ServiceCreate(BaseModel):
     title: str
     description: str
     img_url: str
+
+class UserDashboard(UserOut):
+    is_admin: bool
+    liked_works: List[Work] = []
+
+
+class LikeStatus(BaseModel):
+    liked: bool

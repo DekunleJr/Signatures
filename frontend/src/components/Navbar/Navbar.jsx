@@ -71,6 +71,21 @@ export default function Navbar() {
             Contact
           </Link>
         </li>
+        <li>
+          <div className={`nav-buttons ${isMenuOpen ? "open" : ""}`}>
+            {user ? (
+              <>
+                <Link
+                  to='/dashboard'
+                  className={location.pathname === "/dashboard" ? "active" : ""}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Dashboard
+                </Link>
+              </>
+              ) : null}
+          </div>
+        </li>
       </ul>
       <div className={`nav-buttons ${isMenuOpen ? "open" : ""}`}>
         {user ? (

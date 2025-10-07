@@ -13,7 +13,9 @@ function Portfolio() {
     (async () => {
       try {
         const { data } = await customAxios.get("/portfolio");
-        setProjects(data);
+        const sortedProjects = data
+          ?.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        setProjects(sortedProjects);
       } catch (error) {
         console.error("Error fetching portfolio:", error);
       }
