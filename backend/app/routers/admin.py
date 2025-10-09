@@ -19,7 +19,6 @@ def update_user(
     first_name: str = Form(None),
     last_name: str = Form(None),
     phone_number: str = Form(None),
-    password: str = Form(None),
     db: Session = Depends(get_db),
     current_user: models.User = Depends(oauth2.get_current_admin_user)
 ):
@@ -34,8 +33,6 @@ def update_user(
         user.last_name = last_name
     if phone_number:
         user.phone_number = phone_number
-    if password:
-        user.password = password
     
     db.commit()
     db.refresh(user)

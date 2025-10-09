@@ -37,7 +37,7 @@ function Dashboard() {
   return (
     <div className='dashboard'>
       <aside className='user-details'>
-        <h2>User Details</h2>
+        <h2>My Details</h2>
         <p>
           <strong>First Name:</strong> {dashboardData.first_name}
         </p>
@@ -57,9 +57,12 @@ function Dashboard() {
           <strong>Member Since:</strong>{" "}
           {new Date(dashboardData.created_at).toLocaleDateString()}
         </p>
+        <Link to='/edit-profile'>
+          <button className='btn edit-profile-btn'>Edit Profile</button>
+        </Link>
       </aside>
       <main className='liked-works'>
-        <h2>Liked Works</h2>
+        <h2>Designs Liked</h2>
         <div className='liked-works-grid'>
           {dashboardData.liked_works.length > 0 ? (
             dashboardData.liked_works.map((work) => (

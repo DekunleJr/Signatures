@@ -17,6 +17,7 @@ import WorkDetail from "./pages/WorkDetail/WorkDetail";
 import WorkForm from "./pages/WorkForm/WorkForm";
 import ServiceForm from "./pages/ServiceForm/ServiceForm";
 import Dashboard from "./pages/Dashboard/Dashboard";
+import EditProfile from "./pages/EditProfile/EditProfile";
 
 function App() {
   return (
@@ -41,6 +42,7 @@ function App() {
               element={<ServiceForm />}
             />
             <Route path='/dashboard' element={<Dashboard />} />
+            <Route path='/edit-profile' element={<EditProfile />} />
             <Route path='*' element={<NotFound />} />
           </Routes>
           <Footer />

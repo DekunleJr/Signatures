@@ -71,3 +71,39 @@ def get_liked_work(work_id: int, db: Session = Depends(get_db), current_user: mo
     ).exists()).scalar()
 
     return {"liked": like_exists}
+
+@router.delete("/like/{work_id}", status_code=status.HTTP_204_NO_CONTENT)
+def unlike_work(work_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(oauth2.get_current_user)):
+    like = db.query(models.LikedWork).filter(models.LikedWork.user_id == current_user.id, models.LikedWork.work_id == work_id).first()
+    if not like:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Like not found")
+
+    db.delete(like)
+    db.commit()
+    return {"message": "Work unliked successfully"}
+
+@router.put("/profile", status_code=status.HTTP_200_OK, response_model=schemas.UserOut)
+def update_profile(
+    email: str = Form(None),
+    first_name: str = Form(None),
+    last_name: str = Form(None),
+    phone_number: str = Form(None),
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(oauth2.get_current_user)
+):
+    print(email, first_name, last_name, phone_number)
+    user = db.query(models.User).filter(models.User.id == current_user.id).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+    if email:
+        user.email = email
+    if first_name:
+        user.first_name = first_name
+    if last_name:
+        user.last_name = last_name
+    if phone_number:
+        user.phone_number = phone_number
+    
+    db.commit()
+    db.refresh(user)
+    return user
