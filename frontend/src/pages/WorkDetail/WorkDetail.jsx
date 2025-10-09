@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./WorkDetail.css";
 import { customAxios } from "../../utils/customAxios";
+import { useAuth } from "../../context/AuthContext";
 
 export default function WorkDetail() {
   const { work_id } = useParams();
@@ -10,6 +11,29 @@ export default function WorkDetail() {
   const [error, setError] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const navigate = useNavigate();
+  const { user } = useAuth();
+
+  const handleLikeUnlike = async () => {
+    if (!user) {
+      alert("You need to be logged in to like a work.");
+      return;
+    }
+
+    try {
+      if (work.liked_by_user) {
+        // Unlike the work
+        await customAxios.delete(`/like/${work_id}`);
+        setWork((prevWork) => ({ ...prevWork, liked_by_user: false }));
+      } else {
+        // Like the work
+        await customAxios.post(`/like/${work_id}`);
+        setWork((prevWork) => ({ ...prevWork, liked_by_user: true }));
+      }
+    } catch (err) {
+      console.error("Error liking/unliking work:", err);
+      alert("Failed to update like status. Please try again.");
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -65,6 +89,7 @@ export default function WorkDetail() {
       <h1 className='work-title'>{work.title}</h1>
       <p className='work-description'>{work.description}</p>
 
+
       <div className='slideshow-container'>
         <button className='slideshow-btn prev' onClick={goToPrevious}>
           &#10094;
@@ -92,6 +117,14 @@ export default function WorkDetail() {
           />
         ))}
       </div>
+      {user && (
+        <button
+          className={`like-button ${work.liked_by_user ? "liked" : ""}`}
+          onClick={handleLikeUnlike}
+        >
+          {work.liked_by_user ? "Unlike" : "Like"}
+        </button>
+      )}
     </div>
   );
 }

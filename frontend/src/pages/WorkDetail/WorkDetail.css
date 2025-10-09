@@ -123,6 +123,36 @@
   background-color: #777;
 }
 
+.like-button {
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  display: block; /* Make it a block element to take full width or center it */
+  margin-left: auto;
+  margin-right: auto;
+  width: fit-content; /* Adjust width to content */
+}
+
+.like-button:hover {
+  background-color: var(--color-primary-dark);
+  transform: translateY(-2px);
+}
+
+.like-button.liked {
+  background-color: #dc3545; /* A different color when liked, e.g., red */
+}
+
+.like-button.liked:hover {
+  background-color: #c82333;
+}
+
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .work-detail-container {

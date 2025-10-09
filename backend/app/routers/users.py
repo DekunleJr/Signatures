@@ -23,7 +23,22 @@ def get_user_dashboard(db: Session = Depends(get_db), current_user: models.User 
          raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
     # Manually construct the list of liked works from the relationship
-    liked_works_list = [liked.work for liked in user_with_likes.liked_works]
+    # We need to ensure each Work schema object has the 'liked_by_user' field set to True
+    liked_works_list = []
+    if user_with_likes.liked_works:
+        for liked_item in user_with_likes.liked_works:
+            work = liked_item.work
+            # Create a Pydantic Work schema instance and set liked_by_user to True
+            work_schema = schemas.Work(
+                id=work.id,
+                title=work.title,
+                description=work.description,
+                img_url=work.img_url,
+                other_image_urls=work.other_image_urls if work.other_image_urls else [],
+                created_at=work.created_at,
+                liked_by_user=True  # This user has liked this work
+            )
+            liked_works_list.append(work_schema)
 
     # Create a dictionary with the user's data and the liked works list
     dashboard_data = {

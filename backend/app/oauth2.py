@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app import schemas, database, models
 from .config import settings
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login", auto_error=False)
 
 SECRET_KEY = settings.secret_key
 ALGORITHM = settings.algorithm
@@ -49,3 +49,19 @@ async def get_current_admin_user(current_user: models.User = Depends(get_current
             detail="Not authorized to perform this action"
         )
     return current_user
+
+def get_current_user_optional(token: str = Depends(oauth2_scheme), db: Session = Depends(database.get_db)):
+    
+    if not token:
+        return None
+
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
+    token = verify_access_token(token, credentials_exception)
+    user = db.query(models.User).filter(models.User.id == token.id).first()
+
+    return user

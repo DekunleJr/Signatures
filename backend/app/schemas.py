@@ -52,6 +52,7 @@ class Work(BaseModel):
     id: int
     title: str
     description: str
+    liked_by_user: bool # Added field to indicate if the current user liked the work
     img_url: str
     other_image_urls: List[str] = Field(default_factory=list) # New field for other image URLs
     created_at: datetime
@@ -76,6 +77,7 @@ class ServiceCreate(BaseModel):
 
 class UserDashboard(UserOut):
     is_admin: bool
+    # The Work schema now includes 'liked_by_user', so this list should correctly serialize.
     liked_works: List[Work] = []
 
 
