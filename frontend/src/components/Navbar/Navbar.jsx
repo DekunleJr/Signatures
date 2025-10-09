@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, /* useNavigate */ useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import "./Navbar.css";
+import logo from "../../assets/logo.jpg"; // Import the logo image
 
 export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -21,7 +22,9 @@ export default function Navbar() {
 
   return (
     <nav className='navbar'>
-      <div className='logo'>Signature</div>
+      <Link to="/"> {/* Wrap the logo in a Link to navigate to home */}
+        <img src={logo} alt="Signature Logo" className='logo-image' />
+      </Link>
       <button className='menu-toggle' onClick={toggleMenu}>
         &#9776; {/* Hamburger icon */}
       </button>

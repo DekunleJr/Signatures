@@ -81,11 +81,23 @@ export default function WorkDetail() {
     navigate(-1); // Go back to the previous page
   };
 
+  const isAdmin = user && user.is_admin;
+
   return (
     <div className='work-detail-container'>
-      <button className='back-button' onClick={handleGoBack}>
-        &#8592; Back
-      </button>
+      <div className="work-detail-header">
+        <button className='back-button' onClick={handleGoBack}>
+          &#8592; Back
+        </button>
+        {isAdmin && (
+          <button
+            className='edit-work-button'
+            onClick={() => navigate(`/portfolio/edit/${work_id}`)}
+          >
+            Edit Work
+          </button>
+        )}
+      </div>
       <h1 className='work-title'>{work.title}</h1>
       <p className='work-description'>{work.description}</p>
 

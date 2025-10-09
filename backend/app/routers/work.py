@@ -102,7 +102,7 @@ async def delete_work(work_id: int, db: Session = Depends(get_db), current_user:
     db.commit()
     return
 
-@router.put("/{work_id}", response_model=schemas.Work)
+@router.put("/{work_id}", response_model=schemas.WorkEdit)
 async def update_work(
     work_id: int,
     title: str = Form(...),

@@ -57,6 +57,14 @@ class Work(BaseModel):
     other_image_urls: List[str] = Field(default_factory=list) # New field for other image URLs
     created_at: datetime
 
+class WorkEdit(BaseModel):
+    id: int
+    title: str
+    description: str
+    img_url: str
+    other_image_urls: List[str] = Field(default_factory=list) # New field for other image URLs
+    created_at: datetime
+
 class WorkCreate(BaseModel):
     title: str
     description: str

@@ -26,7 +26,8 @@ export default function WorkForm() {
       const fetchWork = async () => {
         setLoading(true);
         try {
-          const { data } = customAxios.get(`/portfolio/${work_id}`);
+          const response = await customAxios.get(`/portfolio/${work_id}`);
+          const data = response.data;
 
           setTitle(data.title);
           setDescription(data.description);

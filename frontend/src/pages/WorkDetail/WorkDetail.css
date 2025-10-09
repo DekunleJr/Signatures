@@ -1,46 +1,61 @@
 .work-detail-container {
-  margin: 2rem auto;
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  color: #333;
-  width: 100%;
+  padding: 20px;
+  max-width: 900px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+}
+
+.work-detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.back-button, .edit-work-button {
+  background-color: #525353;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.back-button:hover, .edit-work-button:hover {
+  background-color: #999a9b;
 }
 
 .work-title {
-  font-size: 2.5rem;
-  color: var(--color-primary);
-  margin-bottom: 1rem;
+  font-size: 2.5em;
+  color: #f8f5f5;
+  margin-bottom: 10px;
   text-align: center;
-  text-transform: capitalize;
 }
 
 .work-description {
-  font-size: 1.1rem;
-  line-height: 1.6;
-  margin: 0 auto 2rem auto; /* Center the description */
-  text-align: center; /* Center the text */
-  max-width: 800px; /* Limit width for better readability when centered */
+  font-size: 1.1em;
   color: #fff;
-}
-.work-description::first-letter {
-  text-transform: uppercase;
+  line-height: 1.6;
+  margin-bottom: 30px;
+  text-align: center;
 }
 
 .slideshow-container {
   position: relative;
   width: 100%;
-  max-width: 800px; /* Adjust as needed */
-  margin: 0 auto 2rem auto;
+  max-width: 800px;
+  margin: 0 auto 20px auto;
   overflow: hidden;
   border-radius: 8px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .slideshow-image {
   width: 100%;
   height: 500px; /* Fixed height for consistency */
-  object-fit: cover; /* Cover the area without distorting aspect ratio */
+  object-fit: cover; /* Cover the area, cropping if necessary */
   display: block;
 }
 
@@ -51,11 +66,15 @@
   background-color: rgba(0, 0, 0, 0.5);
   color: white;
   border: none;
-  padding: 1rem 1.5rem;
+  padding: 10px 15px;
   cursor: pointer;
-  font-size: 1.5rem;
-  z-index: 10;
-  border-radius: 5px;
+  font-size: 24px;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: background-color 0.3s ease;
 }
 
@@ -74,111 +93,58 @@
 .thumbnail-grid {
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 10px;
-  flex-wrap: wrap; /* Allow thumbnails to wrap on smaller screens */
-  margin-top: 1rem;
+  margin-bottom: 30px;
 }
 
 .thumbnail {
-  width: 100px; /* Fixed width for thumbnails */
-  height: 70px; /* Fixed height for thumbnails */
+  width: 80px;
+  height: 80px;
   object-fit: cover;
+  border-radius: 5px;
   cursor: pointer;
   border: 2px solid transparent;
-  border-radius: 4px;
-  transition: border-color 0.3s ease, transform 0.2s ease;
+  transition: border-color 0.3s ease;
 }
 
 .thumbnail:hover {
-  transform: scale(1.05);
+  border-color: #007bff;
 }
 
 .thumbnail.active-thumbnail {
-  border-color: var(--color-primary); /* Yellow border for active thumbnail */
-  box-shadow: var(box-shadow);
-}
-
-.error-message {
-  color: red;
-  text-align: center;
-  font-size: 1.2rem;
-}
-
-.back-button {
-  background-color: #555;
-  color: white;
-  border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1rem;
-  margin-bottom: 1.5rem;
-  transition: background-color 0.3s ease;
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.back-button:hover {
-  background-color: #777;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
 }
 
 .like-button {
-  background-color: var(--color-primary);
-  color: white;
-  border: none;
-  padding: 0.8rem 1.5rem;
-  border-radius: 5px;
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  font-size: 1.1em;
   cursor: pointer;
-  font-size: 1rem;
-  margin-top: 1rem;
-  margin-bottom: 1.5rem;
-  transition: background-color 0.3s ease, transform 0.2s ease;
-  display: block; /* Make it a block element to take full width or center it */
-  margin-left: auto;
-  margin-right: auto;
-  width: fit-content; /* Adjust width to content */
-}
-
-.like-button:hover {
-  background-color: var(--color-primary-dark);
-  transform: translateY(-2px);
+  border: 2px solid #dc3545;
+  border-radius: 5px;
+  background-color: white;
+  color: #dc3545;
+  transition: all 0.3s ease;
 }
 
 .like-button.liked {
-  background-color: #dc3545; /* A different color when liked, e.g., red */
+  background-color: #dc3545;
+  color: white;
+}
+
+.like-button:hover:not(.liked) {
+  background-color: #f8d7da;
 }
 
 .like-button.liked:hover {
   background-color: #c82333;
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .work-detail-container {
-    padding: 1rem;
-    margin: 1rem auto;
-  }
-
-  .work-title {
-    font-size: 2rem;
-  }
-
-  .work-description {
-    font-size: 1rem;
-  }
-
-  .slideshow-image {
-    height: 300px; /* Smaller height for mobile slideshow */
-  }
-
-  .slideshow-btn {
-    padding: 0.8rem 1rem;
-    font-size: 1.2rem;
-  }
-
-  .thumbnail {
-    width: 80px;
-    height: 50px;
-  }
+.error-message {
+  color: #dc3545;
+  text-align: center;
+  margin-top: 20px;
 }

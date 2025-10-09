@@ -11,10 +11,9 @@
   min-height: 60px;
 }
 
-.logo {
-  font-size: 1.8rem;
-  font-weight: bold;
-  color: var(--color-primary);
+.logo-image {
+  height: 80px; /* Adjust as needed */
+  width: auto;
 }
 
 .nav-links {
