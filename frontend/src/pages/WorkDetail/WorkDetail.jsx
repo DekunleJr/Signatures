@@ -11,11 +11,11 @@ export default function WorkDetail() {
   const [error, setError] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, toast } = useAuth(); // Destructure toast from useAuth
 
   const handleLikeUnlike = async () => {
     if (!user) {
-      alert("You need to be logged in to like a work.");
+      toast.info("You need to be logged in to like a work.");
       return;
     }
 
@@ -90,12 +90,20 @@ export default function WorkDetail() {
           &#8592; Back
         </button>
         {isAdmin && (
-          <button
-            className='edit-work-button'
-            onClick={() => navigate(`/portfolio/edit/${work_id}`)}
-          >
-            Edit Work
-          </button>
+          <div className="admin-actions">
+            <button
+              className='edit-work-button'
+              onClick={() => navigate(`/portfolio/edit/${work_id}`)}
+            >
+              Edit Work
+            </button>
+            <button
+              className='delete-work-button'
+              onClick={handleDelete}
+            >
+              &#128465; {/* Trash icon */} Delete Work
+            </button>
+          </div>
         )}
       </div>
       <h1 className='work-title'>{work.title}</h1>
@@ -139,4 +147,25 @@ export default function WorkDetail() {
       )}
     </div>
   );
+
+  async function handleDelete() {
+    if (!user || !user.is_admin) {
+      toast.error("You are not authorized to delete this work.");
+      return;
+    }
+
+    const isConfirmed = window.confirm("Are you sure you want to delete this work?");
+    if (!isConfirmed) {
+      return;
+    }
+
+    try {
+      await customAxios.delete(`/portfolio/${work_id}`);
+      toast.success("Work deleted successfully!");
+      navigate("/portfolio"); // Redirect to portfolio page
+    } catch (err) {
+      console.error("Error deleting work:", err);
+      toast.error("Failed to delete work. Please try again.");
+    }
+  }
 }

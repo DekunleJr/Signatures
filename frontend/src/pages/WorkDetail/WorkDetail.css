@@ -1,6 +1,6 @@
 .work-detail-container {
   padding: 20px;
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
   font-family: Arial, sans-serif;
 }
@@ -12,8 +12,13 @@
   margin-bottom: 20px;
 }
 
-.back-button, .edit-work-button {
-  background-color: #525353;
+.admin-actions {
+  display: flex;
+  gap: 10px; /* Space between buttons */
+}
+
+.back-button, .edit-work-button, .delete-work-button {
+  background-color: #a8a9aa;
   color: white;
   border: none;
   padding: 10px 15px;
@@ -24,7 +29,15 @@
 }
 
 .back-button:hover, .edit-work-button:hover {
-  background-color: #999a9b;
+  background-color: var(--color-primary-light);
+}
+
+.delete-work-button {
+  background-color: #dc3545; /* Red color for delete */
+}
+
+.delete-work-button:hover {
+  background-color: #c82333;
 }
 
 .work-title {
@@ -123,24 +136,24 @@
   padding: 10px 20px;
   font-size: 1.1em;
   cursor: pointer;
-  border: 2px solid #dc3545;
   border-radius: 5px;
-  background-color: white;
-  color: #dc3545;
+  background-color: var(--color-primary);
+  color: #161616;
   transition: all 0.3s ease;
 }
 
 .like-button.liked {
-  background-color: #dc3545;
+  background-color: #575555;
   color: white;
+  border: 2px solid var(--color-primary);
 }
 
 .like-button:hover:not(.liked) {
-  background-color: #f8d7da;
+  background-color: var(--color-primary-light);
 }
 
 .like-button.liked:hover {
-  background-color: #c82333;
+  background-color: var(--color-primary-light);
 }
 
 .error-message {

@@ -125,16 +125,14 @@ export default function ServiceForm() {
             required={!isEditMode} // Required only for new service
           />
           {isEditMode && existingMainImageUrl && (
-            <p>
-              Current main image:{" "}
-              <a
-                href={existingMainImageUrl}
-                target='_blank'
-                rel='noopener noreferrer'
-              >
-                View
-              </a>
-            </p>
+            <div>
+              <p>Current main image:</p>
+              <img
+                src={existingMainImageUrl}
+                alt="Current Service Main Image"
+                className="current-main-image-thumbnail"
+              />
+            </div>
           )}
         </div>
 
@@ -146,7 +144,7 @@ export default function ServiceForm() {
           >
             Cancel
           </button>
-          <button type='submit' className='btn-primary' disabled={loading}>
+          <button type='submit' className='btn-service' disabled={loading}>
             {loading
               ? "Submitting..."
               : isEditMode

@@ -95,6 +95,11 @@ def get_work(work_id: int, db: Session = Depends(get_db), current_user: Optional
 
 @router.delete("/{work_id}", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_work(work_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(oauth2.get_current_admin_user)):
+    liked_work = db.query(models.LikedWork).filter(models.LikedWork.work_id == work_id).all()
+    if liked_work:
+        for like in liked_work:
+            db.delete(like)
+        db.commit()
     db_work = db.query(models.Work).filter(models.Work.id == work_id).first()
     if not db_work:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Work not found")

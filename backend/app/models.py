@@ -38,6 +38,9 @@ class Work(Base):
     other_image_urls = Column(JSON, nullable=True) # New field for other image URLs
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('now()'))
 
+    # Define the relationship with LikedWork for cascade deletion
+    liked_by_users = relationship("LikedWork", backref="work_item", cascade="all, delete-orphan")
+
 class LikedWork(Base):
     __tablename__ = "liked_works"
 
@@ -46,4 +49,4 @@ class LikedWork(Base):
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('now()'))
 
     user = relationship("User", backref="liked_works")
-    work = relationship("Work", backref="liked_by_users")
+    work = relationship("Work", overlaps="liked_by_users,work_item") # Added overlaps parameter

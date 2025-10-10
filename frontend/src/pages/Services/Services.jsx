@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 import { useAuth } from "../../context/AuthContext";
 import "./Services.css";
 import { customAxios } from "../../utils/customAxios";
@@ -8,6 +8,7 @@ function Services() {
   const [services, setServices] = useState([]);
   const { user, toast } = useAuth();
   const isAdmin = user && user.is_admin;
+  const navigate = useNavigate(); // Initialize useNavigate
 
   useEffect(() => {
     // Fetch from your backend
@@ -20,7 +21,28 @@ function Services() {
         toast.error(error.message);
       }
     })();
-  }, [toast]);
+  }, [toast, navigate]); // Add navigate to dependency array
+
+  const handleDeleteService = async (serviceId) => {
+    if (!user || !user.is_admin) {
+      toast.error("You are not authorized to delete this service.");
+      return;
+    }
+
+    const isConfirmed = window.confirm("Are you sure you want to delete this service?");
+    if (!isConfirmed) {
+      return;
+    }
+
+    try {
+      await customAxios.delete(`/services/${serviceId}`);
+      toast.success("Service deleted successfully!");
+      setServices(prevServices => prevServices.filter(svc => svc.id !== serviceId));
+    } catch (err) {
+      console.error("Error deleting service:", err);
+      toast.error("Failed to delete service. Please try again.");
+    }
+  };
 
   return (
     <section className='services-section'>
@@ -45,15 +67,28 @@ function Services() {
           <p>Loading services...</p>
         ) : (
           services?.map((svc) => (
-            <div key={svc.id} className='service-card'>
-              <div
-                className='service-icon'
-                style={{ backgroundImage: `url(${svc.img_url})` }}
-              >
-                {/* Background image applied via style */}
-              </div>
+            <div 
+              key={svc.id} className='service-card'
+              style={{ backgroundImage: `url(${svc.img_url})` }}
+            >
               <h3>{svc.title}</h3>
               <p>{svc.description}</p>
+              {isAdmin && (
+                <div className="service-actions">
+                  <button
+                    className='btn edit-service-btn'
+                    onClick={() => navigate(`/services/edit/${svc.id}`)}
+                  >
+                    &#9998; Edit
+                  </button>
+                  <button
+                    className='btn delete-service-btn'
+                    onClick={() => handleDeleteService(svc.id)}
+                  >
+                    &#128465; Delete
+                  </button>
+                </div>
+              )}
             </div>
           ))
         )}

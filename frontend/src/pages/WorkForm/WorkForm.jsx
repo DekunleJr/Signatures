@@ -132,16 +132,14 @@ export default function WorkForm() {
             required={!isEditMode} // Required only for new work
           />
           {isEditMode && existingMainImageUrl && (
-            <p>
-              Current main image:{" "}
-              <a
-                href={existingMainImageUrl}
-                target='_blank'
-                rel='noopener noreferrer'
-              >
-                View
-              </a>
-            </p>
+            <div>
+              <p>Current main image:</p>
+              <img
+                src={existingMainImageUrl}
+                alt="Current Work Main Image"
+                className="current-main-image-thumbnail"
+              />
+            </div>
           )}
         </div>
 

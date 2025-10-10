@@ -52,6 +52,9 @@
   ); /* Default for smaller screens */
   gap: 2.5rem;
   align-items: stretch;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
   max-width: 1200px; /* Limit overall width to help control number of columns */
   margin: 0 auto; /* Center the grid */
 }
@@ -65,21 +68,45 @@
 
 /* Individual card */
 .service-card {
-  background: #111;
+  position: relative; /* Needed for pseudo-element positioning */
   border: 1px solid #222;
   border-radius: 8px;
   padding: 2rem;
   text-align: center;
-  transition: transform 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+  transition: transform 0.3s ease, border-color 0.3s ease; /* Removed background from transition */
   display: flex;
   flex-direction: column;
   justify-content: start;
+  background-size: cover; /* Ensure the image covers the entire card */
+  background-position: center; /* Center the background image */
+  background-repeat: no-repeat; /* Prevent the image from repeating */
+  /* The actual background image is set inline in JSX */
+}
+
+.service-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent black overlay */
+  border-radius: 8px; /* Match card border-radius */
+  z-index: 1; /* Ensure overlay is above background image but below text */
 }
 
 .service-card:hover {
   transform: translateY(-8px);
   border-color: var(--color-primary);
-  background: #1a1a1a;
+  /* No change to background image on hover, only the overlay */
+}
+
+/* Ensure text and buttons are above the overlay */
+.service-card h3,
+.service-card p,
+.service-card .service-actions {
+  position: relative;
+  z-index: 2;
 }
 
 .service-icon {
@@ -104,4 +131,36 @@
   font-size: 1rem;
   color: #ddd;
   flex-grow: 1;
+}
+
+.service-actions {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+
+.edit-service-btn, .delete-service-btn {
+  padding: 0.6rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  transition: background-color 0.3s ease;
+  border: none;
+  color: white;
+}
+
+.edit-service-btn {
+  background-color: #007bff; /* Blue for edit */
+}
+
+.edit-service-btn:hover {
+  background-color: #0056b3;
+}
+
+.delete-service-btn {
+  background-color: #dc3545; /* Red for delete */
+}
+
+.delete-service-btn:hover {
+  background-color: #c82333;
 }
