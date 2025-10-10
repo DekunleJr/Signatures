@@ -4,7 +4,7 @@ from typing import List, Optional
 
 from .. import schemas, models, oauth2
 from ..database import get_db
-from ..cloudinary_utils import upload_image
+from ..cloudinary_utils import upload_image, delete_image
 
 router = APIRouter(tags=['Service'], prefix="/api/services")
 
@@ -45,6 +45,9 @@ async def delete_service(
     db_service = db.query(models.Service).filter(models.Service.id == service_id).first()
     if not db_service:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Service not found")
+    
+    if db_service.img_url:
+        delete_image(db_service.img_url)
     db.delete(db_service)
     db.commit()
     return
@@ -66,9 +69,9 @@ async def update_service(
     db_service.description = description
 
     if img_url:
+        if db_service.img_url:
+            delete_image(db_service.img_url)
         db_service.img_url = upload_image(img_url)
-    # If img_url is None, it means no new file was uploaded, so retain the existing one.
-    # No explicit action needed here as it's already retained by not overwriting.
 
     db.commit()
     db.refresh(db_service)

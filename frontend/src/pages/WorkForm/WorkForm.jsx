@@ -14,6 +14,7 @@ export default function WorkForm() {
   const [otherImages, setOtherImages] = useState([]); // List of File objects
   const [existingMainImageUrl, setExistingMainImageUrl] = useState(""); // For edit mode
   const [existingOtherImageUrls, setExistingOtherImageUrls] = useState([]); // For edit mode
+  const [imagesToDelete, setImagesToDelete] = useState([]); // List of URLs to delete
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
@@ -51,6 +52,12 @@ export default function WorkForm() {
     setOtherImages(Array.from(e.target.files));
   };
 
+  const handleDeleteExistingImage = (urlToDelete) => {
+    setImagesToDelete((prev) => [...prev, urlToDelete]);
+    // Optionally, you can also remove it from existingOtherImageUrls for immediate visual feedback
+    // setExistingOtherImageUrls((prev) => prev.filter((url) => url !== urlToDelete));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -72,8 +79,11 @@ export default function WorkForm() {
     otherImages.forEach((file) => {
       formData.append("other_images", file);
     });
-    // If in edit mode and no new other images are selected, but old ones exist,
-    // backend should handle keeping them or clearing if an empty array is sent.
+
+    // Append images to delete
+    imagesToDelete.forEach((url) => {
+      formData.append("images_to_delete", url);
+    });
 
     try {
       await (isEditMode
@@ -156,12 +166,22 @@ export default function WorkForm() {
               <p>Current other images:</p>
               <div className='existing-thumbnails'>
                 {existingOtherImageUrls.map((url, index) => (
-                  <img
-                    key={index}
-                    src={url}
-                    alt={`Existing other image ${index + 1}`}
-                    className='existing-thumbnail'
-                  />
+                  <div key={index} className={`existing-thumbnail-wrapper ${imagesToDelete.includes(url) ? 'marked-for-deletion' : ''}`}>
+                    <img
+                      src={url}
+                      alt={`Existing other image ${index + 1}`}
+                      className='existing-thumbnail'
+                    />
+                    {!imagesToDelete.includes(url) && (
+                      <button
+                        type="button"
+                        className="delete-image-btn"
+                        onClick={() => handleDeleteExistingImage(url)}
+                      >
+                        X
+                      </button>
+                    )}
+                  </div>
                 ))}
               </div>
             </div>

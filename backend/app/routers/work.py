@@ -4,7 +4,7 @@ from typing import List, Optional
 
 from .. import schemas, models, oauth2
 from ..database import get_db
-from ..cloudinary_utils import upload_image, upload_multiple_images
+from ..cloudinary_utils import upload_image, upload_multiple_images, delete_image
 
 router = APIRouter(tags=['Portfolio'], prefix="/api/portfolio")
 
@@ -101,6 +101,13 @@ async def delete_work(work_id: int, db: Session = Depends(get_db), current_user:
             db.delete(like)
         db.commit()
     db_work = db.query(models.Work).filter(models.Work.id == work_id).first()
+    if db_work.img_url:
+        delete_image(db_work.img_url)
+        
+    if db_work.other_image_urls:
+        for url in db_work.other_image_urls:
+            delete_image(url)
+
     if not db_work:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Work not found")
     db.delete(db_work)
@@ -114,6 +121,7 @@ async def update_work(
     description: str = Form(...),
     img_url: Optional[UploadFile] = File(None),
     other_images: Optional[List[UploadFile]] = File(None),
+    images_to_delete: Optional[List[str]] = Form(None), # New parameter for images to delete
     db: Session = Depends(get_db),
     current_user: models.User = Depends(oauth2.get_current_admin_user)
 ):
@@ -125,10 +133,27 @@ async def update_work(
     db_work.description = description
 
     if img_url:
+        # Delete old main image from Cloudinary if a new one is provided
+        if db_work.img_url:
+            delete_image(db_work.img_url)
         db_work.img_url = upload_image(img_url)
     
+    # Initialize other_image_urls if it's None
+    if db_work.other_image_urls is None:
+        db_work.other_image_urls = []
+
+    # Handle image deletion
+    if images_to_delete:
+        for url_to_delete in images_to_delete:
+            delete_image(url_to_delete) # Delete from Cloudinary
+        db_work.other_image_urls = [
+            url for url in db_work.other_image_urls if url not in images_to_delete
+        ]
+
+    # Handle new image uploads
     if other_images:
-        db_work.other_image_urls = upload_multiple_images(other_images)
+        new_image_urls = upload_multiple_images(other_images)
+        db_work.other_image_urls.extend(new_image_urls)
 
     db.commit()
     db.refresh(db_work)

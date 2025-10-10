@@ -23,3 +23,14 @@ def upload_multiple_images(files: List[UploadFile]):
         if url:
             urls.append(url)
     return urls
+
+def delete_image(image_url: str):
+    try:
+        public_id_with_extension = image_url.split('/')[-1]
+        public_id = public_id_with_extension.split('.')[0]
+        
+        cloudinary.uploader.destroy(public_id)
+        return True
+    except Exception as e:
+        print(f"Error deleting image from Cloudinary: {e}")
+        return False
