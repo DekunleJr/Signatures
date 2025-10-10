@@ -89,6 +89,21 @@ export default function Navbar() {
               ) : null}
           </div>
         </li>
+        <li>  
+          <div className={`nav-buttons ${isMenuOpen ? "open" : ""}`}>
+            {user && user.is_admin ? (
+              <>
+                <Link
+                  to='/admin'
+                  className={location.pathname === "/admin" ? "active" : ""}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  Admin
+                </Link>
+              </>
+            ) : null}
+          </div>
+        </li>
       </ul>
       <div className={`nav-buttons ${isMenuOpen ? "open" : ""}`}>
         {user ? (

@@ -18,6 +18,8 @@ import WorkForm from "./pages/WorkForm/WorkForm";
 import ServiceForm from "./pages/ServiceForm/ServiceForm";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import EditProfile from "./pages/EditProfile/EditProfile";
+import AdminPage from "./pages/Admin/AdminPage"; // Import AdminPage
+import EditUser from "./pages/Admin/EditUser"; // Import EditUser
 
 function App() {
   return (
@@ -43,6 +45,8 @@ function App() {
             />
             <Route path='/dashboard' element={<Dashboard />} />
             <Route path='/edit-profile' element={<EditProfile />} />
+            <Route path='/admin' element={<AdminPage />} /> {/* New Admin Page Route */}
+            <Route path='/admin/edit-user/:userId' element={<EditUser />} /> {/* New Edit User Route */}
             <Route path='*' element={<NotFound />} />
           </Routes>
           <Footer />

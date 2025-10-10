@@ -1,0 +1,82 @@
+.admin-page-container {
+  padding: 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  font-family: Arial, sans-serif;
+  color: #f5f5f5;
+}
+
+.admin-page-container h1 {
+  text-align: center;
+  color: var(--color-primary);
+  margin-bottom: 30px;
+  font-size: 2.5rem;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.users-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  background-color: #1a1a1a;
+  border-radius: 8px;
+  overflow: hidden; /* Ensures rounded corners apply to table content */
+}
+
+.users-table th,
+.users-table td {
+  padding: 12px 15px;
+  text-align: left;
+  border-bottom: 1px solid #333;
+}
+
+.users-table th {
+  background-color: #222;
+  color: var(--color-primary);
+  font-weight: bold;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+}
+
+.users-table tbody tr:hover {
+  background-color: #2a2a2a;
+}
+
+.users-table td {
+  color: #ccc;
+}
+
+.users-table td:last-child {
+  display: flex;
+  gap: 10px;
+}
+
+.edit-user-btn,
+.delete-user-btn {
+  padding: 8px 12px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: background-color 0.3s ease;
+  border: none;
+  color: white;
+}
+
+
+
+.delete-user-btn {
+  background-color: #dc3545; /* Red for delete */
+}
+
+.delete-user-btn:hover {
+  background-color: #c82333;
+}
+
+.error-message {
+  color: #dc3545;
+  text-align: center;
+  margin-top: 20px;
+}

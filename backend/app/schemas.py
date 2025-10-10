@@ -31,6 +31,7 @@ class UserOut(BaseModel):
     email: EmailStr
     first_name: str
     last_name: str
+    is_admin: bool
     phone_number: Optional[str] = None
     created_at: datetime
 
