@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { customAxios, customFormAxios} from "../../utils/customAxios";
+import { customAxios, customFormAxios } from "../../utils/customAxios";
 import "./EditProfile.css";
+import Loader from "../../components/Loader/Loader";
 
 function EditProfile() {
   const [formData, setFormData] = useState({
@@ -55,17 +56,23 @@ function EditProfile() {
         setError("Server error. Please try again later.");
         setTimeout(() => navigate("/dashboard"), 3000);
       } else {
-        setError(err.response?.data?.detail || "An error occurred. Please try again.");
+        setError(
+          err.response?.data?.detail || "An error occurred. Please try again."
+        );
       }
     }
   };
 
   if (loading) {
-    return <p>Loading profile...</p>;
+    return (
+      <p style={{ margin: "auto 0" }}>
+        <Loader />
+      </p>
+    );
   }
 
   return (
-    <div className='edit-profile'>
+    <div className='service-form-container' style={{ position: "relative" }}>
       <h2>Edit Profile</h2>
       <form onSubmit={handleSubmit}>
         <div className='form-group'>
@@ -96,6 +103,7 @@ function EditProfile() {
             name='email'
             value={formData.email}
             onChange={handleChange}
+            style={{ background: "#222", color: "#fff" }}
           />
         </div>
         <div className='form-group'>

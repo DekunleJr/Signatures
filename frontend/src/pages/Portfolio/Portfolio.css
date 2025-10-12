@@ -66,6 +66,7 @@
   width: 100%;
   max-width: 550px;
   margin: auto;
+  padding: 0.5rem;
 }
 
 /* Overlay base (transparent at first) */
@@ -141,6 +142,8 @@
   transition: all 0.3s ease;
   position: relative;
   z-index: 2;
+  margin-bottom: 1rem;
+  margin-left: 1.5rem;
 }
 
 .view-details-btn:hover {

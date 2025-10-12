@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import "./Portfolio.css";
 import { customAxios } from "../../utils/customAxios";
+import Loader from "../../components/Loader/Loader";
 
 function Portfolio() {
   const [projects, setProjects] = useState([]);
@@ -24,8 +25,8 @@ function Portfolio() {
       }
 
       // Update the projects state to reflect the change
-      setProjects(prevProjects =>
-        prevProjects.map(project => {
+      setProjects((prevProjects) =>
+        prevProjects.map((project) => {
           if (project.id === workId) {
             return {
               ...project,
@@ -46,8 +47,9 @@ function Portfolio() {
     (async () => {
       try {
         const { data } = await customAxios.get("/portfolio");
-        const sortedProjects = data
-          ?.sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        const sortedProjects = data?.sort(
+          (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        );
         setProjects(sortedProjects);
       } catch (error) {
         console.error("Error fetching portfolio:", error);
@@ -71,9 +73,9 @@ function Portfolio() {
         </div>
       )}
 
-      <div className='portfolio-grid'>
+      <div className='portfolio-grid' style={{ position: "relative" }}>
         {projects.length === 0 ? (
-          <p>Loading projects...</p>
+          <Loader />
         ) : (
           projects.map((project) => (
             <div
@@ -83,19 +85,34 @@ function Portfolio() {
             >
               <h3>{project.title}</h3>
               <p>{project.description}</p>
-              <div className="portfolio-actions" style={{ display: 'flex', alignItems: 'center', width: '100%' }}>
-                <div style={{ flexGrow: 1, textAlign: 'center' }}> {/* Wrapper for centering */}
+              <div
+                className='portfolio-actions'
+                style={{ display: "flex", alignItems: "center", width: "100%" }}
+              >
+                <div style={{ flexGrow: 1, textAlign: "center" }}>
+                  {" "}
+                  {/* Wrapper for centering */}
                   <Link to={`/portfolio/${project.id}`}>
-                    <button className='btn view-details-btn'>View Details</button>
+                    <button className='btn view-details-btn'>
+                      View Details
+                    </button>
                   </Link>
                 </div>
                 {user && ( // Only show like icon if user is logged in
                   <span
-                    className={`like-icon ${project.liked_by_user ? 'liked' : ''}`}
-                    onClick={() => handleLikeToggle(project.id, project.liked_by_user)}
-                    style={{ cursor: 'pointer', fontSize: '1.8em', marginLeft: 'auto' }} // Increased size and pushed to the right
+                    className={`like-icon ${
+                      project.liked_by_user ? "liked" : ""
+                    }`}
+                    onClick={() =>
+                      handleLikeToggle(project.id, project.liked_by_user)
+                    }
+                    style={{
+                      cursor: "pointer",
+                      fontSize: "1.8em",
+                      marginLeft: "auto",
+                    }} // Increased size and pushed to the right
                   >
-                    {project.liked_by_user ? '❤️' : '♡'}
+                    {project.liked_by_user ? "❤️" : "♡"}
                   </span>
                 )}
               </div>

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import "./ServiceForm.css"; // Will create this CSS file next
 import { customAxios, customFormAxios } from "../../utils/customAxios";
 import { useAuth } from "../../context/AuthContext";
+import Loader from "../../components/Loader/Loader";
 
 export default function ServiceForm() {
   const { service_id } = useParams(); // Will be undefined for 'add' mode
@@ -27,7 +28,6 @@ export default function ServiceForm() {
           setTitle(data.title);
           setDescription(data.description);
           setExistingMainImageUrl(data.img_url);
-          toast.success();
         } catch (err) {
           setError(err.message);
           toast.error(err.message);
@@ -88,9 +88,9 @@ export default function ServiceForm() {
   };
 
   return (
-    <div className='service-form-container'>
+    <div className='service-form-container' style={{ position: "relative" }}>
       <h1>{isEditMode ? "Edit Service" : "Add New Service"}</h1>
-      {loading && <p>Loading...</p>}
+      {loading && <Loader />}
       {error && <p className='error-message'>{error}</p>}
       {success && <p className='success-message'>{success}</p>}
 
@@ -123,14 +123,15 @@ export default function ServiceForm() {
             id='mainImage'
             onChange={handleMainImageChange}
             required={!isEditMode} // Required only for new service
+            style={{ padding: ".5rem" }}
           />
           {isEditMode && existingMainImageUrl && (
             <div>
               <p>Current main image:</p>
               <img
                 src={existingMainImageUrl}
-                alt="Current Service Main Image"
-                className="current-main-image-thumbnail"
+                alt='Current Service Main Image'
+                className='current-main-image-thumbnail'
               />
             </div>
           )}
@@ -139,7 +140,7 @@ export default function ServiceForm() {
         <div className='form-buttons'>
           <button
             type='button'
-            className='btn btn-secondary'
+            className='btn-secondary'
             onClick={() => navigate(-1)}
           >
             Cancel

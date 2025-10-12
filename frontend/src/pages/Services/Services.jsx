@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom"; // Import useNavigate
 import { useAuth } from "../../context/AuthContext";
 import "./Services.css";
 import { customAxios } from "../../utils/customAxios";
+import Loader from "../../components/Loader/Loader";
 
 function Services() {
   const [services, setServices] = useState([]);
@@ -29,7 +30,9 @@ function Services() {
       return;
     }
 
-    const isConfirmed = window.confirm("Are you sure you want to delete this service?");
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete this service?"
+    );
     if (!isConfirmed) {
       return;
     }
@@ -37,7 +40,9 @@ function Services() {
     try {
       await customAxios.delete(`/services/${serviceId}`);
       toast.success("Service deleted successfully!");
-      setServices(prevServices => prevServices.filter(svc => svc.id !== serviceId));
+      setServices((prevServices) =>
+        prevServices.filter((svc) => svc.id !== serviceId)
+      );
     } catch (err) {
       console.error("Error deleting service:", err);
       toast.error("Failed to delete service. Please try again.");
@@ -62,30 +67,31 @@ function Services() {
         </div>
       )}
 
-      <div className='services-cards'>
+      <div className='services-cards' style={{ position: "relative" }}>
         {services?.length === 0 ? (
-          <p>Loading services...</p>
+          <Loader />
         ) : (
           services?.map((svc) => (
-            <div 
-              key={svc.id} className='service-card'
+            <div
+              key={svc.id}
+              className='service-card'
               style={{ backgroundImage: `url(${svc.img_url})` }}
             >
               <h3>{svc.title}</h3>
               <p>{svc.description}</p>
               {isAdmin && (
-                <div className="service-actions">
+                <div className='service-actions'>
                   <button
                     className='btn edit-service-btn'
                     onClick={() => navigate(`/services/edit/${svc.id}`)}
                   >
-                    &#9998; Edit
+                    {/* &#9998;  */}Edit
                   </button>
                   <button
                     className='btn delete-service-btn'
                     onClick={() => handleDeleteService(svc.id)}
                   >
-                    &#128465; Delete
+                    {/*  &#128465;  */}Delete
                   </button>
                 </div>
               )}

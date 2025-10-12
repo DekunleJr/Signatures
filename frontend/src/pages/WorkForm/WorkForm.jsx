@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext"; // Import useAuth
 import "./WorkForm.css"; // Will create this CSS file next
 import { customAxios, customFormAxios } from "../../utils/customAxios";
+import Loader from "../../components/Loader/Loader";
 
 export default function WorkForm() {
   const { work_id } = useParams(); // Will be undefined for 'add' mode
@@ -105,9 +106,9 @@ export default function WorkForm() {
   };
 
   return (
-    <div className='work-form-container'>
+    <div className='service-form-container' style={{ position: "relative" }}>
       <h1>{isEditMode ? "Edit Work" : "Add New Work"}</h1>
-      {loading && <p>Loading...</p>}
+      {loading && <Loader />}
       {error && <p className='error-message'>{error}</p>}
       {success && <p className='success-message'>{success}</p>}
 
@@ -140,14 +141,15 @@ export default function WorkForm() {
             id='mainImage'
             onChange={handleMainImageChange}
             required={!isEditMode} // Required only for new work
+            style={{ padding: ".5rem" }}
           />
           {isEditMode && existingMainImageUrl && (
             <div>
               <p>Current main image:</p>
               <img
                 src={existingMainImageUrl}
-                alt="Current Work Main Image"
-                className="current-main-image-thumbnail"
+                alt='Current Work Main Image'
+                className='current-main-image-thumbnail'
               />
             </div>
           )}
@@ -160,13 +162,19 @@ export default function WorkForm() {
             id='otherImages'
             multiple
             onChange={handleOtherImagesChange}
+            style={{ padding: ".5rem" }}
           />
           {isEditMode && existingOtherImageUrls.length > 0 && (
             <div>
               <p>Current other images:</p>
               <div className='existing-thumbnails'>
                 {existingOtherImageUrls.map((url, index) => (
-                  <div key={index} className={`existing-thumbnail-wrapper ${imagesToDelete.includes(url) ? 'marked-for-deletion' : ''}`}>
+                  <div
+                    key={index}
+                    className={`existing-thumbnail-wrapper ${
+                      imagesToDelete.includes(url) ? "marked-for-deletion" : ""
+                    }`}
+                  >
                     <img
                       src={url}
                       alt={`Existing other image ${index + 1}`}
@@ -174,8 +182,8 @@ export default function WorkForm() {
                     />
                     {!imagesToDelete.includes(url) && (
                       <button
-                        type="button"
-                        className="delete-image-btn"
+                        type='button'
+                        className='delete-image-btn'
                         onClick={() => handleDeleteExistingImage(url)}
                       >
                         X
@@ -191,12 +199,12 @@ export default function WorkForm() {
         <div className='form-buttons'>
           <button
             type='button'
-            className='btn btn-secondary'
+            className='btn-secondary'
             onClick={() => navigate(-1)}
           >
             Cancel
           </button>
-          <button type='submit' className='btn-primary' disabled={loading}>
+          <button type='submit' className='btn-service' disabled={loading}>
             {loading
               ? "Submitting..."
               : isEditMode
