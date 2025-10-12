@@ -1,8 +1,9 @@
-import React, { useState, useEffect, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import "./WorkDetail.css";
 import { customAxios } from "../../utils/customAxios";
 import { useAuth } from "../../context/AuthContext";
+import Loader from "../../components/Loader/Loader";
 
 export default function WorkDetail() {
   const { work_id } = useParams();
@@ -50,7 +51,14 @@ export default function WorkDetail() {
   }, [work_id]);
 
   if (loading) {
-    return <div className='work-detail-container'>Loading work details...</div>;
+    return (
+      <div
+        className='work-detail-container'
+        style={{ position: "relative", marginTop: "5rem", height: "100%" }}
+      >
+        <Loader />
+      </div>
+    );
   }
 
   if (error) {
@@ -85,30 +93,26 @@ export default function WorkDetail() {
 
   return (
     <div className='work-detail-container'>
-      <div className="work-detail-header">
+      <div className='work-detail-header'>
         <button className='back-button' onClick={handleGoBack}>
           &#8592; Back
         </button>
         {isAdmin && (
-          <div className="admin-actions">
+          <div className='admin-actions'>
             <button
               className='edit-work-button'
               onClick={() => navigate(`/portfolio/edit/${work_id}`)}
             >
-              Edit Work
+              Edit
             </button>
-            <button
-              className='delete-work-button'
-              onClick={handleDelete}
-            >
-              &#128465; {/* Trash icon */} Delete Work
+            <button className='delete-work-button' onClick={handleDelete}>
+              {/* Trash icon &#128465; */} Delete
             </button>
           </div>
         )}
       </div>
       <h1 className='work-title'>{work.title}</h1>
       <p className='work-description'>{work.description}</p>
-
 
       <div className='slideshow-container'>
         <button className='slideshow-btn prev' onClick={goToPrevious}>
@@ -154,7 +158,9 @@ export default function WorkDetail() {
       return;
     }
 
-    const isConfirmed = window.confirm("Are you sure you want to delete this work?");
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete this work?"
+    );
     if (!isConfirmed) {
       return;
     }

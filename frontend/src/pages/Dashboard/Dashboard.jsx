@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { customAxios } from "../../utils/customAxios";
 import "./Dashboard.css";
+import Loader from "../../components/Loader/Loader";
 
 function Dashboard() {
   const [dashboardData, setDashboardData] = useState(null);
@@ -27,7 +28,11 @@ function Dashboard() {
   }, [user]);
 
   if (loading) {
-    return <p>Loading dashboard...</p>;
+    return (
+      <p style={{ margin: " auto 0" }}>
+        <Loader />
+      </p>
+    );
   }
 
   if (!dashboardData) {

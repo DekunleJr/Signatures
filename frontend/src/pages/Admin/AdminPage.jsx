@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { customAxios } from "../../utils/customAxios";
 import "./AdminPage.css";
+import Loader from "../../components/Loader/Loader";
 
 export default function AdminPage() {
   const [users, setUsers] = useState([]);
@@ -12,13 +13,12 @@ export default function AdminPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!user || !user.is_admin) {
-      toast.error("You are not authorized to view this page.");
-      navigate("/");
-      return;
-    }
-
     const fetchUsers = async () => {
+      if (!user || !user.is_admin) {
+        toast.error("You are not authorized to view this page.");
+        navigate("/");
+        return;
+      }
       setLoading(true);
       try {
         const { data } = await customAxios.get("/admin/");
@@ -43,7 +43,9 @@ export default function AdminPage() {
       return;
     }
 
-    const isConfirmed = window.confirm("Are you sure you want to delete this user?");
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete this user?"
+    );
     if (!isConfirmed) {
       return;
     }
@@ -51,7 +53,7 @@ export default function AdminPage() {
     try {
       await customAxios.delete(`/admin/${userId}`);
       toast.success("User deleted successfully!");
-      setUsers(prevUsers => prevUsers.filter(u => u.id !== userId));
+      setUsers((prevUsers) => prevUsers.filter((u) => u.id !== userId));
     } catch (err) {
       console.error("Error deleting user:", err);
       toast.error("Failed to delete user. Please try again.");
@@ -59,11 +61,17 @@ export default function AdminPage() {
   };
 
   if (loading) {
-    return <div className="admin-page-container">Loading users...</div>;
+    return (
+      <div style={{ position: "relative", margin: "auto 0" }}>
+        <Loader />
+      </div>
+    );
   }
 
   if (error) {
-    return <div className="admin-page-container error-message">Error: {error}</div>;
+    return (
+      <div className='admin-page-container error-message'>Error: {error}</div>
+    );
   }
 
   if (!user || !user.is_admin) {
@@ -71,13 +79,13 @@ export default function AdminPage() {
   }
 
   return (
-    <div className="admin-page-container">
+    <div className='admin-page-container'>
       <h1>Admin Dashboard - User Management</h1>
       {users.length === 0 ? (
         <p>No users found.</p>
       ) : (
-        <div className="table-responsive">
-          <table className="users-table">
+        <div className='table-responsive'>
+          <table className='users-table'>
             <thead>
               <tr>
                 <th>ID</th>
@@ -92,26 +100,26 @@ export default function AdminPage() {
             </thead>
             <tbody>
               {users.map((u) => (
-                <tr key={u.id}>
+                <tr key={u.id} style={{ textTransform: "capitalize" }}>
                   <td>{u.id}</td>
                   <td>{u.first_name}</td>
                   <td>{u.last_name}</td>
-                  <td>{u.email}</td>
+                  <td style={{ textTransform: "lowercase" }}>{u.email}</td>
                   <td>{u.phone_number || "N/A"}</td>
                   <td>{u.is_admin ? "admin" : "user"}</td>
                   <td>{new Date(u.created_at).toLocaleDateString()}</td>
                   <td>
                     <button
-                      className="btn"
+                      className='btn'
                       onClick={() => navigate(`/admin/edit-user/${u.id}`)}
                     >
-                      &#9998; Edit
+                      {/*  &#9998;  */}Edit
                     </button>
                     <button
-                      className="btn delete-user-btn"
+                      className='btn delete-user-btn'
                       onClick={() => handleDeleteUser(u.id)}
                     >
-                      &#128465; Delete
+                      {/* &#128465; */} Delete
                     </button>
                   </td>
                 </tr>

@@ -139,7 +139,8 @@
   margin-top: 1rem;
 }
 
-.edit-service-btn, .delete-service-btn {
+.edit-service-btn,
+.delete-service-btn {
   padding: 0.6rem 1rem;
   border-radius: 5px;
   cursor: pointer;
@@ -150,17 +151,20 @@
 }
 
 .edit-service-btn {
-  background-color: #007bff; /* Blue for edit */
+  background-color: #d4af3711 !important; /* Blue for edit */
+  border: 1px solid #d4af37 !important;
+  color: #d4af37 !important;
 }
 
-.edit-service-btn:hover {
-  background-color: #0056b3;
-}
+/* .edit-service-btn:hover,
+.delete-service-btn:hover {
+  scale: 1.02;
+  translate: 0 -2px !important;
+  transition: all 0.3s;
+} */
 
 .delete-service-btn {
-  background-color: #dc3545; /* Red for delete */
-}
-
-.delete-service-btn:hover {
-  background-color: #c82333;
+  background-color: #dc354511 !important;
+  border: 1px solid #dc3545 !important;
+  color: #dc3545 !important; /* Red for delete */
 }
