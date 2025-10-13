@@ -4,7 +4,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from . import models
 from .database import engine
-from .routers import admin, auth, work, service, users
+from .routers import admin, auth, work, service, users, contact
 from .config import settings
 
 models.Base.metadata.create_all(bind=engine)
@@ -25,8 +25,8 @@ app.include_router(work.router)
 app.include_router(service.router)
 app.include_router(admin.router)
 app.include_router(users.router)
+app.include_router(contact.router)
 
 @app.get("/api")
 def read_root():
     return {"message": "Hello from the backend!"}
-
