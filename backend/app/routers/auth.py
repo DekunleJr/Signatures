@@ -8,13 +8,15 @@ import secrets
 from .. import schemas, models, utils, oauth2
 from ..database import get_db
 from ..config import settings
+from ..email_utils import send_otp_email
+from datetime import datetime, timedelta, timezone
+import random
 
 router = APIRouter(tags=['Authentication'])
 
 @router.post('/login', response_model=schemas.Token)
 def login(user: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     db_user = db.query(models.User).filter(models.User.email == user.username).first()
-    print(user.username)
     if not db_user:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid Credentials")
 
@@ -87,3 +89,46 @@ def google_signup_login(google_user: schemas.GoogleUserCreate, db: Session = Dep
 
         access_token = oauth2.create_access_token(data={"user_id": new_user.id})
         return {"access_token": access_token, "token_type": "bearer", "is_admin": new_user.is_admin, "first_name": new_user.first_name}
+
+
+@router.post('/forgot-password', status_code=status.HTTP_200_OK)
+def forgot_password(request: schemas.ForgotPasswordRequest, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.email == request.email).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    otp = ''.join([str(random.randint(0, 9)) for _ in range(6)])
+    expires_at = datetime.now(timezone.utc) + timedelta(minutes=15)
+
+    password_reset = models.PasswordReset(
+        user_id=user.id,
+        otp=otp,
+        expires_at=expires_at
+    )
+    db.add(password_reset)
+    db.commit()
+
+    send_otp_email(user.email, otp)
+
+    return {"message": "OTP sent to your email"} 
+
+
+@router.post('/reset-password', status_code=status.HTTP_200_OK)
+def reset_password(request: schemas.ResetPasswordRequest, db: Session = Depends(get_db)):
+    user = db.query(models.User).filter(models.User.email == request.email).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    password_reset = db.query(models.PasswordReset).filter(
+        models.PasswordReset.user_id == user.id,
+        models.PasswordReset.otp == request.otp
+    ).first()
+
+    if not password_reset or password_reset.expires_at < datetime.now(timezone.utc):
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid or expired OTP")
+
+    user.password = utils.hash_password(request.new_password)
+    db.delete(password_reset)
+    db.commit()
+
+    return {"message": "Password reset successful"}

@@ -29,8 +29,6 @@ export default function Login() {
       const { data } = await axios.post(`${url}/login`, formData.toString(), {
         "Content-Type": "application/x-www-form-urlencoded",
       });
-
-      console.log("Login successful:", data);
       login(data.access_token, {
         first_name: data.first_name,
         is_admin: data.is_admin,
@@ -45,18 +43,17 @@ export default function Login() {
   const handleGoogleLoginSuccess = async (credentialResponse) => {
     const idToken = credentialResponse.credential;
     const decodedToken = jwtDecode(idToken);
-    console.log("Decoded Google Token:", decodedToken);
 
     const googleUserData = {
       email: decodedToken.email,
       first_name: decodedToken.given_name || "",
       last_name: decodedToken.family_name || "",
-      phone_number: decodedToken.phone_number || null, // Google might not provide phone_number directly
+      phone_number: decodedToken.phone_number || null,
       google_id_token: idToken,
     };
 
     try {
-      const url = import.meta.env.VITE_API_URL || "http://localhost:8000";
+      const url = import.meta.env.VITE_API_URL;
 
       const { data } = await axios.post(
         `${url}/google-signup-login`,
@@ -122,6 +119,9 @@ export default function Login() {
         </div>
         <p className='signup-link-container'>
           Don't have an account? <Link to='/signup'>Sign Up</Link>
+        </p>
+        <p className='signup-link-container'>
+          <Link to='/forgot-password'>Forgot Password?</Link>
         </p>
       </form>
     </div>
