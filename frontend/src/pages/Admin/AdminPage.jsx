@@ -16,6 +16,15 @@ export default function AdminPage() {
   const { user, toast } = useAuth();
   const navigate = useNavigate();
 
+  // State for broadcast email form
+  const [emailSubject, setEmailSubject] = useState("");
+  const [emailMessage, setEmailMessage] = useState("");
+  const [sendOption, setSendOption] = useState("all_except_admin"); // Default option
+  const [selectedEmails, setSelectedEmails] = useState([]); // For 'all_except_selected' and 'only_selected'
+  const [allUsersForSelection, setAllUsersForSelection] = useState([]); // All users for dropdown
+  const [emailLoading, setEmailLoading] = useState(false); // Loading state for email broadcast
+
+  // Fetch paginated users for the table
   useEffect(() => {
     const fetchUsers = async () => {
       if (!user || !user.is_admin) {
@@ -42,6 +51,21 @@ export default function AdminPage() {
     fetchUsers();
   }, [user, navigate, toast, currentPage]);
 
+  // Fetch all users for the email broadcast dropdown
+  useEffect(() => {
+    const fetchAllUsers = async () => {
+      if (!user || !user.is_admin) return;
+      try {
+        // Fetch all users without pagination
+        const { data } = await customAxios.get("/admin/?skip=0&limit=99999"); // A large limit to get all users
+        setAllUsersForSelection(data.users);
+      } catch (err) {
+        console.error("Error fetching all users for selection:", err);
+      }
+    };
+    fetchAllUsers();
+  }, [user]);
+
   const handleDeleteUser = async (userId) => {
     if (!user || !user.is_admin) {
       toast.error("You are not authorized to delete users.");
@@ -60,15 +84,61 @@ export default function AdminPage() {
       toast.success("User deleted successfully!");
       setUsers((prevUsers) => prevUsers.filter((u) => u.id !== userId));
       // Re-fetch users to update pagination if a user is deleted from the current page
-      // This might be optimized later to just adjust totalUsers and current page if needed
       const skip = (currentPage - 1) * ITEMS_PER_PAGE;
       const limit = ITEMS_PER_PAGE;
       const { data } = await customAxios.get(`/admin/?skip=${skip}&limit=${limit}`);
       setUsers(data.users);
       setTotalUsers(data.total_users);
+      // Also update the allUsersForSelection list
+      const { data: allUsersData } = await customAxios.get("/admin/?skip=0&limit=99999");
+      setAllUsersForSelection(allUsersData.users);
     } catch (err) {
       console.error("Error deleting user:", err);
       toast.error("Failed to delete user. Please try again.");
+    }
+  };
+
+  const handleSelectedEmailsChange = (e) => {
+    const options = e.target.options;
+    const value = [];
+    for (let i = 0, l = options.length; i < l; i++) {
+      if (options[i].selected) {
+        value.push(options[i].value);
+      }
+    }
+    setSelectedEmails(value);
+  };
+
+  const handleBroadcastEmail = async (e) => {
+    e.preventDefault();
+    if (!user || !user.is_admin) {
+      toast.error("You are not authorized to broadcast emails.");
+      return;
+    }
+
+    setEmailLoading(true); // Set loading to true immediately
+
+    try {
+      const requestBody = {
+        subject: emailSubject,
+        message: emailMessage,
+        send_option: sendOption,
+        selected_emails: (sendOption === "all_except_selected" || sendOption === "only_selected")
+          ? selectedEmails
+          : undefined,
+      };
+
+      const { data } = await customAxios.post("/admin/broadcast-email", requestBody);
+      toast.success(data.message);
+      setEmailSubject("");
+      setEmailMessage("");
+      setSendOption("all_except_admin");
+      setSelectedEmails([]);
+    } catch (err) {
+      console.error("Error broadcasting email:", err);
+      toast.error(`Failed to send email: ${err.response?.data?.detail || err.message}`);
+    } finally {
+      setEmailLoading(false);
     }
   };
 
@@ -101,6 +171,70 @@ export default function AdminPage() {
   return (
     <div className='admin-page-container'>
       <h1>Admin Dashboard - User Management</h1>
+
+      <div className="broadcast-email-section">
+        <h2>Broadcast Email to Users</h2>
+        <form onSubmit={handleBroadcastEmail}>
+          <div className="form-group">
+            <label htmlFor="subject">Subject:</label>
+            <input
+              type="text"
+              id="subject"
+              value={emailSubject}
+              onChange={(e) => setEmailSubject(e.target.value)}
+              required
+            />
+          </div>
+          <div className="form-group">
+            <label htmlFor="message">Message:</label>
+            <textarea
+              id="message"
+              value={emailMessage}
+              onChange={(e) => setEmailMessage(e.target.value)}
+              required
+            ></textarea>
+          </div>
+          <div className="form-group">
+            <label htmlFor="sendOption">Send To:</label>
+            <select
+              id="sendOption"
+              value={sendOption}
+              onChange={(e) => setSendOption(e.target.value)}
+            >
+              <option value="all_except_admin">All users (except admin)</option>
+              <option value="all_except_selected">All users (except selected)</option>
+              <option value="only_selected">Only selected users</option>
+            </select>
+          </div>
+          {(sendOption === "all_except_selected" || sendOption === "only_selected") && (
+            <div className="form-group">
+              <label htmlFor="selectedEmails">Select Users:</label>
+              <select
+                id="selectedEmails"
+                multiple
+                value={selectedEmails}
+                onChange={handleSelectedEmailsChange}
+              >
+                {allUsersForSelection.map((u) => (
+                  <option key={u.id} value={u.email}>
+                    {u.first_name} {u.last_name} ({u.email})
+                  </option>
+                ))}
+              </select>
+              <p className="hint">Hold Ctrl/Cmd to select multiple users.</p>
+            </div>
+          )}
+          <button type="submit" className="btn send-email-btn" disabled={emailLoading}>
+            {emailLoading ? "Sending..." : "Send Email"}
+          </button>
+        </form>
+        {emailLoading && (
+          <div style={{ position: "relative", margin: "20px auto", width: "50px", height: "50px" }}>
+            <Loader />
+          </div>
+        )}
+      </div>
+
       {users.length === 0 && totalUsers === 0 ? (
         <p>No users found.</p>
       ) : users.length === 0 ? (

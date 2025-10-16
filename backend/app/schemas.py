@@ -115,3 +115,9 @@ class ResetPasswordRequest(BaseModel):
     email: EmailStr
     otp: str
     new_password: str
+
+class BroadcastEmailRequest(BaseModel):
+    subject: str
+    message: str
+    send_option: Literal["all_except_admin", "all_except_selected", "only_selected"]
+    selected_emails: Optional[List[EmailStr]] = None

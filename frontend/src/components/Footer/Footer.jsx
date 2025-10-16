@@ -13,7 +13,7 @@ function Footer() {
         </div>
       <div className="footer-container">
         <div className="footer-about">
-          <h3>2125 Signatures</h3>
+          <h3>2125 Signature</h3>
           <p>
             Crafting timeless and elegant interiors that transform houses into homes
             and offices into experiences.
@@ -23,9 +23,11 @@ function Footer() {
 
         <div className="footer-contact">
           <h4>Contact</h4>
-          <p>Email: info@signatures.com</p>
-          <p>Phone: +234 706 274 3233</p>
-          <p>Abuja, Nigeria</p>
+          <p>Email: info@2125signature.com</p>
+          <p>Phone: +234 706 717 6373</p>
+          <address>
+            <p>Address: Suite 7, His Glory Plaza, Back of H-Medix, Ademola Adetokumbo Cresent, Wuse II, Abuja, Nigeria</p>
+          </address>
         </div>
       </div>
 
