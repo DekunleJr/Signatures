@@ -7,10 +7,17 @@ from ..database import get_db
 
 router = APIRouter(tags=['Admin'], prefix="/api/admin")
 
-@router.get("/", response_model=list[schemas.UserOut])
-def get_users(db: Session = Depends(get_db), current_user: models.User = Depends(oauth2.get_current_admin_user)):
-    users = db.query(models.User).all()
-    return users
+@router.get("/", response_model=schemas.UserPaginationResponse)
+def get_users(
+    skip: int = 0, 
+    limit: int = 10,
+    db: Session = Depends(get_db), 
+    current_user: models.User = Depends(oauth2.get_current_admin_user)
+):
+    query = db.query(models.User).order_by(models.User.id.asc())
+    total_users = query.count()
+    users = query.offset(skip).limit(limit).all()
+    return {"total_users": total_users, "users": users}
 
 @router.put("/{user_id}", status_code=status.HTTP_200_OK, response_model=schemas.UserOut)
 def update_user(

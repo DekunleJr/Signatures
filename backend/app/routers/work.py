@@ -39,9 +39,17 @@ async def create_work(
     db.refresh(db_work)
     return db_work
 
-@router.get("/", response_model=list[schemas.Work])
-def get_works(db: Session = Depends(get_db), current_user: Optional[models.User] = Depends(oauth2.get_current_user_optional)):
-    works = db.query(models.Work).all()
+@router.get("/", response_model=schemas.WorkPaginationResponse)
+def get_works(
+    skip: int = 0, 
+    limit: int = 12, 
+    db: Session = Depends(get_db), 
+    current_user: Optional[models.User] = Depends(oauth2.get_current_user_optional)
+):
+    query = db.query(models.Work).order_by(models.Work.created_at.desc())
+    total_works = query.count() # Get total count before applying limit and offset
+    
+    works = query.offset(skip).limit(limit).all()
     
     # Get the user's liked work IDs for efficient checking if the user is logged in
     liked_work_ids = set()
@@ -63,7 +71,7 @@ def get_works(db: Session = Depends(get_db), current_user: Optional[models.User]
         )
         response_works.append(work_schema)
         
-    return response_works
+    return {"total_works": total_works, "works": response_works}
 
 @router.get("/{work_id}", response_model=schemas.Work)
 def get_work(work_id: int, db: Session = Depends(get_db), current_user: Optional[models.User] = Depends(oauth2.get_current_user_optional)):

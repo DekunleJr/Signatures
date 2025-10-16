@@ -49,6 +49,34 @@
   margin: 0 auto;
 }
 
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 3rem;
+  gap: 10px;
+}
+
+.pagination-controls .btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--primary-color);
+  background-color: transparent;
+  color: var(--primary-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pagination-controls .btn:hover:not(:disabled),
+.pagination-controls .btn.active {
+  background-color: var(--primary-color);
+  color: var(--white-color);
+}
+
+.pagination-controls .btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
 .portfolio-item {
   position: relative;
   background: #1a1a1a;

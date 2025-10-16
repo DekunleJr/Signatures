@@ -5,8 +5,12 @@ import "./Portfolio.css";
 import { customAxios } from "../../utils/customAxios";
 import Loader from "../../components/Loader/Loader";
 
+const ITEMS_PER_PAGE = 12; // Maximum of 12 products at a time
+
 function Portfolio() {
   const [projects, setProjects] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalWorks, setTotalWorks] = useState(0);
   const { user } = useAuth();
   const isAdmin = user && user.is_admin;
 
@@ -46,16 +50,24 @@ function Portfolio() {
   useEffect(() => {
     (async () => {
       try {
-        const { data } = await customAxios.get("/portfolio");
-        const sortedProjects = data?.sort(
-          (a, b) => new Date(b.created_at) - new Date(a.created_at)
-        );
-        setProjects(sortedProjects);
+        const skip = (currentPage - 1) * ITEMS_PER_PAGE;
+        const limit = ITEMS_PER_PAGE;
+        const { data } = await customAxios.get(`/portfolio?skip=${skip}&limit=${limit}`);
+        setProjects(data.works);
+        setTotalWorks(data.total_works);
       } catch (error) {
         console.error("Error fetching portfolio:", error);
       }
     })();
-  }, [user]); // Re-fetch if user changes (e.g., login/logout)
+  }, [user, currentPage]); // Re-fetch if user or current page changes
+
+  const totalPages = Math.ceil(totalWorks / ITEMS_PER_PAGE);
+
+  const handlePageChange = (pageNumber) => {
+    if (pageNumber > 0 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
+    }
+  };
 
   return (
     <section className='page portfolio'>
@@ -74,8 +86,10 @@ function Portfolio() {
       )}
 
       <div className='portfolio-grid' style={{ position: "relative" }}>
-        {projects.length === 0 ? (
+        {projects.length === 0 && totalWorks === 0 ? (
           <Loader />
+        ) : projects.length === 0 ? (
+          <p>No projects found.</p>
         ) : (
           projects.map((project) => (
             <div
@@ -120,6 +134,34 @@ function Portfolio() {
           ))
         )}
       </div>
+
+      {totalPages > 1 && (
+        <div className='pagination-controls'>
+          <button
+            className='btn'
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+          {[...Array(totalPages)].map((_, index) => (
+            <button
+              key={index + 1}
+              className={`btn ${currentPage === index + 1 ? "active" : ""}`}
+              onClick={() => handlePageChange(index + 1)}
+            >
+              {index + 1}
+            </button>
+          ))}
+          <button
+            className='btn'
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
+        </div>
+      )}
     </section>
   );
 }

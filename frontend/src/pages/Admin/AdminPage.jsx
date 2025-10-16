@@ -5,10 +5,14 @@ import { customAxios } from "../../utils/customAxios";
 import "./AdminPage.css";
 import Loader from "../../components/Loader/Loader";
 
+const ITEMS_PER_PAGE = 10; // Maximum of 10 users at a time
+
 export default function AdminPage() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalUsers, setTotalUsers] = useState(0);
   const { user, toast } = useAuth();
   const navigate = useNavigate();
 
@@ -21,10 +25,11 @@ export default function AdminPage() {
       }
       setLoading(true);
       try {
-        const { data } = await customAxios.get("/admin/");
-        // Sort users by ID from small to big
-        const sortedUsers = data.sort((a, b) => a.id - b.id);
-        setUsers(sortedUsers);
+        const skip = (currentPage - 1) * ITEMS_PER_PAGE;
+        const limit = ITEMS_PER_PAGE;
+        const { data } = await customAxios.get(`/admin/?skip=${skip}&limit=${limit}`);
+        setUsers(data.users);
+        setTotalUsers(data.total_users);
       } catch (err) {
         console.error("Error fetching users:", err);
         setError(err.message);
@@ -35,7 +40,7 @@ export default function AdminPage() {
     };
 
     fetchUsers();
-  }, [user, navigate, toast]);
+  }, [user, navigate, toast, currentPage]);
 
   const handleDeleteUser = async (userId) => {
     if (!user || !user.is_admin) {
@@ -54,9 +59,24 @@ export default function AdminPage() {
       await customAxios.delete(`/admin/${userId}`);
       toast.success("User deleted successfully!");
       setUsers((prevUsers) => prevUsers.filter((u) => u.id !== userId));
+      // Re-fetch users to update pagination if a user is deleted from the current page
+      // This might be optimized later to just adjust totalUsers and current page if needed
+      const skip = (currentPage - 1) * ITEMS_PER_PAGE;
+      const limit = ITEMS_PER_PAGE;
+      const { data } = await customAxios.get(`/admin/?skip=${skip}&limit=${limit}`);
+      setUsers(data.users);
+      setTotalUsers(data.total_users);
     } catch (err) {
       console.error("Error deleting user:", err);
       toast.error("Failed to delete user. Please try again.");
+    }
+  };
+
+  const totalPages = Math.ceil(totalUsers / ITEMS_PER_PAGE);
+
+  const handlePageChange = (pageNumber) => {
+    if (pageNumber > 0 && pageNumber <= totalPages) {
+      setCurrentPage(pageNumber);
     }
   };
 
@@ -81,8 +101,10 @@ export default function AdminPage() {
   return (
     <div className='admin-page-container'>
       <h1>Admin Dashboard - User Management</h1>
-      {users.length === 0 ? (
+      {users.length === 0 && totalUsers === 0 ? (
         <p>No users found.</p>
+      ) : users.length === 0 ? (
+        <p>No users found on this page.</p>
       ) : (
         <div className='table-responsive'>
           <table className='users-table'>
@@ -126,6 +148,34 @@ export default function AdminPage() {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {totalPages > 1 && (
+        <div className='pagination-controls'>
+          <button
+            className='btn'
+            onClick={() => handlePageChange(currentPage - 1)}
+            disabled={currentPage === 1}
+          >
+            Previous
+          </button>
+          {[...Array(totalPages)].map((_, index) => (
+            <button
+              key={index + 1}
+              className={`btn ${currentPage === index + 1 ? "active" : ""}`}
+              onClick={() => handlePageChange(index + 1)}
+            >
+              {index + 1}
+            </button>
+          ))}
+          <button
+            className='btn'
+            onClick={() => handlePageChange(currentPage + 1)}
+            disabled={currentPage === totalPages}
+          >
+            Next
+          </button>
         </div>
       )}
     </div>

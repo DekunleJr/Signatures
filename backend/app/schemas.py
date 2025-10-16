@@ -72,6 +72,10 @@ class WorkCreate(BaseModel):
     # img_url will be handled as a file upload in the router, not directly in the schema
     # other_images will be handled as a list of file uploads in the router
 
+class WorkPaginationResponse(BaseModel):
+    total_works: int
+    works: List[Work]
+
 class Service(BaseModel):
     id: int
     title: str
@@ -83,6 +87,10 @@ class ServiceCreate(BaseModel):
     title: str
     description: str
     img_url: str
+
+class UserPaginationResponse(BaseModel):
+    total_users: int
+    users: List[UserOut]
 
 class UserDashboard(UserOut):
     is_admin: bool
