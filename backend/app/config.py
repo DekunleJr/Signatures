@@ -17,6 +17,7 @@ class Settings(BaseSettings):
     mail_username: str
     mail_password: str
     mail_from: str
+    mail_to: str
     mail_port: int
     mail_server: str
     mail_tls: bool

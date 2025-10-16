@@ -33,7 +33,7 @@ def send_contact_email(name: str, sender_email: str, message: str):
     try:
         msg = MIMEMultipart()
         msg['From'] = settings.mail_from
-        msg['To'] = settings.mail_from  # Send to admin email, which is MAIL_FROM for now
+        msg['To'] = settings.mail_to  # Send to admin email, which is MAIL_TO for now
         msg['Subject'] = f"Contact Form: from {name} with email ({sender_email})"
 
         body = f"Name: {name}\nEmail: {sender_email}\n\nMessage:\n{message}"
