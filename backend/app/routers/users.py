@@ -48,6 +48,7 @@ def get_user_dashboard(db: Session = Depends(get_db), current_user: models.User 
         "last_name": user_with_likes.last_name,
         "phone_number": user_with_likes.phone_number,
         "is_admin": user_with_likes.is_admin,
+        "status": user_with_likes.status,
         "created_at": user_with_likes.created_at,
         "liked_works": liked_works_list 
     }

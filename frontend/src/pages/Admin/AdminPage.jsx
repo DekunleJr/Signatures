@@ -66,35 +66,29 @@ export default function AdminPage() {
     fetchAllUsers();
   }, [user]);
 
-  const handleDeleteUser = async (userId) => {
+  const handleBlockUser = async (userId, currentStatus) => {
     if (!user || !user.is_admin) {
-      toast.error("You are not authorized to delete users.");
+      toast.error("You are not authorized to block/unblock users.");
       return;
     }
 
+    const action = currentStatus === "active" ? "block" : "unblock";
     const isConfirmed = window.confirm(
-      "Are you sure you want to delete this user?"
+      `Are you sure you want to ${action} this user?`
     );
     if (!isConfirmed) {
       return;
     }
 
     try {
-      await customAxios.delete(`/admin/${userId}`);
-      toast.success("User deleted successfully!");
-      setUsers((prevUsers) => prevUsers.filter((u) => u.id !== userId));
-      // Re-fetch users to update pagination if a user is deleted from the current page
-      const skip = (currentPage - 1) * ITEMS_PER_PAGE;
-      const limit = ITEMS_PER_PAGE;
-      const { data } = await customAxios.get(`/admin/?skip=${skip}&limit=${limit}`);
-      setUsers(data.users);
-      setTotalUsers(data.total_users);
-      // Also update the allUsersForSelection list
-      const { data: allUsersData } = await customAxios.get("/admin/?skip=0&limit=99999");
-      setAllUsersForSelection(allUsersData.users);
+      const { data } = await customAxios.put(`/admin/block-unblock/${userId}`);
+      toast.success(`User ${action}ed successfully!`);
+      setUsers((prevUsers) =>
+        prevUsers.map((u) => (u.id === userId ? data : u))
+      );
     } catch (err) {
-      console.error("Error deleting user:", err);
-      toast.error("Failed to delete user. Please try again.");
+      console.error(`Error ${action}ing user:`, err);
+      toast.error(`Failed to ${action} user. Please try again.`);
     }
   };
 
@@ -250,6 +244,7 @@ export default function AdminPage() {
                 <th>Email</th>
                 <th>Phone Number</th>
                 <th>User Role</th>
+                <th>Status</th>
                 <th>Member Since</th>
                 <th>Action</th>
               </tr>
@@ -263,19 +258,24 @@ export default function AdminPage() {
                   <td style={{ textTransform: "lowercase" }}>{u.email}</td>
                   <td>{u.phone_number || "N/A"}</td>
                   <td>{u.is_admin ? "admin" : "user"}</td>
+                  <td>{u.status}</td>
                   <td>{new Date(u.created_at).toLocaleDateString()}</td>
                   <td>
                     <button
                       className='btn'
                       onClick={() => navigate(`/admin/edit-user/${u.id}`)}
                     >
-                      {/*  &#9998;  */}Edit
+                      Edit
                     </button>
                     <button
-                      className='btn delete-user-btn'
-                      onClick={() => handleDeleteUser(u.id)}
+                      className={`btn ${
+                        u.status === "active"
+                          ? "delete-user-btn"
+                          : "unblock-user-btn"
+                      }`}
+                      onClick={() => handleBlockUser(u.id, u.status)}
                     >
-                      {/* &#128465; */} Delete
+                      {u.status === "active" ? "Block" : "Unblock"}
                     </button>
                   </td>
                 </tr>

@@ -32,6 +32,7 @@ class UserOut(BaseModel):
     first_name: str
     last_name: str
     is_admin: bool
+    status: str 
     phone_number: Optional[str] = None
     created_at: datetime
 
@@ -94,7 +95,6 @@ class UserPaginationResponse(BaseModel):
 
 class UserDashboard(UserOut):
     is_admin: bool
-    # The Work schema now includes 'liked_by_user', so this list should correctly serialize.
     liked_works: List[Work] = []
 
 

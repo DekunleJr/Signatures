@@ -43,13 +43,13 @@ export default function Signup() {
       const url = import.meta.env.VITE_API_URL;
       await customAxios.post(`${url}/signup`, userData);
 
-      setSuccess("Signup successful! Redirecting to login...");
+      setSuccess("Signup successful! Please check your email for a verification link to activate your account.");
       setTimeout(() => {
         navigate("/login");
-      }, 2000);
+      }, 5000);
     } catch (error) {
       console.error("Error during signup:", error);
-      setError("An error occurred during signup. Please try again later.");
+      setError(error.response?.data?.detail || "An error occurred during signup. Please try again later.");
     }
   };
 

@@ -11,14 +11,17 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [showVerificationMessage, setShowVerificationMessage] = useState(false);
+  const [pendingVerificationEmail, setPendingVerificationEmail] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
-  const { login } = useAuth();
+  const { login, toast } = useAuth();
   const from = location.state?.from?.pathname || "/";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(""); // Clear previous errors
+    setShowVerificationMessage(false); // Clear previous verification messages
 
     const formData = new URLSearchParams();
     formData.append("username", email);
@@ -32,11 +35,37 @@ export default function Login() {
       login(data.access_token, {
         first_name: data.first_name,
         is_admin: data.is_admin,
+        status: data.status, // Assuming status is returned in the token payload
       });
       navigate(from, { replace: true }); // Redirect to previous page
     } catch (error) {
       console.error("Error during login:", error);
-      setError("An error occurred during login. Please try again later.");
+      if (error.response?.data?.detail === "Account not verified. Please check your email for a verification link.") {
+        setError("Your account is pending verification. Please verify your email.");
+        setShowVerificationMessage(true);
+        setPendingVerificationEmail(email); // Store email to resend link
+      } else if (error.response?.data?.detail === "Account blocked. Please contact support.") {
+        setError("Your account is blocked. Please contact support.");
+      } else {
+        setError("Invalid Credentials. Please check your email and password.");
+      }
+    }
+  };
+
+  const handleResendVerification = async () => {
+    try {
+      const url = import.meta.env.VITE_API_URL;
+      await axios.post(`${url}/resend-verification`, { email: pendingVerificationEmail }, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      toast.success("New verification link sent to your email!");
+      setError("");
+      setShowVerificationMessage(false);
+    } catch (error) {
+      console.error("Error resending verification link:", error);
+      toast.error(error.response?.data?.detail || "Failed to resend verification link. Please try again.");
     }
   };
 
@@ -110,6 +139,20 @@ export default function Login() {
         <button type='submit' className='btn-primary'>
           Login
         </button>
+        {showVerificationMessage && (
+          <div className="verification-message-container">
+            <p className="info-message">
+              Your account is pending verification. Please check your email for a verification link.
+            </p>
+            <button
+              type="button"
+              className="btn-secondary"
+              onClick={handleResendVerification}
+            >
+              Resend Verification Link
+            </button>
+          </div>
+        )}
         <div className='google-login-button-container'>
           <GoogleLogin
             onSuccess={handleGoogleLoginSuccess}

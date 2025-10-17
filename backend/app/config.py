@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     mail_port: int
     mail_server: str
     mail_tls: bool
+    frontend_url: str
 
     model_config = ConfigDict(env_file=".env")
 

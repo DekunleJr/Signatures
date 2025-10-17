@@ -21,6 +21,7 @@ import EditProfile from "./pages/EditProfile/EditProfile";
 import AdminPage from "./pages/Admin/AdminPage";
 import EditUser from "./pages/Admin/EditUser"; 
 import ForgotPassword from "./pages/ForgotPassword/ForgotPassword";
+import VerifyEmail from "./pages/VerifyEmail/VerifyEmail"; // Import the new component
 
 function App() {
   return (
@@ -49,6 +50,7 @@ function App() {
             <Route path='/admin' element={<AdminPage />} /> {/* New Admin Page Route */}
             <Route path='/admin/edit-user/:userId' element={<EditUser />} /> {/* New Edit User Route */}
             <Route path='/forgot-password' element={<ForgotPassword />} />
+            <Route path='/verify-email' element={<VerifyEmail />} /> {/* New Verify Email Route */}
             <Route path='*' element={<NotFound />} />
           </Routes>
           <Footer />

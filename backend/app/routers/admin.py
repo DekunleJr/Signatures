@@ -21,6 +21,24 @@ def get_users(
     users = query.offset(skip).limit(limit).all()
     return {"total_users": total_users, "users": users}
 
+@router.put("/block-unblock/{user_id}", status_code=status.HTTP_200_OK, response_model=schemas.UserOut)
+def block_unblock_user(
+    user_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(oauth2.get_current_admin_user)
+):
+    user = db.query(models.User).filter(models.User.id == user_id).first()
+    if not user:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
+
+    if user.status == "active":
+        user.status = "blocked"
+    else:
+        user.status = "active"
+    
+    db.commit()
+    db.refresh(user)
+    return user
 
 @router.post("/broadcast-email", status_code=status.HTTP_200_OK)
 async def broadcast_email(

@@ -68,3 +68,25 @@ async def send_email(recipient_emails: List[EmailStr], subject: str, message: st
     except Exception as e:
         print(f"Error sending broadcast email: {e}")
         raise Exception(f"Failed to send broadcast email: {e}")
+
+async def send_verification_email(recipient_email: str, subject: str, verification_url: str):
+    """
+    Sends a verification email with a confirmation link to the user.
+    """
+    try:
+        msg = MIMEMultipart()
+        msg['From'] = settings.mail_from
+        msg['To'] = recipient_email
+        msg['Subject'] = subject
+
+        body = f"Please click the following link to verify your account: {verification_url}"
+        msg.attach(MIMEText(body, 'plain'))
+
+        with smtplib.SMTP(settings.mail_server, settings.mail_port) as server:
+            server.starttls()
+            server.login(settings.mail_username, settings.mail_password)
+            server.send_message(msg)
+        return {"message": "Verification email sent successfully!"}
+    except Exception as e:
+        print(f"Error sending verification email: {e}")
+        raise Exception(f"Failed to send verification email: {e}")

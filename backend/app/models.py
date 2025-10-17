@@ -1,5 +1,5 @@
 from .database import Base
-from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, JSON
+from sqlalchemy import Column, Integer, String, Boolean, ForeignKey, JSON, CheckConstraint
 from sqlalchemy.orm import relationship
 from sqlalchemy.sql.sqltypes import TIMESTAMP
 from sqlalchemy.sql.expression import text
@@ -26,8 +26,13 @@ class User(Base):
     last_name = Column(String, nullable=False)
     phone_number = Column(String, unique=True)
     password = Column(String)
+    status = Column(String, default="pending", nullable=False)
+    verification_token = Column(String, nullable=True, unique=True) # New field for verification token
     is_admin = Column(Boolean, default=False, nullable=False)
     created_at = Column(TIMESTAMP(timezone=True), nullable=False, server_default=text('now()'))
+    __table_args__ = (
+        CheckConstraint(status.in_(['pending', 'active', 'blocked']), name='user_status_check'),
+    )
 
 
 class Service(Base):
