@@ -1,0 +1,81 @@
+.about-section {
+  background: #0d0d0d;
+  color: #f5f5f5;
+  padding: 3rem 2rem;
+}
+
+/* Hero / top image + overlay title */
+.about-hero {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 3rem;
+}
+
+.about-hero-text {
+  flex: 1;
+  padding-right: 2rem;
+}
+
+.about-hero-image {
+  width: 25%;
+  flex-shrink: 0;
+}
+
+.about-hero-image img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.about-hero-text h2 {
+  font-size: 2.75rem;
+  margin: 0;
+}
+
+/* Content paragraphs */
+.about-content {
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.7;
+  font-size: 1.1rem;
+  margin-bottom: 3rem;
+}
+
+.about-content p {
+  margin-bottom: 1.5rem;
+  color: #ccc;
+}
+
+/* Values / philosophy boxes */
+.about-values {
+  display: grid;
+  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  margin-top: 2rem;
+}
+
+.value-box {
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 8px;
+  padding: 2rem;
+  transition: transform 0.3s, border-color 0.3s;
+}
+
+.value-box:hover {
+  transform: translateY(-5px);
+  border-color: var(--color-primary);
+}
+
+.value-box h3 {
+  color: var(--color-primary);
+  margin-bottom: 0.75rem;
+  font-size: 1.4rem;
+}
+
+.value-box p {
+  color: #ddd;
+  font-size: 1rem;
+  line-height: 1.6;
+}

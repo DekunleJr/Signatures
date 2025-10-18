@@ -1,0 +1,185 @@
+.portfolio {
+  padding: 3rem 2rem;
+  text-align: center;
+}
+
+.portfolio h2 {
+  font-size: 2.2rem;
+  margin-bottom: 1rem;
+  color: var(--color-primary);
+}
+
+.portfolio .intro {
+  max-width: 700px;
+  margin: 0 auto 2rem;
+  color: #ccc;
+  line-height: 1.6;
+}
+
+.add-new-work-btn {
+  background-color: var(--color-primary);
+  color: #333;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  transition: background-color 0.3s ease;
+}
+
+.add-new-work-btn:hover {
+  background-color: var(--color-primary-light);
+}
+
+.add-work-button-container {
+  /* position: fixed; */
+  bottom: 2rem;
+  right: 2rem;
+  z-index: 100;
+}
+
+/* Grid layout */
+.portfolio-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  width: calc(100vw - 64px);
+  margin: 0 auto;
+}
+
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 3rem;
+  gap: 10px;
+}
+
+.pagination-controls .btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--primary-color);
+  background-color: transparent;
+  color: var(--primary-color);
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.pagination-controls .btn:hover:not(:disabled),
+.pagination-controls .btn.active {
+  background-color: var(--primary-color);
+  color: var(--white-color);
+}
+
+.pagination-controls .btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.portfolio-item {
+  position: relative;
+  background: #1a1a1a;
+  border: 1px solid #333;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: transform 0.3s;
+  height: 300px;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  width: 100%;
+  max-width: 550px;
+  margin: auto;
+  padding: 0.5rem;
+}
+
+/* Overlay base (transparent at first) */
+.portfolio-item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0); /* fully transparent */
+  transition: background 0.3s ease;
+  z-index: 1;
+}
+
+/* Show overlay on hover */
+.portfolio-item:hover::before {
+  background: rgba(0, 0, 0, 0.6); /* black overlay */
+}
+
+.portfolio-item h3,
+.portfolio-item p {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2; /* make sure text stays above overlay */
+}
+
+.portfolio-item:hover h3,
+.portfolio-item:hover p {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.portfolio-item:hover {
+  transform: translateY(-5px);
+  border-color: var(--color-primary);
+}
+
+.portfolio-info {
+  padding: 1rem;
+  text-align: left;
+  position: relative;
+  z-index: 2; /* above overlay */
+}
+
+.portfolio-info h3 {
+  color: var(--color-primary);
+  margin: 0 0 0.5rem;
+}
+
+.portfolio-info p {
+  color: #aaa;
+  font-size: 0.95rem;
+}
+
+.view-details-btn {
+  background-color: var(--color-primary);
+  color: #333;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+  margin-top: 1rem; /* Add some space above the button */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2;
+  margin-bottom: 1rem;
+  margin-left: 1.5rem;
+}
+
+.view-details-btn:hover {
+  background-color: var(--color-primary-light);
+}
+
+.portfolio-item:hover .view-details-btn {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
