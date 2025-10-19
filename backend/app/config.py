@@ -14,14 +14,13 @@ class Settings(BaseSettings):
     cloudinary_cloud_name: str
     cloudinary_api_key: str
     cloudinary_api_secret: str
-    mail_username: str
-    mail_password: str
+    frontend_url: str
     mail_from: str
     mail_to: str
-    mail_port: int
-    mail_server: str
-    mail_tls: bool
-    frontend_url: str
+    zoho_client_id: str
+    zoho_client_secret: str
+    zoho_account_id: str
+    zoho_refresh_token: str
 
     model_config = ConfigDict(env_file=".env")
 

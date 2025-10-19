@@ -113,7 +113,7 @@ def google_signup_login(google_user: schemas.GoogleUserCreate, db: Session = Dep
 
 
 @router.post('/forgot-password', status_code=status.HTTP_200_OK)
-def forgot_password(request: schemas.ForgotPasswordRequest, db: Session = Depends(get_db)):
+async def forgot_password(request: schemas.ForgotPasswordRequest, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.email == request.email).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
@@ -129,9 +129,9 @@ def forgot_password(request: schemas.ForgotPasswordRequest, db: Session = Depend
     db.add(password_reset)
     db.commit()
 
-    send_otp_email(user.email, otp)
+    await send_otp_email(user.email, otp)
 
-    return {"message": "OTP sent to your email"} 
+    return {"message": "OTP sent to your email"}
 
 @router.get('/api/verify-email', status_code=status.HTTP_200_OK, response_model=schemas.Token)
 async def verify_email(token: str, db: Session = Depends(get_db)):
