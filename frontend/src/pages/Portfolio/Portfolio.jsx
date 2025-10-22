@@ -52,9 +52,22 @@ function Portfolio() {
       try {
         const skip = (currentPage - 1) * ITEMS_PER_PAGE;
         const limit = ITEMS_PER_PAGE;
-        const { data } = await customAxios.get(`/portfolio?skip=${skip}&limit=${limit}`);
-        setProjects(data.works);
-        setTotalWorks(data.total_works);
+        const { data } = await customAxios.get(`/portfolio/?skip=${skip}&limit=${limit}`);
+        console.log("API Response Data:", data);
+        if (Array.isArray(data.works)) {
+          console.log("Projects from API:", data.works);
+          setProjects(data.works);
+        } else {
+          console.log("Projects from API: Not an array, setting to empty array.");
+          setProjects([]); // Ensure projects is always an array
+        }
+        if (typeof data.total_works === 'number') {
+          console.log("Total Works from API:", data.total_works);
+          setTotalWorks(data.total_works);
+        } else {
+          console.log("Total Works from API: Not a number, setting to 0.");
+          setTotalWorks(0); // Ensure totalWorks is always a number
+        }
       } catch (error) {
         console.error("Error fetching portfolio:", error);
       }

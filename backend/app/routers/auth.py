@@ -12,15 +12,20 @@ from ..email_utils import send_otp_email, send_verification_email
 from datetime import datetime, timedelta, timezone
 import random
 
-router = APIRouter(tags=['Authentication'])
+router = APIRouter(tags=['Authentication'], prefix="/api")
 
 @router.post('/login', response_model=schemas.Token)
 def login(user: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    print("login started")
     db_user = db.query(models.User).filter(models.User.email == user.username).first()
+    print(f"sent email: {user.username}")  # Debugging statement
+    print(f"Fetched user from DB: {db_user.email}")  # Debugging statement
     if not db_user:
+        print("User not found")  # Debugging statement
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid Credentials")
 
     if not utils.verify_password(user.password, db_user.password):
+        print("Invalid password")  # Debugging statement
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid password Credentials")
 
     if db_user.status == "pending":
@@ -133,7 +138,7 @@ async def forgot_password(request: schemas.ForgotPasswordRequest, db: Session = 
 
     return {"message": "OTP sent to your email"}
 
-@router.get('/api/verify-email', status_code=status.HTTP_200_OK, response_model=schemas.Token)
+@router.get('/verify-email', status_code=status.HTTP_200_OK, response_model=schemas.Token)
 async def verify_email(token: str, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.verification_token == token).first()
 

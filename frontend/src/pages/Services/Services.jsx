@@ -15,8 +15,12 @@ function Services() {
     // Fetch from your backend
     (async () => {
       try {
-        const { data } = await customAxios.get(`/services`);
-        setServices(data);
+        const { data } = await customAxios.get(`/services/`);
+        if (Array.isArray(data)) {
+          setServices(data);
+        } else {
+          setServices([]); // Ensure services is always an array
+        }
       } catch (error) {
         console.error("Error fetching services:", error);
         toast.error(error.message);

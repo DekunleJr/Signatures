@@ -27,11 +27,14 @@ export default function Home() {
   useEffect(() => {
     (async () => {
       try {
-        const { data } = await customAxios.get("/portfolio");
-        const sortedProjects = data
-          ?.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-          ?.slice(0, 3);
-        setRecentProjects(sortedProjects);
+        const { data } = await customAxios.get("/portfolio/");
+        let projectsToSet = [];
+        if (Array.isArray(data.works)) {
+          projectsToSet = data.works
+            .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+            .slice(0, 3);
+        }
+        setRecentProjects(projectsToSet);
       } catch (error) {
         console.error("Error fetching recent projects:", error);
       }
@@ -40,8 +43,8 @@ export default function Home() {
 
   return (
     <div className='home'>
-      <VideoPlayer videoId={1128426647} />
-      {/* Hero Section */}
+      {/* Old Hero Section (commented out) */}
+      {/*
       <section className='hero'>
         {heroImages.map((image, index) => (
           <div
@@ -52,6 +55,23 @@ export default function Home() {
             style={{ backgroundImage: `url(${image})` }}
           />
         ))}
+        <div className='hero-overlay' />
+        <div className='hero-content'>
+          <h1>Creative Interior Design</h1>
+          <p>
+            Transforming spaces with modern and elegant interior decoration
+            solutions.
+          </p>
+          <Link to='/portfolio'>
+            <button className='btn-primary'>Check Out Our Projects</button>
+          </Link>
+        </div>
+      </section>
+      */}
+
+      {/* New Video Hero Section */}
+      <section className='hero-video'>
+        <VideoPlayer videoId={1128426647} />
         <div className='hero-overlay' />
         <div className='hero-content'>
           <h1>Creative Interior Design</h1>

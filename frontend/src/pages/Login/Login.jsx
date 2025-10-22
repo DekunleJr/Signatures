@@ -33,7 +33,7 @@ export default function Login() {
 
     try {
       const url = import.meta.env.VITE_API_URL;
-      const { data } = await axios.post(`${url}/login`, formData.toString(), {
+      const { data } = await axios.post(`${url}/api/login`, formData.toString(), {
         "Content-Type": "application/x-www-form-urlencoded",
       });
       login(data.access_token, {
@@ -62,7 +62,7 @@ export default function Login() {
     setResendLoading(true);
     try {
       const url = import.meta.env.VITE_API_URL;
-      await axios.post(`${url}/resend-verification`, { email: pendingVerificationEmail }, {
+      await axios.post(`${url}/api/resend-verification`, { email: pendingVerificationEmail }, {
         headers: {
           "Content-Type": "application/json",
         },
@@ -94,7 +94,7 @@ export default function Login() {
       const url = import.meta.env.VITE_API_URL;
 
       const { data } = await axios.post(
-        `${url}/google-signup-login`,
+        `${url}/api/google-signup-login`,
         googleUserData,
         {
           headers: {

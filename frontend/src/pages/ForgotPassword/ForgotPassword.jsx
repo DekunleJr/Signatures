@@ -20,7 +20,7 @@ export default function ForgotPassword() {
 
     try {
       const url = import.meta.env.VITE_API_URL;
-      await customAxios.post(`${url}/forgot-password`, { email });
+      await customAxios.post(`${url}/api/forgot-password`, { email });
       setSuccess("OTP sent to your email address.");
       setOtpSent(true);
     } catch (error) {
@@ -41,7 +41,7 @@ export default function ForgotPassword() {
 
     try {
       const url = import.meta.env.VITE_API_URL;
-      await customAxios.post(`${url}/reset-password`, {
+      await customAxios.post(`${url}/api/reset-password`, {
         email,
         otp,
         new_password: newPassword,

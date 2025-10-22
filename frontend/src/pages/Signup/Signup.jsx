@@ -46,7 +46,7 @@ export default function Signup() {
 
     try {
       const url = import.meta.env.VITE_API_URL;
-      await customAxios.post(`${url}/signup`, userData);
+      await customAxios.post(`${url}/api/signup`, userData);
 
       setSuccess("Signup successful! Please check your email for a verification link to activate your account.");
       setTimeout(() => {
