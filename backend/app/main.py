@@ -18,7 +18,7 @@ app = FastAPI()
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
+    allow_origins=["https://www.2125signature.com", "https://2125signature.com", "http://localhost:8000"],
     allow_credentials=True,
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
@@ -35,15 +35,6 @@ app.include_router(contact.router)
 def read_root():
     return {"message": "Hello from the backend!"}
 
-# Mount the static files directory
-# app.mount("/static", StaticFiles(directory="./static"), name="static")
-# app.mount("/", StaticFiles(directory="static", html=True), name="frontend")
-
-# Serve the frontend for all other routes
-# @app.get("/{full_path:path}")
-# async def serve_frontend(request: Request, full_path: str):
-#     # Serve index.html for all other routes
-#     return FileResponse("static/index.html")
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
