@@ -18,7 +18,7 @@ app = FastAPI()
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://www.2125signature.com", "https://2125signature.com", "http://localhost:8000"],
+    allow_origins=["https://www.2125signature.com", "https://2125signature.com", "https://www.api.2125signature.com", "https://api.2125signature.com", "http://localhost:8000"],
     allow_credentials=True,
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
