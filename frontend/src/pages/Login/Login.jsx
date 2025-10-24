@@ -45,7 +45,7 @@ export default function Login() {
     } catch (error) {
       console.error("Error during login:", error);
       if (error.response?.data?.detail === "Account not verified. Please check your email for a verification link.") {
-        setError("Your account is pending verification. Please verify your email.");
+        setError("Your account is pending verification. Please check your email for a verification link.");
         setShowVerificationMessage(true);
         setPendingVerificationEmail(email); // Store email to resend link
       } else if (error.response?.data?.detail === "Account blocked. Please contact support.") {
@@ -150,9 +150,6 @@ export default function Login() {
         </button>
         {showVerificationMessage && (
           <div className="verification-message-container">
-            <p className="info-message">
-              Your account is pending verification. Please check your email for a verification link.
-            </p>
             <button
               type="button"
               className="btn-secondary"

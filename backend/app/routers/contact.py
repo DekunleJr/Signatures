@@ -8,9 +8,9 @@ router = APIRouter(
 )
 
 @router.post("/", status_code=status.HTTP_200_OK)
-def submit_contact_form(contact_message: ContactMessage):
+async def submit_contact_form(contact_message: ContactMessage):
     try:
-        send_contact_email(
+        await send_contact_email(
             name=contact_message.name,
             sender_email=contact_message.email,
             message=contact_message.message

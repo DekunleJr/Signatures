@@ -71,7 +71,7 @@ export default function Home() {
 
       {/* New Video Hero Section */}
       <section className='hero-video'>
-        <VideoPlayer videoId={1128426647} />
+        <VideoPlayer videoId={1130371383} />
         <div className='hero-overlay' />
         <div className='hero-content'>
           <h1>Creative Interior Design</h1>

@@ -60,7 +60,9 @@ async def send_email_via_zoho_api(recipient_email: str, subject: str, body: str)
             "mailFormat": "html"  # or "text"
         }
         
-        async with httpx.AsyncClient() as client:
+        # Set a longer timeout for the HTTP client
+        timeout_seconds = 30 # Increased from default
+        async with httpx.AsyncClient(timeout=timeout_seconds) as client:
             try:
                 # ✅ CORRECT URL with account ID
                 url = ZOHO_API_URL.format(settings.zoho_account_id)
@@ -71,7 +73,9 @@ async def send_email_via_zoho_api(recipient_email: str, subject: str, body: str)
                 print(f"Error sending email: {e.response.text}")
                 raise Exception(f"Failed to send email: {e.response.text}")
             except Exception as e:
-                print(f"Unexpected error: {e}")
+                import traceback
+                print(f"Unexpected error in send_email_via_zoho_api: {e}")
+                traceback.print_exc() # Print full traceback
                 raise Exception(f"Unexpected error: {e}")
 
 async def send_otp_email(recipient_email: str, otp: str):

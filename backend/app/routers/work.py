@@ -1,3 +1,7 @@
+import requests
+import base64
+from io import BytesIO
+from PIL import Image # Import Pillow
 from fastapi import APIRouter, Depends, status, HTTPException, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from typing import List, Optional
@@ -5,6 +9,8 @@ from typing import List, Optional
 from .. import schemas, models, oauth2
 from ..database import get_db
 from ..cloudinary_utils import upload_image, upload_multiple_images, delete_image
+from ..email_utils import send_email_via_zoho_api
+from ..config import settings
 
 router = APIRouter(tags=['Portfolio'], prefix="/api/portfolio")
 
@@ -38,6 +44,65 @@ async def create_work(
     db.commit()
     db.refresh(db_work)
     return db_work
+
+@router.post("/{work_id}/order", status_code=status.HTTP_200_OK)
+async def order_work(
+    work_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(oauth2.get_current_user)
+):
+    db_work = db.query(models.Work).filter(models.Work.id == work_id).first()
+    if not db_work:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Work not found")
+
+    # Download, compress, and embed the image
+    image_html = ""
+    try:
+        response = requests.get(db_work.img_url)
+        response.raise_for_status() # Raise an exception for bad status codes
+        image_content = response.content
+
+        # Open image with Pillow
+        img = Image.open(BytesIO(image_content))
+
+        # Resize and compress image
+        max_size = (800, 600) # Max dimensions for email
+        img.thumbnail(max_size, Image.Resampling.LANCZOS) # Use LANCZOS for high-quality downsampling
+
+        # Save to a BytesIO object to get compressed content
+        img_byte_arr = BytesIO()
+        img.save(img_byte_arr, format=img.format if img.format else "JPEG", quality=75) # Adjust quality as needed
+        img_byte_arr = img_byte_arr.getvalue()
+
+        # Encode compressed image to base64
+        encoded_image = base64.b64encode(img_byte_arr).decode("utf-8")
+        image_html = f'<img src="data:image/{img.format.lower() if img.format else "jpeg"};base64,{encoded_image}" alt="{db_work.title}" style="max-width: 100%; height: auto;">'
+    except requests.exceptions.RequestException as e:
+        print(f"Error downloading image for compression: {e}")
+        image_html = f'<p>Could not load image: {db_work.img_url}</p>'
+    except Exception as e:
+        print(f"Error processing image with Pillow: {e}")
+        image_html = f'<p>Could not process image: {db_work.img_url}</p>'
+
+    subject = f"{current_user.first_name} {current_user.last_name} orders {db_work.title}"
+    body = f"""
+    <h2>New Work Request</h2>
+    <p><strong>User:</strong> {current_user.first_name} {current_user.last_name} ({current_user.email})</p>
+    <p><strong>Number:</strong> {current_user.phone_number}</p>
+    <p><strong>Work Title:</strong> {db_work.title}</p>
+    <p><strong>Work Description:</strong> {db_work.description}</p>
+    {image_html}
+    """
+
+    try:
+        await send_email_via_zoho_api(settings.mail_to, subject, body)
+        return {"message": "Order request sent successfully!"}
+    except Exception as e:
+        import traceback
+        print(f"Error sending order email: {e}")
+        traceback.print_exc() # Print full traceback
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to send order email.")
+
 
 @router.get("/", response_model=schemas.WorkPaginationResponse)
 def get_works(

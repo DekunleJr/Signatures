@@ -142,15 +142,35 @@ export default function WorkDetail() {
         ))}
       </div>
       {user && (
-        <button
-          className={`like-button ${work.liked_by_user ? "liked" : ""}`}
-          onClick={handleLikeUnlike}
-        >
-          {work.liked_by_user ? "Unlike" : "Like"}
-        </button>
+        <div className="work-actions">
+          <button
+            className={`like-button ${work.liked_by_user ? "liked" : ""}`}
+            onClick={handleLikeUnlike}
+          >
+            {work.liked_by_user ? "Unlike" : "Like"}
+          </button>
+          <button className="like-button" onClick={handleOrderNow}>
+            Contact us about this design
+          </button>
+        </div>
       )}
     </div>
   );
+
+  async function handleOrderNow() {
+    if (!user) {
+      toast.info("You need to be logged in to order a work.");
+      return;
+    }
+
+    try {
+      await customAxios.post(`/portfolio/${work_id}/order`);
+      toast.success("Your request has been sent! We will contact you soon.");
+    } catch (err) {
+      console.error("Error sending order request:", err);
+      toast.error("Failed to send order request. Please try again.");
+    }
+  }
 
   async function handleDelete() {
     if (!user || !user.is_admin) {

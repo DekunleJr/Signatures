@@ -161,3 +161,25 @@
   text-align: center;
   margin-top: 20px;
 }
+
+.work-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px; /* Space between buttons */
+  margin-top: 20px;
+  margin-bottom: 30px;
+}
+
+.order-now-button {
+  font-size: 1.1em;
+  cursor: pointer;
+  border-radius: 5px;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  transition: background-color 0.3s ease;
+}
+
+.order-now-button:hover {
+  background-color: var(--color-primary-light);
+}
