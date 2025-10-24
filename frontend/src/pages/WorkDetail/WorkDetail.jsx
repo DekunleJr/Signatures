@@ -141,25 +141,23 @@ export default function WorkDetail() {
           />
         ))}
       </div>
-      {user && (
-        <div className="work-actions">
-          <button
-            className={`like-button ${work.liked_by_user ? "liked" : ""}`}
-            onClick={handleLikeUnlike}
-          >
-            {work.liked_by_user ? "Unlike" : "Like"}
-          </button>
-          <button className="like-button" onClick={handleOrderNow}>
-            Contact us about this design
-          </button>
-        </div>
-      )}
+      <div className="work-actions">
+        <button
+          className={`like-button ${work.liked_by_user ? "liked" : ""}`}
+          onClick={handleLikeUnlike}
+        >
+          {work.liked_by_user ? "Unlike" : "Like"}
+        </button>
+        <button className="like-button" onClick={handleOrderNow}>
+          Inquire Now
+        </button>
+      </div>
     </div>
   );
 
   async function handleOrderNow() {
     if (!user) {
-      toast.info("You need to be logged in to order a work.");
+      toast.info("You need to be logged in to inquire about a work.");
       return;
     }
 
