@@ -26,8 +26,8 @@ coverage.xml
 node_modules/
 npm-debug.log
 .npm
-/frontend/my-app/dist
-/frontend/my-app/node_modules
+/frontend/dist
+/frontend/node_modules
 
 # Environment variables
 .env
