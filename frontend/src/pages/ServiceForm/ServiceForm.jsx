@@ -69,7 +69,7 @@ export default function ServiceForm() {
     try {
       await (isEditMode
         ? customFormAxios.put(`/services/${service_id}`, formData)
-        : customFormAxios.post("/services", formData));
+        : customFormAxios.post("/services/", formData));
 
       setSuccess(`Service ${isEditMode ? "updated" : "added"} successfully!`);
       toast.success(

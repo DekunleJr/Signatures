@@ -89,7 +89,7 @@ export default function WorkForm() {
     try {
       await (isEditMode
         ? customFormAxios.put(`/portfolio/${work_id}`, formData)
-        : customFormAxios.post("/portfolio", formData));
+        : customFormAxios.post("/portfolio/", formData));
 
       setSuccess(`Work ${isEditMode ? "updated" : "added"} successfully!`);
       toast.success(`Work ${isEditMode ? "updated" : "added"} successfully!`);
