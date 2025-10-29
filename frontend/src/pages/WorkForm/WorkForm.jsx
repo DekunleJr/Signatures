@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext"; // Import useAuth
 import "./WorkForm.css"; // Will create this CSS file next
 import { customAxios, customFormAxios } from "../../utils/customAxios";
 import Loader from "../../components/Loader/Loader";
+import "../ServiceForm/ServiceForm.css"; // Reuse ServiceForm styles
 
 export default function WorkForm() {
   const { work_id } = useParams(); // Will be undefined for 'add' mode

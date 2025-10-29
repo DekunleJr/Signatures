@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from app import schemas, database, models
 from .config import settings
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login", auto_error=False)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/login", auto_error=False)
 
 SECRET_KEY = settings.secret_key
 ALGORITHM = settings.algorithm

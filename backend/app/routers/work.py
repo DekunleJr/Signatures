@@ -15,7 +15,7 @@ from ..config import settings
 router = APIRouter(tags=['Portfolio'], prefix="/api/portfolio")
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.Work)
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.WorkEdit)
 async def create_work(
     title: str = Form(...),
     description: str = Form(...),
