@@ -15,12 +15,8 @@ class Settings(BaseSettings):
     cloudinary_api_key: str
     cloudinary_api_secret: str
     frontend_url: str
-    mail_from: str
     mail_to: str
-    zoho_client_id: str
-    zoho_client_secret: str
-    zoho_account_id: str
-    zoho_refresh_token: str
+    resend_api_key: str
 
     model_config = ConfigDict(env_file=".env")
 

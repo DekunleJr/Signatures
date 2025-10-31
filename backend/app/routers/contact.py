@@ -17,6 +17,7 @@ async def submit_contact_form(contact_message: ContactMessage):
         )
         return {"message": "Contact message sent successfully!"}
     except Exception as e:
+        print(e)
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to send contact message: {e}"

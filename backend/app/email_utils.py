@@ -1,89 +1,59 @@
 import httpx
 import os
-import requests
 from typing import List
 from pydantic import EmailStr
 from .config import settings
-from contextlib import asynccontextmanager
 
-# ✅ CORRECT Zoho Mail API URL
-ZOHO_API_URL = "https://mail.zoho.com/api/accounts/{}/messages"
-ZOHO_TOKEN_URL = "https://accounts.zoho.com/oauth/v2/token"
+# ✅ Resend API URL
+RESEND_API_URL = "https://api.resend.com/emails"
 
-# Global token storage (auto-refreshes)
-current_access_token = None
-refresh_token = settings.zoho_refresh_token
+# ✅ Read API Key from settings (or .env)
+RESEND_API_KEY = settings.resend_api_key  # Add this field in your settings/config
 
-async def refresh_zoho_token():
-    """Auto-refresh token every hour"""
-    global current_access_token
-    if not refresh_token:
-        raise Exception("ZOHO_REFRESH_TOKEN not set!")
-    
-    response = requests.post(ZOHO_TOKEN_URL, data={
-        "grant_type": "refresh_token",
-        "client_id": settings.zoho_client_id,
-        "client_secret": settings.zoho_client_secret,
-        "refresh_token": refresh_token
-    })
-    
-    if response.status_code == 200:
-        current_access_token = response.json()["access_token"]
-        print("✅ Zoho token refreshed!")
-    else:
-        raise Exception(f"Token refresh failed: {response.text}")
+# ✅ Default sender address
+DEFAULT_FROM = "info@nonreply.2125signature.com"  # change this to your verified sender
 
-@asynccontextmanager
-async def get_valid_token():
-    """Get valid token, refresh if needed"""
-    global current_access_token
-    if not current_access_token:
-        await refresh_zoho_token()
-    yield current_access_token
-
-async def send_email_via_zoho_api(recipient_email: str, subject: str, body: str):
+async def send_email_via_resend(sender_email: str, recipient_email: str, subject: str, body: str):
     """
-    Sends an email using the Zoho Mail REST API (FIXED).
+    Sends an email using the Resend API.
     """
-    async with get_valid_token() as token:
-        headers = {
-            "Authorization": f"Zoho-oauthtoken {token}",
-            "Content-Type": "application/json",
-        }
-        
-        # ✅ CORRECT PAYLOAD FORMAT for Zoho Mail API
-        payload = {
-            "fromAddress": settings.mail_from,
-            "toAddress": recipient_email,
-            "subject": subject,
-            "content": body,
-            "mailFormat": "html"  # or "text"
-        }
-        
-        # Set a longer timeout for the HTTP client
-        timeout_seconds = 30 # Increased from default
-        async with httpx.AsyncClient(timeout=timeout_seconds) as client:
-            try:
-                # ✅ CORRECT URL with account ID
-                url = ZOHO_API_URL.format(settings.zoho_account_id)
-                response = await client.post(url, headers=headers, json=payload)
-                response.raise_for_status()
-                return {"message": "Email sent successfully!"}
-            except httpx.HTTPStatusError as e:
-                print(f"Error sending email: {e.response.text}")
-                raise Exception(f"Failed to send email: {e.response.text}")
-            except Exception as e:
-                import traceback
-                print(f"Unexpected error in send_email_via_zoho_api: {e}")
-                traceback.print_exc() # Print full traceback
-                raise Exception(f"Unexpected error: {e}")
+    headers = {
+        "Authorization": f"Bearer {RESEND_API_KEY}",
+        "Content-Type": "application/json",
+    }
 
+    payload = {
+        "from": sender_email,
+        "to": [recipient_email],
+        "subject": subject,
+        "html": body,
+    }
+
+    async with httpx.AsyncClient(timeout=30) as client:
+        try:
+            response = await client.post(RESEND_API_URL, headers=headers, json=payload)
+            response.raise_for_status()
+            return {"message": "Email sent successfully!"}
+        except httpx.HTTPStatusError as e:
+            print(f"❌ Error sending email: {e.response.text}")
+            raise Exception(f"Failed to send email: {e.response.text}")
+        except Exception as e:
+            import traceback
+            print(f"❌ Unexpected error: {e}")
+            traceback.print_exc()
+            raise Exception(f"Unexpected error: {e}")
+
+
+# 🔹 Reuse your existing wrappers with no change to your codebase
 async def send_otp_email(recipient_email: str, otp: str):
+    sender_email = "support@nonreply.2125signature.com"
     subject = "Password Reset OTP"
     body = f"<h2>Your OTP for password reset is: <strong>{otp}</strong></h2>"
-    return await send_email_via_zoho_api(recipient_email, subject, body)
+    return await send_email_via_resend(sender_email, recipient_email, subject, body)
+
 
 async def send_contact_email(name: str, sender_email: str, message: str):
+    send_email = "contact@nonreply.2125signature.com"
     subject = f"Contact Form: from {name} ({sender_email})"
     body = f"""
     <h3>New Contact Form Submission</h3>
@@ -92,21 +62,21 @@ async def send_contact_email(name: str, sender_email: str, message: str):
     <p><strong>Message:</strong></p>
     <p>{message}</p>
     """
-    return await send_email_via_zoho_api(settings.mail_to, subject, body)
+    return await send_email_via_resend(send_email, settings.mail_to, subject, body)
+
 
 async def send_email(recipient_emails: List[EmailStr], subject: str, message: str):
     for email in recipient_emails:
-        await send_email_via_zoho_api(email, subject, message)
+        send_email = DEFAULT_FROM
+        await send_email_via_resend(send_email, email, subject, message)
     return {"message": "Emails sent successfully!"}
 
+
 async def send_verification_email(recipient_email: str, subject: str, verification_url: str):
+    sender_email = "support@nonreply.2125signature.com"
     body = f"""
     <h2>Verify Your Account</h2>
     <p>Please click the following link to verify your account:</p>
     <a href="{verification_url}" style="background: #007cba; color: white; padding: 10px 20px; text-decoration: none;">Verify Account</a>
     """
-    return await send_email_via_zoho_api(recipient_email, subject, body)
-
-# Startup: Initialize token
-async def init_zoho():
-    await refresh_zoho_token()
+    return await send_email_via_resend(sender_email, recipient_email, subject, body)

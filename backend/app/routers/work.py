@@ -9,7 +9,7 @@ from typing import List, Optional
 from .. import schemas, models, oauth2
 from ..database import get_db
 from ..cloudinary_utils import upload_image, upload_multiple_images, delete_image
-from ..email_utils import send_email_via_zoho_api
+from ..email_utils import send_email_via_resend
 from ..config import settings
 
 router = APIRouter(tags=['Portfolio'], prefix="/api/portfolio")
@@ -84,6 +84,7 @@ async def order_work(
         print(f"Error processing image with Pillow: {e}")
         image_html = f'<p>Could not process image: {db_work.img_url}</p>'
 
+    sender_email = "order@nonreply.2125signature.com"
     subject = f"{current_user.first_name} {current_user.last_name} orders {db_work.title}"
     body = f"""
     <h2>New Work Request</h2>
@@ -95,7 +96,7 @@ async def order_work(
     """
 
     try:
-        await send_email_via_zoho_api(settings.mail_to, subject, body)
+        await send_email_via_resend(sender_email, settings.mail_to, subject, body)
         return {"message": "Order request sent successfully!"}
     except Exception as e:
         import traceback
