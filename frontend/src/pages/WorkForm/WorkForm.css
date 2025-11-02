@@ -127,7 +127,7 @@
 .btn-secondary {
   background-color: #6c757d;
   color: white;
-  margin-bottom: 1rem;
+  /* margin-bottom: 1rem; */
 }
 
 .btn-secondary:hover {
