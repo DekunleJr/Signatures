@@ -55,3 +55,25 @@
   border-top: 1px solid #333;
   padding-top: 1rem;
 }
+
+.footer-socials .social-icons {
+  display: flex;
+  flex-direction: column; /* Added to display links on separate lines */
+  gap: 15px;
+  margin-top: 10px;
+}
+
+.footer-socials .social-icons a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.footer-socials .social-icons svg {
+  width: 30px;
+  height: 30px;
+  transition: transform 0.3s ease;
+}
+
+.footer-socials .social-icons svg:hover {
+  transform: scale(1.1);
+}
