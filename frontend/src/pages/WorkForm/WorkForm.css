@@ -27,7 +27,8 @@
 }
 
 .work-form .form-group input[type="text"],
-.work-form .form-group textarea {
+.work-form .form-group textarea,
+.work-form .form-group select {
   width: 100%;
   padding: 0.8rem;
   border: 1px solid #ddd;

@@ -168,6 +168,20 @@
   gap: 10px;
 }
 
+.category-action-buttons {
+  display: flex;
+  justify-content: right;
+  gap: 10px;
+}
+
+.category-action-header {
+  display: flex;
+  justify-content: flex-end;
+  /* padding-right: 1500px; */
+  margin-right: 90px;
+  /* transform: translateX(-40px); */
+}
+
 .pagination-controls .btn {
   padding: 0.5rem 1rem;
   border: 1px solid var(--primary-color);

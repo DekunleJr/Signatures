@@ -91,7 +91,7 @@ export default function Home() {
 
 
       {/* Portfolio Section */}
-      <section className='portfolio'>
+      {/* <section className='portfolio'>
         <div className='container'>
           <h2>Recent Projects</h2>
           <div className='portfolio-grid'>
@@ -118,7 +118,7 @@ export default function Home() {
             </Link>
           </div>
         </div>
-      </section>
+      </section> */}
     </div>
   );
 }

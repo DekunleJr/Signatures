@@ -335,7 +335,7 @@ export default function AdminPage() {
                 <tr>
                   <th>ID</th>
                   <th>Title</th>
-                  <th>Action</th>
+                  <th className="category-action-header">Action</th>
                 </tr>
               </thead>
               <tbody>
@@ -343,7 +343,7 @@ export default function AdminPage() {
                   <tr key={c.id}>
                     <td>{c.id}</td>
                     <td>{c.title}</td>
-                    <td>
+                    <td className="category-action-buttons">
                       <button
                         className="btn"
                         onClick={() => navigate(`/category/edit/${c.id}`)}
