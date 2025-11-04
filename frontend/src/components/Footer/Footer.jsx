@@ -1,16 +1,14 @@
 import "./Footer.css";
 import { Link } from "react-router-dom";
-import xLogo from "/x-logo.jpg"; // Import X logo
+import xLogo from "/x-logo.png"; // Import X logo
 import tiktokLogo from "/tiktok-logo.svg"; // Import TikTok logo
 
 function Footer() {
   return (
     <footer className="footer">
         <div className="footer-contacts">
-          <h3>Let's discuss about your interior</h3>
-          <p>Get in touch with us for a personalized consultation.</p>
           <Link to="/contact">
-            <button className="btn-primary">Contact Us</button>
+            <button className="btn-primary">Book a consultation</button>
           </Link>
         </div>
       <div className="footer-container">
@@ -33,10 +31,8 @@ function Footer() {
             <p>Address: Suite 7, His Glory Plaza, Back of H-Medix, Ademola Adetokumbo Cresent, Wuse II, Abuja, Nigeria</p>
           </address>
         </div>
-
-        
+      </div>
         <div className="footer-socials">
-          <h3>Socials</h3>
           <div className="social-icons">
             <a href="https://facebook.com/yourpage" target="_blank" rel="noopener noreferrer">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="#1877F2"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.271 0-4.192 1.58-4.192 4.615v3.385z"/></svg>
@@ -52,7 +48,6 @@ function Footer() {
             </a>
           </div>
         </div>
-      </div>
 
       <div className="footer-bottom">
         <p>© 2025 Signatures — All Rights Reserved.</p>

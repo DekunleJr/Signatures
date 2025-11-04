@@ -11,6 +11,8 @@ function Portfolio() {
   const [projects, setProjects] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalWorks, setTotalWorks] = useState(0);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("");
   const { user } = useAuth();
   const isAdmin = user && user.is_admin;
 
@@ -48,31 +50,45 @@ function Portfolio() {
   };
 
   useEffect(() => {
-    (async () => {
+    const fetchCategories = async () => {
+      try {
+        const { data } = await customAxios.get("/portfolio/categories");
+        setCategories(data);
+      } catch (error) {
+        console.error("Error fetching categories:", error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    const fetchWorks = async () => {
       try {
         const skip = (currentPage - 1) * ITEMS_PER_PAGE;
         const limit = ITEMS_PER_PAGE;
-        const { data } = await customAxios.get(`/portfolio/?skip=${skip}&limit=${limit}`);
-        console.log("API Response Data:", data);
+        let url = `/portfolio/?skip=${skip}&limit=${limit}`;
+        if (selectedCategory) {
+          url = `/portfolio/search/${selectedCategory}?skip=${skip}&limit=${limit}`;
+        }
+        const { data } = await customAxios.get(url);
         if (Array.isArray(data.works)) {
-          console.log("Projects from API:", data.works);
           setProjects(data.works);
         } else {
-          console.log("Projects from API: Not an array, setting to empty array.");
-          setProjects([]); // Ensure projects is always an array
+          setProjects([]);
         }
-        if (typeof data.total_works === 'number') {
-          console.log("Total Works from API:", data.total_works);
+        if (typeof data.total_works === "number") {
           setTotalWorks(data.total_works);
         } else {
-          console.log("Total Works from API: Not a number, setting to 0.");
-          setTotalWorks(0); // Ensure totalWorks is always a number
+          setTotalWorks(0);
         }
       } catch (error) {
         console.error("Error fetching portfolio:", error);
       }
-    })();
-  }, [user, currentPage]); // Re-fetch if user or current page changes
+    };
+
+    fetchWorks();
+  }, [user, currentPage, selectedCategory]);
 
   const totalPages = Math.ceil(totalWorks / ITEMS_PER_PAGE);
 
@@ -80,6 +96,11 @@ function Portfolio() {
     if (pageNumber > 0 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber);
     }
+  };
+
+  const handleCategoryChange = (e) => {
+    setSelectedCategory(e.target.value);
+    setCurrentPage(1); // Reset to the first page when category changes
   };
 
   return (
@@ -95,8 +116,23 @@ function Portfolio() {
           <Link to='/portfolio/add'>
             <button className='btn add-new-work-btn'>Add New Work</button>
           </Link>
+          <Link to='/category'>
+            <button className='btn add-new-work-btn'>Create Category</button>
+          </Link>
         </div>
       )}
+
+      <div className='filter-container'>
+        <label htmlFor='category-filter'>Filter by Category:</label>
+        <select id='category-filter' onChange={handleCategoryChange} value={selectedCategory}>
+          <option value=''>All</option>
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.title}
+            </option>
+          ))}
+        </select>
+      </div>
 
       <div className='portfolio-grid' style={{ position: "relative" }}>
         {projects.length === 0 && totalWorks === 0 ? (

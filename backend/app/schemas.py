@@ -53,14 +53,26 @@ class TokenData(BaseModel):
 class Work(BaseModel):
     id: int
     title: str
+    category_id: int
     description: str
     liked_by_user: bool # Added field to indicate if the current user liked the work
     img_url: str
     other_image_urls: List[str] = Field(default_factory=list) # New field for other image URLs
     created_at: datetime
 
+class WorkDetails(BaseModel):
+    id: int
+    title: str
+    category: str
+    category_id: int
+    description: str
+    img_url: str
+    other_image_urls: List[str] = Field(default_factory=list) # New field for other image URLs
+    created_at: datetime
+
 class WorkEdit(BaseModel):
     id: int
+    category_id: int
     title: str
     description: str
     img_url: str
@@ -121,3 +133,17 @@ class BroadcastEmailRequest(BaseModel):
     message: str
     send_option: Literal["all_except_admin", "all_except_selected", "only_selected"]
     selected_emails: Optional[List[EmailStr]] = None
+
+
+class Category(BaseModel):
+    id: int
+    title: str
+
+class HomeWork(BaseModel):
+    id: int
+    title: str
+    description: str
+    img_url: str
+
+class HomeWorksResponse(BaseModel):
+    works_by_category: dict[str, List[HomeWork]]

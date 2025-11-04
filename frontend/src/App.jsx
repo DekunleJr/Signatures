@@ -24,6 +24,7 @@ const AdminPage = lazy(() => import("./pages/Admin/AdminPage"));
 const EditUser = lazy(() => import("./pages/Admin/EditUser"));
 const ForgotPassword = lazy(() => import("./pages/ForgotPassword/ForgotPassword"));
 const VerifyEmail = lazy(() => import("./pages/VerifyEmail/VerifyEmail"));
+const CategoryForm = lazy(() => import("./pages/category/category"));
 
 function App() {
   return (
@@ -54,6 +55,8 @@ function App() {
               <Route path='/admin/edit-user/:userId' element={<EditUser />} />
               <Route path='/forgot-password' element={<ForgotPassword />} />
               <Route path='/verify-email' element={<VerifyEmail />} />
+              <Route path='/category' element={<CategoryForm />} />
+              <Route path='/category/edit/:category_id' element={<CategoryForm />} />
               <Route path='*' element={<NotFound />} />
             </Routes>
           </Suspense>

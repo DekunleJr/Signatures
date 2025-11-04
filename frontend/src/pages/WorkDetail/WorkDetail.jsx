@@ -111,7 +111,8 @@ export default function WorkDetail() {
           </div>
         )}
       </div>
-      <h1 className='work-title'>{work.title}</h1>
+      <h1 className='work-title'>{work.title} [{work.category}]</h1>
+      {/* <p className='work-description'>Category: {work.category}</p> */}
       <p className='work-description'>{work.description}</p>
 
       <div className='slideshow-container'>

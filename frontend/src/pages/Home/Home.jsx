@@ -7,6 +7,7 @@ import hero2 from "../../assets/hero-2.jpg";
 import hero3 from "../../assets/hero-3.jpg";
 import { customAxios } from "../../utils/customAxios";
 import VideoPlayer from "../../components/VideoPlayer/VideoPlayer";
+import CategorizedWorks from "../../components/CategorizedWorks/CategorizedWorks";
 
 const heroImages = [hero1, hero2, hero3];
 
@@ -85,54 +86,9 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Services Section */}
-      <section className='services'>
-        <div className='container'>
-          <h2>Our Services</h2>
-          <div className='service-grid'>
-            <div className='service-card'>
-              <i className='fas fa-home'></i>
-              <h3>Residential Design</h3>
-              <p>
-                We create beautiful and functional living spaces that reflect
-                your personal style. From concept to completion, we handle
-                everything.
-              </p>
-            </div>
-            <div className='service-card'>
-              <i className='fas fa-building'></i>
-              <h3>Commercial Design</h3>
-              <p>
-                Our commercial design solutions create inspiring environments
-                that enhance productivity and brand identity.
-              </p>
-            </div>
-            <div className='service-card'>
-              <i className='fas fa-comments'></i>
-              <h3>Consultation</h3>
-              <p>
-                Get expert advice on your design projects. We help you make the
-                right decisions to bring your vision to life.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Categorized Works Section */}
+      <CategorizedWorks />
 
-      {/* Brand Philosophy Section */}
-      <section className='brand-philosophy'>
-        <div className='container'>
-          <h2>Our Brand Philosophy</h2>
-          <p>
-            At Signatures, we believe that great design is about more than just
-            aesthetics. It's about creating spaces that are a true reflection of
-            your personality and lifestyle. Our philosophy is centered around
-            three core principles: creativity, quality, and sustainability. We
-            are passionate about crafting unique and timeless interiors that you
-            will love for years to come.
-          </p>
-        </div>
-      </section>
 
       {/* Portfolio Section */}
       <section className='portfolio'>
@@ -161,16 +117,6 @@ export default function Home() {
               <button className='btn-primary'>View More...</button>
             </Link>
           </div>
-        </div>
-      </section>
-
-      {/* Call To Action */}
-      <section className='cta'>
-        <div className='container'>
-          <h2>Ready to Transform Your Space?</h2>
-          <Link to='/contact'>
-            <button className='btn-primary'>Contact Us</button>
-          </Link>
         </div>
       </section>
     </div>

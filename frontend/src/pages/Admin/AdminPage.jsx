@@ -13,6 +13,7 @@ export default function AdminPage() {
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalUsers, setTotalUsers] = useState(0);
+  const [categories, setCategories] = useState([]);
   const { user, toast } = useAuth();
   const navigate = useNavigate();
 
@@ -63,8 +64,19 @@ export default function AdminPage() {
         console.error("Error fetching all users for selection:", err);
       }
     };
+    const fetchCategories = async () => {
+      if (!user || !user.is_admin) return;
+      try {
+        const { data } = await customAxios.get("/portfolio/categories");
+        setCategories(data);
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+        toast.error(`Failed to fetch categories: ${err.message}`);
+      }
+    };
     fetchAllUsers();
-  }, [user]);
+    fetchCategories();
+  }, [user, toast]);
 
   const handleBlockUser = async (userId, currentStatus) => {
     if (!user || !user.is_admin) {
@@ -89,6 +101,31 @@ export default function AdminPage() {
     } catch (err) {
       console.error(`Error ${action}ing user:`, err);
       toast.error(`Failed to ${action} user. Please try again.`);
+    }
+  };
+
+  const handleDeleteCategory = async (categoryId) => {
+    if (!user || !user.is_admin) {
+      toast.error("You are not authorized to delete categories.");
+      return;
+    }
+
+    const isConfirmed = window.confirm(
+      "Are you sure you want to delete this category?"
+    );
+    if (!isConfirmed) {
+      return;
+    }
+
+    try {
+      await customAxios.delete(`/portfolio/category/${categoryId}`);
+      toast.success("Category deleted successfully!");
+      setCategories((prevCategories) =>
+        prevCategories.filter((c) => c.id !== categoryId)
+      );
+    } catch (err) {
+      console.error("Error deleting category:", err);
+      toast.error("Failed to delete category. Please try again.");
     }
   };
 
@@ -164,7 +201,7 @@ export default function AdminPage() {
 
   return (
     <div className='admin-page-container'>
-      <h1>Admin Dashboard - User Management</h1>
+      <h1>Admin Dashboard</h1>
 
       <div className="broadcast-email-section">
         <h2>Broadcast Email to Users</h2>
@@ -229,6 +266,8 @@ export default function AdminPage() {
         )}
       </div>
 
+      <h2>User Management</h2>
+
       {users.length === 0 && totalUsers === 0 ? (
         <p>No users found.</p>
       ) : users.length === 0 ? (
@@ -284,6 +323,47 @@ export default function AdminPage() {
           </table>
         </div>
       )}
+
+      <div className="category-management-section">
+        <h2>Category Management</h2>
+        {categories.length === 0 ? (
+          <p>No categories found.</p>
+        ) : (
+          <div className="table-responsive">
+            <table className="users-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Title</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {categories.map((c) => (
+                  <tr key={c.id}>
+                    <td>{c.id}</td>
+                    <td>{c.title}</td>
+                    <td>
+                      <button
+                        className="btn"
+                        onClick={() => navigate(`/category/edit/${c.id}`)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="btn delete-user-btn"
+                        onClick={() => handleDeleteCategory(c.id)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
 
       {totalPages > 1 && (
         <div className='pagination-controls'>

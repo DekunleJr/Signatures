@@ -1,0 +1,131 @@
+.categorized-works {
+  padding: 4rem 0;
+  background-color: var(--light-background);
+}
+
+.categorized-works .container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+}
+
+.category-section {
+  margin-bottom: 3rem;
+}
+
+.category-title {
+  text-align: center;
+  font-size: 2.5rem;
+  color: var(--primary-color);
+  margin-bottom: 2rem;
+  position: relative;
+  padding-bottom: 10px;
+}
+
+.category-title::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background-color: var(--accent-color);
+}
+
+.categorized-works-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+}
+
+.categorized-work-item {
+  background-color: var(--card-background);
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: var(--box-shadow);
+  transition: transform 0.3s ease;
+  position: relative;
+  height: 300px; /* Fixed height for consistency */
+  background-size: cover;
+  background-position: center;
+  display: flex;
+  align-items: flex-end; /* Align info to the bottom */
+}
+
+.categorized-work-item::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0); /* fully transparent */
+  transition: background 0.3s ease;
+  z-index: 1;
+}
+
+/* Show overlay on hover */
+.categorized-work-item:hover::before {
+  background: rgba(0, 0, 0, 0.6); /* black overlay */
+}
+
+.categorized-work-item:hover {
+  transform: translateY(-5px);
+}
+
+.categorized-work-item h3,
+.categorized-work-item p {
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(20px);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 2; /* make sure text stays above overlay */
+  color: var(--text-color-light); /* Ensure text color is light */
+}
+
+.categorized-work-item:hover h3,
+.categorized-work-item:hover p {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.categorized-work-info {
+  padding: 1rem;
+  text-align: left;
+  position: relative;
+  z-index: 2; /* above overlay */
+  width: 100%;
+}
+
+.categorized-work-info h3 {
+  color: var(--color-primary); /* Use primary color for consistency with portfolio */
+  margin: 0 0 0.5rem;
+}
+
+.categorized-work-info p {
+  color: #aaa; /* Use a lighter grey for consistency with portfolio */
+  font-size: 0.95rem;
+}
+
+/* Responsive adjustments */
+@media (min-width: 768px) {
+  .categorized-works-grid {
+    grid-template-columns: repeat(2, 1fr); /* 2 columns on medium screens */
+  }
+}
+
+@media (min-width: 1024px) {
+  .categorized-works-grid {
+    grid-template-columns: repeat(4, 1fr); /* 4 columns on large screens */
+  }
+}
+
+.error-message {
+  text-align: center;
+  color: var(--error-color);
+  font-size: 1.2rem;
+  padding: 2rem;
+}

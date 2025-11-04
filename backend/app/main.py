@@ -8,7 +8,7 @@ from starlette.routing import Mount
 from starlette.responses import FileResponse
 from . import models
 from .database import engine
-from .routers import admin, auth, work, service, users, contact
+from .routers import admin, auth, work, service, users, contact, home
 from .config import settings
 
 models.Base.metadata.create_all(bind=engine)
@@ -18,12 +18,13 @@ app = FastAPI()
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://www.2125signature.com", "https://2125signature.com", "https://www.api.2125signature.com", "https://api.2125signature.com", "http://localhost:8000"],
+    allow_origins=["https://www.2125signature.com", "https://2125signature.com", "http://localhost:8000", "http://localhost:5173"],
     allow_credentials=True,
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
 )
 
+app.include_router(home.router)
 app.include_router(auth.router)
 app.include_router(work.router)
 app.include_router(service.router)

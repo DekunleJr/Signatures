@@ -45,7 +45,7 @@ function Contact() {
 
   return (
     <section className='page contact'>
-      <h2>Contact Us</h2>
+      <h2>Book a consultation</h2>
       <p>We’d love to bring your dream space to life.</p>
       {loading && <Loader />}
       {error && <p className='error-message'>{error}</p>}

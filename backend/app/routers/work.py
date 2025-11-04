@@ -19,6 +19,7 @@ router = APIRouter(tags=['Portfolio'], prefix="/api/portfolio")
 async def create_work(
     title: str = Form(...),
     description: str = Form(...),
+    category_id: int = Form(...),
     img_url: UploadFile = File(...),
     other_images: Optional[List[UploadFile]] = File(None),
     db: Session = Depends(get_db),
@@ -38,7 +39,8 @@ async def create_work(
         title=title,
         description=description,
         img_url=main_image_url,
-        other_image_urls=other_image_urls
+        other_image_urls=other_image_urls,
+        category_id=category_id
     )
     db.add(db_work)
     db.commit()
@@ -129,6 +131,7 @@ def get_works(
         work_schema = schemas.Work(
             id=work.id,
             title=work.title,
+            category_id=work.category_id,
             description=work.description,
             img_url=work.img_url,
             other_image_urls=work.other_image_urls if work.other_image_urls else [],
@@ -139,52 +142,92 @@ def get_works(
         
     return {"total_works": total_works, "works": response_works}
 
-@router.get("/{work_id}", response_model=schemas.Work)
-def get_work(work_id: int, db: Session = Depends(get_db), current_user: Optional[models.User] = Depends(oauth2.get_current_user_optional)):
-    db_work = db.query(models.Work).filter(models.Work.id == work_id).first()
-    if not db_work:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Work not found")
 
-    liked_by_user = False
-    if current_user:
-        # Check if the current user has liked this specific work
-        like_exists = db.query(models.LikedWork).filter(
-            models.LikedWork.user_id == current_user.id,
-            models.LikedWork.work_id == work_id
-        ).first()
-        if like_exists:
-            liked_by_user = True
+@router.post("/categories", status_code=status.HTTP_201_CREATED)
+async def create_category(
+    title: str, 
+    db: Session = Depends(get_db), 
+    current_user: models.User = Depends(oauth2.get_current_admin_user)
+):
+    db_category = models.Category(title=title)
+    db.add(db_category)
+    db.commit()
+    db.refresh(db_category)
+    return db_category
 
-    # Map SQLAlchemy Work object to Pydantic schemas.Work, populating liked_by_user
-    response_work = schemas.Work(
-        id=db_work.id,
-        title=db_work.title,
-        description=db_work.description,
-        img_url=db_work.img_url,
-        other_image_urls=db_work.other_image_urls if db_work.other_image_urls else [],
-        created_at=db_work.created_at,
-        liked_by_user=liked_by_user
-    )
-    return response_work
+@router.get("/categories", response_model=List[schemas.Category])
+async def get_categories(db: Session = Depends(get_db)):
+    categories = db.query(models.Category).all()
+    return categories
 
-@router.delete("/{work_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_work(work_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(oauth2.get_current_admin_user)):
-    liked_work = db.query(models.LikedWork).filter(models.LikedWork.work_id == work_id).all()
-    if liked_work:
-        for like in liked_work:
-            db.delete(like)
-        db.commit()
-    db_work = db.query(models.Work).filter(models.Work.id == work_id).first()
-    if db_work.img_url:
-        delete_image(db_work.img_url)
-        
-    if db_work.other_image_urls:
-        for url in db_work.other_image_urls:
-            delete_image(url)
+@router.get("/search/{category_id}", response_model=schemas.WorkPaginationResponse)
+async def search_by_category(
+    category_id: int,
+    skip: int = 0, 
+    limit: int = 12,
+    db: Session = Depends(get_db),
+    current_user: Optional[models.User] = Depends(oauth2.get_current_user_optional)
+):
+    works = db.query(models.Work).filter(models.Work.category_id == category_id).offset(skip).limit(limit).all()
 
-    if not db_work:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Work not found")
-    db.delete(db_work)
+    # Get the user's liked work IDs for efficient checking if the user is logged in
+    liked_work_ids = set()
+    if current_user and current_user.liked_works:
+        liked_work_ids = {like.work_id for like in current_user.liked_works}
+
+    response_works = []
+    for work in works:
+        work_schema = schemas.Work(
+            id=work.id,
+            title=work.title,
+            category_id=work.category_id,
+            description=work.description,
+            img_url=work.img_url,
+            other_image_urls=work.other_image_urls if work.other_image_urls else [],
+            created_at=work.created_at,
+            liked_by_user=work.id in liked_work_ids
+        )
+        response_works.append(work_schema)
+
+    return {"total_works": len(response_works), "works": response_works}
+
+@router.get("/category/{category_id}", response_model=schemas.Category)
+async def get_category(
+    category_id: int,
+    db: Session = Depends(get_db)
+):
+    db_category = db.query(models.Category).filter(models.Category.id == category_id).first()
+    if not db_category:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Category not found")
+    return db_category
+
+@router.put("/category/{category_id}", status_code=status.HTTP_200_OK)
+async def update_category(
+    category_id: int,
+    title: str = Form(...),
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(oauth2.get_current_admin_user)
+):
+    db_category = db.query(models.Category).filter(models.Category.id == category_id).first()
+    if not db_category:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Category not found")
+    
+    db_category.title = title
+    db.commit()
+    db.refresh(db_category)
+    return db_category
+
+@router.delete("/category/{category_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_category(
+    category_id: int,
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(oauth2.get_current_admin_user)
+):
+    db_category = db.query(models.Category).filter(models.Category.id == category_id).first()
+    if not db_category:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Category not found")
+    
+    db.delete(db_category)
     db.commit()
     return
 
@@ -192,6 +235,7 @@ async def delete_work(work_id: int, db: Session = Depends(get_db), current_user:
 async def update_work(
     work_id: int,
     title: str = Form(...),
+    category_id: int = Form(...),
     description: str = Form(...),
     img_url: Optional[UploadFile] = File(None),
     other_images: Optional[List[UploadFile]] = File(None),
@@ -204,6 +248,7 @@ async def update_work(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Work not found")
     
     db_work.title = title
+    db_work.category_id = category_id
     db_work.description = description
 
     if img_url:
@@ -232,3 +277,58 @@ async def update_work(
     db.commit()
     db.refresh(db_work)
     return db_work
+
+
+@router.get("/{work_id}", response_model=schemas.WorkDetails)
+def get_work(work_id: int, db: Session = Depends(get_db), current_user: Optional[models.User] = Depends(oauth2.get_current_user_optional)):
+    db_work = db.query(models.Work).filter(models.Work.id == work_id).first()
+    if not db_work:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Work not found")
+
+    liked_by_user = False
+    if current_user:
+        # Check if the current user has liked this specific work
+        like_exists = db.query(models.LikedWork).filter(
+            models.LikedWork.user_id == current_user.id,
+            models.LikedWork.work_id == work_id
+        ).first()
+        if like_exists:
+            liked_by_user = True
+
+    category_list = db.query(models.Category).filter(models.Category.id == db_work.category_id).first()
+    category = category_list.title if category_list else "Uncategorized"
+    
+    # Map SQLAlchemy Work object to Pydantic schemas.Work, populating liked_by_user
+    response_work = schemas.WorkDetails(
+        id=db_work.id,
+        title=db_work.title,
+        category=category,
+        category_id=db_work.category_id,
+        description=db_work.description,
+        img_url=db_work.img_url,
+        other_image_urls=db_work.other_image_urls if db_work.other_image_urls else [],
+        created_at=db_work.created_at,
+        liked_by_user=liked_by_user
+    )
+    return response_work
+
+@router.delete("/{work_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_work(work_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(oauth2.get_current_admin_user)):
+    liked_work = db.query(models.LikedWork).filter(models.LikedWork.work_id == work_id).all()
+    if liked_work:
+        for like in liked_work:
+            db.delete(like)
+        db.commit()
+    db_work = db.query(models.Work).filter(models.Work.id == work_id).first()
+    if db_work.img_url:
+        delete_image(db_work.img_url)
+        
+    if db_work.other_image_urls:
+        for url in db_work.other_image_urls:
+            delete_image(url)
+
+    if not db_work:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Work not found")
+    db.delete(db_work)
+    db.commit()
+    return

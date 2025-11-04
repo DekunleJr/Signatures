@@ -12,6 +12,8 @@ export default function WorkForm() {
   const [title, setTitle] = useState("");
   const { toast } = useAuth(); // Get token from AuthContext
   const [description, setDescription] = useState("");
+  const [categoryId, setCategoryId] = useState("");
+  const [categories, setCategories] = useState([]);
   const [mainImage, setMainImage] = useState(null); // File object
   const [otherImages, setOtherImages] = useState([]); // List of File objects
   const [existingMainImageUrl, setExistingMainImageUrl] = useState(""); // For edit mode
@@ -25,6 +27,17 @@ export default function WorkForm() {
   const isEditMode = !!work_id;
 
   useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const { data } = await customAxios.get("/portfolio/categories");
+        setCategories(data);
+      } catch (err) {
+        console.error("Error fetching categories:", err);
+      }
+    };
+
+    fetchCategories();
+
     if (isEditMode) {
       const fetchWork = async () => {
         setLoading(true);
@@ -34,6 +47,7 @@ export default function WorkForm() {
 
           setTitle(data.title);
           setDescription(data.description);
+          setCategoryId(data.category_id);
           setExistingMainImageUrl(data.img_url);
           setExistingOtherImageUrls(data.other_image_urls || []);
         } catch (err) {
@@ -69,6 +83,7 @@ export default function WorkForm() {
     const formData = new FormData();
     formData.append("title", title);
     formData.append("description", description);
+    formData.append("category_id", categoryId);
 
     if (mainImage) {
       formData.append("img_url", mainImage);
@@ -133,6 +148,23 @@ export default function WorkForm() {
             onChange={(e) => setDescription(e.target.value)}
             required
           ></textarea>
+        </div>
+
+        <div className='form-group'>
+          <label htmlFor='category'>Category</label>
+          <select
+            id='category'
+            value={categoryId}
+            onChange={(e) => setCategoryId(e.target.value)}
+            required
+          >
+            <option value=''>Select a category</option>
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.title}
+              </option>
+            ))}
+          </select>
         </div>
 
         <div className='form-group'>

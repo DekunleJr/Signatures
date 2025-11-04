@@ -71,7 +71,7 @@ export default function Navbar() {
             className={location.pathname === "/contact" ? "active" : ""}
             onClick={() => setIsMenuOpen(false)}
           >
-            Contact
+            Book
           </Link>
         </li>
         <li>
