@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { customAxios, customFormAxios } from "../../utils/customAxios";
 import "./EditProfile.css";
+import "../ServiceForm/ServiceForm.css";
 import Loader from "../../components/Loader/Loader";
 
 function EditProfile() {
@@ -65,9 +66,9 @@ function EditProfile() {
 
   if (loading) {
     return (
-      <p style={{ margin: "auto 0" }}>
+      <div style={{ margin: "auto 0" }}>
         <Loader />
-      </p>
+      </div>
     );
   }
 
@@ -117,9 +118,18 @@ function EditProfile() {
           />
         </div>
         {error && <p className='error-message'>{error}</p>}
-        <button type='submit' className='btn'>
-          Save Changes
-        </button>
+        <div className='form-buttons'>
+          <button
+              type='button'
+              className='btn-secondary'
+              onClick={() => navigate(-1)}
+              >
+              Cancel
+          </button>
+          <button type='submit' className='btn'>
+            Save Changes
+          </button>
+        </div>
       </form>
     </div>
   );

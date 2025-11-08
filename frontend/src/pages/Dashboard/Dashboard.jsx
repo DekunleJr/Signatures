@@ -29,9 +29,9 @@ function Dashboard() {
 
   if (loading) {
     return (
-      <p style={{ margin: " auto 0" }}>
+      <div style={{ margin: " auto 0" }}>
         <Loader />
-      </p>
+      </div>
     );
   }
 
