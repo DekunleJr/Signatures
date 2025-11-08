@@ -183,3 +183,57 @@
 .order-now-button:hover {
   background-color: var(--color-primary-light);
 }
+
+@media (max-width: 768px) {
+  .work-detail-container {
+    padding: 1rem;
+  }
+
+  .work-detail-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .admin-actions {
+    width: 100%;
+    justify-content: space-around;
+  }
+
+  .back-button, .edit-work-button, .delete-work-button {
+    width: 45%;
+    text-align: center;
+  }
+
+  .work-title {
+    font-size: 1.8em;
+  }
+
+  .work-description {
+    font-size: 1em;
+  }
+
+  .slideshow-image {
+    height: 300px;
+  }
+
+  .thumbnail-grid {
+    gap: 5px;
+  }
+
+  .thumbnail {
+    width: 60px;
+    height: 60px;
+  }
+
+  .like-button, .order-now-button {
+    width: 90%;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .work-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+}

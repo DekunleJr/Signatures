@@ -78,3 +78,19 @@
 .footer-socials .social-icons svg:hover {
   transform: scale(1.1);
 }
+
+@media (max-width: 768px) {
+  .footer-container {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .footer-contacts {
+    width: 90%;
+    padding: 1.5rem;
+  }
+
+  .footer-contacts h3 {
+    font-size: 2rem;
+  }
+}

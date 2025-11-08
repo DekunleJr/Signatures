@@ -96,3 +96,23 @@
   flex: 1; /* Each form-group takes equal space */
   margin-bottom: 0; /* Remove bottom margin from individual groups in a row */
 }
+
+@media (max-width: 768px) {
+  .signup-form {
+    padding: 2rem;
+    max-width: 95%;
+  }
+
+  .signup-form h2 {
+    font-size: 1.8rem;
+  }
+
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .form-row .form-group {
+    margin-bottom: 1.5rem;
+  }
+}

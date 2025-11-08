@@ -291,15 +291,24 @@ export default function AdminPage() {
             <tbody>
               {users.map((u) => (
                 <tr key={u.id} style={{ textTransform: "capitalize" }}>
-                  <td>{u.id}</td>
-                  <td>{u.first_name}</td>
-                  <td>{u.last_name}</td>
-                  <td style={{ textTransform: "lowercase" }}>{u.email}</td>
-                  <td>{u.phone_number || "N/A"}</td>
-                  <td>{u.is_admin ? "admin" : "user"}</td>
-                  <td>{u.status}</td>
-                  <td>{new Date(u.created_at).toLocaleDateString()}</td>
-                  <td>
+                  <td data-label='ID'>{u.id}</td>
+                  <td data-label='First Name'>{u.first_name}</td>
+                  <td data-label='Last Name'>{u.last_name}</td>
+                  <td
+                    data-label='Email'
+                    style={{ textTransform: "lowercase" }}
+                  >
+                    {u.email}
+                  </td>
+                  <td data-label='Phone Number'>{u.phone_number || "N/A"}</td>
+                  <td data-label='User Role'>
+                    {u.is_admin ? "admin" : "user"}
+                  </td>
+                  <td data-label='Status'>{u.status}</td>
+                  <td data-label='Member Since'>
+                    {new Date(u.created_at).toLocaleDateString()}
+                  </td>
+                  <td data-label='Action'>
                     <button
                       className='btn'
                       onClick={() => navigate(`/admin/edit-user/${u.id}`)}
@@ -341,11 +350,14 @@ export default function AdminPage() {
               <tbody>
                 {categories.map((c) => (
                   <tr key={c.id}>
-                    <td>{c.id}</td>
-                    <td>{c.title}</td>
-                    <td className="category-action-buttons">
+                    <td data-label='ID'>{c.id}</td>
+                    <td data-label='Title'>{c.title}</td>
+                    <td
+                      data-label='Action'
+                      className='category-action-buttons'
+                    >
                       <button
-                        className="btn"
+                        className='btn'
                         onClick={() => navigate(`/category/edit/${c.id}`)}
                       >
                         Edit

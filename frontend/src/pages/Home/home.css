@@ -239,3 +239,48 @@
   font-weight: bold;
   font-size: 2rem;
 }
+
+@media (max-width: 768px) {
+  .hero-video {
+    height: 50vh;
+  }
+
+  .hero-video h1 {
+    font-size: 2.5rem;
+  }
+
+  .hero-video p {
+    font-size: 1rem;
+    padding: 0 1rem;
+  }
+
+  .services {
+    padding: 3rem 1rem;
+  }
+
+  .services h2,
+  .portfolio h2,
+  .brand-philosophy h2,
+  .cta h2 {
+    font-size: 2rem;
+  }
+
+  .service-grid,
+  .portfolio-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .service-card,
+  .portfolio-item {
+    padding: 1.5rem;
+  }
+
+  .brand-philosophy p {
+    font-size: 1rem;
+    padding: 0 1rem;
+  }
+
+  .cta {
+    padding: 3rem 1rem;
+  }
+}

@@ -14,3 +14,9 @@
   left: 0;
   pointer-events: none;
 }
+
+@media (max-width: 768px) {
+  .video-container {
+    height: 50vh; /* Adjust height for smaller screens */
+  }
+}

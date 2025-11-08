@@ -146,3 +146,29 @@
   text-align: center;
   margin-bottom: 1rem;
 }
+
+@media (max-width: 768px) {
+  .work-form-container {
+    max-width: 95%;
+    margin: 1rem auto;
+    padding: 1.5rem;
+  }
+
+  .work-form-container h1 {
+    font-size: 1.8rem;
+  }
+
+  .form-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .btn-secondary,
+  .btn-primary {
+    width: 100%;
+  }
+
+  .existing-thumbnails {
+    justify-content: center;
+  }
+}

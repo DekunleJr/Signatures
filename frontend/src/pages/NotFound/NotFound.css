@@ -44,3 +44,17 @@
   background-color: var(--color-primary-dark);
   transform: translateY(-3px);
 }
+
+@media (max-width: 768px) {
+  .not-found-container h1 {
+    font-size: 5rem;
+  }
+
+  .not-found-container h2 {
+    font-size: 1.8rem;
+  }
+
+  .not-found-container p {
+    font-size: 1rem;
+  }
+}

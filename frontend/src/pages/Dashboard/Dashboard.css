@@ -62,8 +62,7 @@ body {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
-  max-width: 850px;
-  width: calc(100vw - 400px);
+  width: 100%;
   margin: 0 auto 2rem;
 }
 
@@ -170,10 +169,16 @@ body {
 
   .user-details {
     max-width: 100%;
+    padding: 1.5rem;
   }
 
   .liked-works h2 {
     font-size: 1.8rem;
+  }
+
+  .liked-works-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
   }
 
   .liked-works-item {

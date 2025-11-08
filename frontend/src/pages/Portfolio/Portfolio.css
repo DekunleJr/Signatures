@@ -194,3 +194,31 @@
   visibility: visible;
   transform: translateY(0);
 }
+
+@media (max-width: 768px) {
+  .portfolio {
+    padding: 2rem 1rem;
+  }
+
+  .portfolio h2 {
+    font-size: 1.8rem;
+  }
+
+  .filter-container {
+    justify-content: center;
+  }
+
+  .portfolio-grid {
+    grid-template-columns: 1fr;
+    width: 100%;
+  }
+
+  .portfolio-item {
+    height: 250px;
+  }
+
+  .add-new-work-btn {
+    width: 90%;
+    margin: 1rem auto;
+  }
+}

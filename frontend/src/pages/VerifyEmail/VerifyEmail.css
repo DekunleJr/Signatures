@@ -49,3 +49,22 @@
 .verify-email-container button:hover {
   background-color: var(--color-primary-light);
 }
+
+@media (max-width: 768px) {
+  .verify-email-container {
+    padding: 1rem;
+  }
+
+  .verify-email-container h2 {
+    font-size: 1.5rem;
+  }
+
+  .verify-email-container p {
+    font-size: 1rem;
+  }
+
+  .verify-email-container .success-message,
+  .verify-email-container .error-message {
+    padding: 20px;
+  }
+}
