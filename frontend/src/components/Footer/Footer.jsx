@@ -26,7 +26,7 @@ function Footer() {
         <div className="footer-contact">
           <h4>Contact</h4>
           <p>Email: info@2125signature.com</p>
-          <p>Phone: +234 706 717 6373</p>
+          <p>Phone: +234 701 777 7571</p>
           <address>
             <p>Address: Suite 7, His Glory Plaza, Back of H-Medix, Ademola Adetokumbo Cresent, Wuse II, Abuja, Nigeria</p>
           </address>

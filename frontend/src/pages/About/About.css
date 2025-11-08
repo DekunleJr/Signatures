@@ -79,3 +79,30 @@
   font-size: 1rem;
   line-height: 1.6;
 }
+
+@media (max-width: 768px) {
+  .about-hero {
+    flex-direction: column; /* Stack items vertically */
+    text-align: center;
+  }
+
+  .about-hero-text {
+    padding-right: 0; /* Remove right padding */
+    margin-bottom: 1.5rem; /* Add space between text and image */
+  }
+
+  .about-hero-image {
+    width: 80%; /* Make image take up more width on mobile */
+    max-width: 300px; /* Limit max width for larger phones */
+  }
+
+  .about-hero-text h2 {
+    font-size: 2rem; /* Adjust font size for mobile */
+  }
+}
+
+@media (max-width: 480px) {
+  .about-values {
+    grid-template-columns: 1fr; /* Single column for very small screens */
+  }
+}

@@ -168,3 +168,28 @@
   border: 1px solid #dc3545 !important;
   color: #dc3545 !important; /* Red for delete */
 }
+
+@media (max-width: 768px) {
+  .services-section {
+    padding: 2rem 1rem; /* Adjust padding for smaller screens */
+  }
+
+  .services-hero h2 {
+    font-size: 2.2rem; /* Adjust font size for mobile */
+  }
+
+  .services-hero p {
+    font-size: 1rem; /* Adjust font size for mobile */
+  }
+
+  .services-cards {
+    gap: 1.5rem; /* Reduce gap between cards on mobile */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Allow smaller cards if needed */
+  }
+}
+
+@media (max-width: 480px) {
+  .services-cards {
+    grid-template-columns: 1fr; /* Single column for very small screens */
+  }
+}

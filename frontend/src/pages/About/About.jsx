@@ -20,6 +20,10 @@ function About() {
       <div className='about-hero'>
         <div className='about-hero-text'>
           <h2>{aboutInfo.heading}</h2>
+        </div>
+      </div>
+      <div className='about-hero'>
+        <div className='about-hero-text'>
           {aboutInfo.paragraphs.map((para, i) => (
             <p key={i}>{para}</p>
           ))}
