@@ -111,8 +111,10 @@
     opacity: 1;
     visibility: visible;
     pointer-events: auto;
-    height: auto; /* Restore height when open */
-    padding: 1rem 0; /* Restore padding when open */
+    height: auto; /* Allow height to adjust to content */
+    max-height: 100vh; /* Ensure it doesn't exceed viewport height */
+    overflow-y: auto; /* Enable scrolling if content overflows */
+    padding: 1rem 0; /* Consistent padding when open */
     box-shadow: var(--box-shadow-dark); /* Restore shadow when open */
     border-top: 1px solid #444; /* Restore border when open */
   }
@@ -123,26 +125,25 @@
 
   .nav-buttons {
     order: 3; /* Nav buttons appear after links */
-    margin-top: 1rem; /* Add some space between links and buttons */
+    margin-top: 0.1rem; /* Add some space between links and buttons */
   }
 
   .nav-links li {
-    margin: 0.5rem 0;
+    margin: 0.1rem 0; /* Standard margin for list items */
     text-align: center;
   }
 
   .nav-buttons.open {
-    /* Apply margin only when open */
-    margin-top: 1rem;
+    margin-top: 0.1rem; /* Apply margin only when open */
   }
 
   .nav-buttons .btn {
     width: 80%;
-    margin: 0.5rem auto;
+    margin: 0.5rem auto; /* Standard margin for buttons */
   }
 
   .welcome-message {
-    margin: 0.5rem auto;
+    margin: 0.1rem auto; /* Standard margin for welcome message */
     text-align: center;
   }
 }

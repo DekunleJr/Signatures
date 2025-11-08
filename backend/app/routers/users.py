@@ -32,6 +32,7 @@ def get_user_dashboard(db: Session = Depends(get_db), current_user: models.User 
             work_schema = schemas.Work(
                 id=work.id,
                 title=work.title,
+                category_id=work.category_id,
                 description=work.description,
                 img_url=work.img_url,
                 other_image_urls=work.other_image_urls if work.other_image_urls else [],
