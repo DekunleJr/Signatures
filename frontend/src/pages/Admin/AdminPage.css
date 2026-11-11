@@ -277,3 +277,74 @@
 .admin-page-container h2 {
   font-size: clamp(1.3rem, 4vw, 1.7rem);
 }
+
+/* ---------- Tabs ---------- */
+.admin-tabs {
+  display: flex;
+  gap: 0.25rem;
+  margin: 0 0 1.5rem;
+  border-bottom: 1px solid var(--border);
+  overflow-x: auto;          /* phones: scroll sideways instead of wrapping */
+  scrollbar-width: none;
+}
+.admin-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.admin-tab {
+  flex: 0 0 auto;
+  min-height: 44px;
+  padding: 0.65rem 1.2rem;
+  margin-bottom: -1px;       /* sit on top of the bar's border */
+  background: transparent;
+  color: var(--text-muted);
+  border: 0;
+  border-bottom: 3px solid transparent;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  font: inherit;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+}
+
+.admin-tab:hover {
+  color: var(--text);
+  background: var(--table-hover);
+}
+
+.admin-tab.is-active {
+  color: var(--accent-text);
+  border-bottom-color: var(--color-primary);
+}
+
+.admin-panel > h2 {
+  margin: 0 0 0.5rem;
+  color: var(--accent-text);
+}
+
+.admin-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+.admin-panel-header h2 {
+  margin: 0;
+  color: var(--accent-text);
+}
+
+.category-management-section .category-action-header {
+  margin-right: 0;           /* the old fixed margin pushed the heading out of line */
+}
+
+@media (max-width: 768px) {
+  .admin-page-container {
+    padding: 14px;
+  }
+  .admin-tab {
+    padding: 0.65rem 0.9rem;
+  }
+}
