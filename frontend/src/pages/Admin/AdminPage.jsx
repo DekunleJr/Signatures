@@ -296,7 +296,7 @@ export default function AdminPage() {
                           <td data-label='Member Since'>
                             {new Date(u.created_at).toLocaleDateString()}
                           </td>
-                          <td data-label='Action'>
+                          <td data-label='Action' className='row-actions'>
                             <button
                               className='btn'
                               onClick={() => navigate(`/admin/edit-user/${u.id}`)}

@@ -341,26 +341,29 @@
 }
 
 @media (max-width: 768px) {
-  /* Category rows: one bordered card each, buttons side by side at equal width */
-  .category-management-section .users-table tr {
+  /* Table rows become bordered cards; action buttons sit side by side */
+  .admin-panel .users-table tr {
     border: 1px solid var(--border);
     border-radius: var(--radius-sm);
     margin-bottom: 0.9rem;
     overflow: hidden;
   }
-  .category-management-section .users-table td {
+  .admin-panel .users-table td {
     padding: 0.7rem 0.9rem;
   }
-  .category-management-section td.category-action-buttons {
+  .admin-panel td.row-actions,
+  .admin-panel td.category-action-buttons {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0.6rem;
     border-bottom: 0;
   }
-  .category-management-section td.category-action-buttons::before {
+  .admin-panel td.row-actions::before,
+  .admin-panel td.category-action-buttons::before {
     display: none;
   }
-  .category-management-section td.category-action-buttons .btn {
+  .admin-panel td.row-actions .btn,
+  .admin-panel td.category-action-buttons .btn {
     width: 100%;
     margin: 0;
     min-height: 44px;
