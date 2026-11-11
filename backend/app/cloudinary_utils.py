@@ -2,6 +2,7 @@ import cloudinary
 import cloudinary.uploader
 from fastapi import UploadFile
 from typing import List
+from concurrent.futures import ThreadPoolExecutor
 
 from .config import settings
 
@@ -17,12 +18,11 @@ def upload_image(file: UploadFile):
     return upload_result.get("secure_url")
 
 def upload_multiple_images(files: List[UploadFile]):
-    urls = []
-    for file in files:
-        url = upload_image(file)
-        if url:
-            urls.append(url)
-    return urls
+    if not files:
+        return []
+    with ThreadPoolExecutor(max_workers=min(4, len(files))) as pool:
+        results = list(pool.map(upload_image, files))
+    return [u for u in results if u]
 
 def delete_image(image_url: str):
     try:

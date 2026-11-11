@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { customAxios } from "../../utils/customAxios";
 import Loader from "../Loader/Loader";
+import ProjectCard from "../ProjectCard/ProjectCard";
 import "./CategorizedWorks.css";
 
 function CategorizedWorks() {
@@ -26,11 +27,21 @@ function CategorizedWorks() {
   }, []);
 
   if (loading) {
-    return <Loader />;
+    return (
+      <section className="categorized-works" aria-busy="true" style={{ minHeight: "40vh", position: "relative" }}>
+        <Loader />
+      </section>
+    );
   }
 
   if (error) {
-    return <div className="error-message">{error}</div>;
+    return (
+      <section className="categorized-works">
+        <div className="container">
+          <p className="error-message" role="alert">{error}</p>
+        </div>
+      </section>
+    );
   }
 
   return (
@@ -44,16 +55,7 @@ function CategorizedWorks() {
               <h2 className="category-title">{categoryTitle}</h2>
               <div className="categorized-works-grid">
                 {works.map((work) => (
-                  <div
-                    key={work.id}
-                    className="categorized-work-item"
-                    style={{ backgroundImage: `url(${work.img_url})` }}
-                  >
-                    <div className="categorized-work-info">
-                      <h3>{work.title}</h3>
-                      <p>{work.description}</p>
-                    </div>
-                  </div>
+                  <ProjectCard key={work.id} project={work} width={600} />
                 ))}
               </div>
             </div>

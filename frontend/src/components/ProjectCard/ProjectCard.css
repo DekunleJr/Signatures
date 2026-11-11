@@ -1,0 +1,121 @@
+.project-card {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  text-align: left;
+  transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.project-card:hover,
+.project-card:focus-within {
+  transform: translateY(-4px);
+  border-color: var(--color-primary);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.45);
+}
+
+.project-card__img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s ease;
+}
+
+.project-card:hover .project-card__img {
+  transform: scale(1.04);
+}
+
+/* Readable text on any photo */
+.project-card__body {
+  position: absolute;
+  inset: auto 0 0 0;
+  padding: 3rem 1rem 1rem;
+  background: linear-gradient(
+    to top,
+    rgba(0, 0, 0, 0.9) 0%,
+    rgba(0, 0, 0, 0.7) 55%,
+    rgba(0, 0, 0, 0) 100%
+  );
+}
+
+.project-card__title {
+  margin: 0 0 0.25rem;
+  font-size: 1.15rem;
+  color: #fff;
+}
+
+.project-card__link {
+  color: #fff;
+  text-decoration: none;
+}
+
+/* stretch the link over the whole card */
+.project-card__link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+.project-card__link:focus-visible {
+  outline: none;
+}
+.project-card:has(.project-card__link:focus-visible) {
+  outline: 3px solid var(--color-primary-light);
+  outline-offset: 2px;
+}
+
+.project-card__desc {
+  margin: 0;
+  color: #ddd;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.project-card__more {
+  display: inline-block;
+  margin-top: 0.5rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-primary);
+}
+
+.project-card__like {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 2; /* above the stretched link */
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  font-size: 1.4rem;
+  line-height: 1;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.project-card__like:hover {
+  background: rgba(0, 0, 0, 0.8);
+  transform: scale(1.08);
+}
+
+@media (hover: none) {
+  .project-card:hover {
+    transform: none;
+  }
+}

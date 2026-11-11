@@ -18,22 +18,26 @@
 }
 
 .back-button, .edit-work-button, .delete-work-button {
-  background-color: #a8a9aa;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 5px;
+  background-color: transparent;
+  color: var(--text);
+  border: 1px solid var(--border-strong);
+  min-height: 44px;
+  padding: 10px 16px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   font-size: 16px;
   transition: background-color 0.3s ease;
 }
 
 .back-button:hover, .edit-work-button:hover {
-  background-color: var(--color-primary-light);
+  border-color: var(--color-primary);
+  color: var(--accent-text);
 }
 
 .delete-work-button {
-  background-color: #dc3545; /* Red color for delete */
+  background-color: #c62836; /* Red color for delete */
+  border-color: #c62836;
+  color: #fff;
 }
 
 .delete-work-button:hover {
@@ -42,14 +46,14 @@
 
 .work-title {
   font-size: 2.5em;
-  color: #f8f5f5;
+  color: var(--text);
   margin-bottom: 10px;
   text-align: center;
 }
 
 .work-description {
   font-size: 1.1em;
-  color: #fff;
+  color: var(--text);
   line-height: 1.6;
   margin-bottom: 30px;
   text-align: center;
@@ -67,7 +71,8 @@
 
 .slideshow-image {
   width: 100%;
-  height: 500px; /* Fixed height for consistency */
+  height: min(500px, 70vw); /* consistent, scales down on phones */
+  min-height: 260px;
   object-fit: cover; /* Cover the area, cropping if necessary */
   display: block;
 }
@@ -112,33 +117,39 @@
 }
 
 .thumbnail {
-  width: 80px;
-  height: 80px;
-  object-fit: cover;
-  border-radius: 5px;
+  width: 64px;
+  height: 64px;
+  padding: 0;
+  background: none;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   border: 2px solid transparent;
+  overflow: hidden;
   transition: border-color 0.3s ease;
 }
 
-.thumbnail:hover {
-  border-color: #007bff;
+.thumbnail img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
+.thumbnail:hover,
 .thumbnail.active-thumbnail {
-  border-color: #007bff;
-  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+  border-color: var(--color-primary);
 }
 
 .like-button {
   display: block;
-  margin: 20px auto;
-  padding: 10px 20px;
+  margin: 0;
+  min-height: 48px;
+  padding: 10px 24px;
   font-size: 1.1em;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: var(--radius-sm);
   background-color: var(--color-primary);
-  color: #161616;
+  color: var(--on-primary);
   transition: all 0.3s ease;
 }
 
@@ -156,24 +167,17 @@
   background-color: var(--color-primary-light);
 }
 
-.error-message {
-  color: #dc3545;
-  text-align: center;
-  margin-top: 20px;
-}
-
 .work-actions {
   display: flex;
   justify-content: center;
   gap: 15px; /* Space between buttons */
-  margin-top: 20px;
-  margin-bottom: 30px;
+  margin: 0 0 24px;
 }
 
 .order-now-button {
   font-size: 1.1em;
   cursor: pointer;
-  border-radius: 5px;
+  border-radius: var(--radius-sm);
   background-color: var(--color-primary);
   color: white;
   border: none;
@@ -184,56 +188,26 @@
   background-color: var(--color-primary-light);
 }
 
+.slideshow-btn {
+  min-width: 44px;
+  min-height: 44px;
+}
+
 @media (max-width: 768px) {
   .work-detail-container {
-    padding: 1rem;
+    padding: 14px;
   }
-
-  .work-detail-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
-  .admin-actions {
-    width: 100%;
-    justify-content: space-around;
-  }
-
-  .back-button, .edit-work-button, .delete-work-button {
-    width: 45%;
-    text-align: center;
-  }
-
   .work-title {
     font-size: 1.8em;
   }
-
   .work-description {
-    font-size: 1em;
+    margin-bottom: 18px;
   }
-
-  .slideshow-image {
-    height: 300px;
+  .work-actions .like-button {
+    flex: 1;
+    padding: 10px 12px;
   }
-
-  .thumbnail-grid {
-    gap: 5px;
-  }
-
-  .thumbnail {
-    width: 60px;
-    height: 60px;
-  }
-
-  .like-button, .order-now-button {
-    width: 90%;
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .work-actions {
-    flex-direction: column;
-    gap: 10px;
+  .admin-actions {
+    gap: 8px;
   }
 }

@@ -4,6 +4,8 @@ import "./WorkDetail.css";
 import { customAxios } from "../../utils/customAxios";
 import { useAuth } from "../../context/AuthContext";
 import Loader from "../../components/Loader/Loader";
+import { optimizeImage } from "../../utils/optimizeImage";
+import { setSeo } from "../../utils/seo";
 
 export default function WorkDetail() {
   const { work_id } = useParams();
@@ -42,6 +44,13 @@ export default function WorkDetail() {
         const { data } = await customAxios.get(`/portfolio/${work_id}`);
 
         setWork(data);
+        const desc = (data.description || "").trim();
+        setSeo({
+          title: `${data.title} | Portfolio`,
+          description: desc.length > 160 ? `${desc.slice(0, 157).trimEnd()}…` : desc || undefined,
+          image: data.img_url?.replace("/image/upload/", "/image/upload/f_jpg,q_auto,w_1200/"),
+          path: `/portfolio/${work_id}`,
+        });
       } catch (err) {
         setError(err.message);
       } finally {
@@ -94,18 +103,19 @@ export default function WorkDetail() {
   return (
     <div className='work-detail-container'>
       <div className='work-detail-header'>
-        <button className='back-button' onClick={handleGoBack}>
+        <button type='button' className='back-button' onClick={handleGoBack}>
           &#8592; Back
         </button>
         {isAdmin && (
           <div className='admin-actions'>
             <button
+              type='button'
               className='edit-work-button'
               onClick={() => navigate(`/portfolio/edit/${work_id}`)}
             >
               Edit
             </button>
-            <button className='delete-work-button' onClick={handleDelete}>
+            <button type='button' className='delete-work-button' onClick={handleDelete}>
               {/* Trash icon &#128465; */} Delete
             </button>
           </div>
@@ -115,43 +125,56 @@ export default function WorkDetail() {
       {/* <p className='work-description'>Category: {work.category}</p> */}
       <p className='work-description'>{work.description}</p>
 
+      <div className="work-actions">
+        <button
+          type="button"
+          className={`like-button ${work.liked_by_user ? "liked" : ""}`}
+          onClick={handleLikeUnlike}
+          aria-pressed={!!work.liked_by_user}
+        >
+          {work.liked_by_user ? "♥ Liked" : "♡ Like"}
+        </button>
+        <button type="button" className="like-button inquire-button" onClick={handleOrderNow}>
+          Inquire Now
+        </button>
+      </div>
+
       <div className='slideshow-container'>
-        <button className='slideshow-btn prev' onClick={goToPrevious}>
-          &#10094;
+        <button type='button' className='slideshow-btn prev' onClick={goToPrevious} aria-label='Previous image'>
+          <span aria-hidden='true'>&#10094;</span>
         </button>
         <img
-          src={allImages[currentImageIndex]}
+          src={optimizeImage(allImages[currentImageIndex], 1400)}
           alt={work.title}
           className='slideshow-image'
         />
-        <button className='slideshow-btn next' onClick={goToNext}>
-          &#10095;
+        <button type='button' className='slideshow-btn next' onClick={goToNext} aria-label='Next image'>
+          <span aria-hidden='true'>&#10095;</span>
         </button>
       </div>
 
       <div className='thumbnail-grid'>
         {allImages.map((image, index) => (
-          <img
+          <button
+            type='button'
             key={index}
-            src={image}
-            alt={`Thumbnail ${index + 1}`}
             className={`thumbnail ${
               index === currentImageIndex ? "active-thumbnail" : ""
             }`}
             onClick={() => setCurrentImageIndex(index)}
-          />
+            aria-label={`Show image ${index + 1} of ${allImages.length}`}
+            aria-current={index === currentImageIndex ? "true" : undefined}
+          >
+            <img
+              src={optimizeImage(image, 200)}
+              loading='lazy'
+              decoding='async'
+              alt=''
+              width='80'
+              height='80'
+            />
+          </button>
         ))}
-      </div>
-      <div className="work-actions">
-        <button
-          className={`like-button ${work.liked_by_user ? "liked" : ""}`}
-          onClick={handleLikeUnlike}
-        >
-          {work.liked_by_user ? "Unlike" : "Like"}
-        </button>
-        <button className="like-button" onClick={handleOrderNow}>
-          Inquire Now
-        </button>
       </div>
     </div>
   );

@@ -27,25 +27,23 @@ target_metadata = Base.metadata
 # ... etc.
 
 def get_database_url():
-    # Get the directory of the env.py file
+    # Prefer real environment variables (Docker / Railway), then fall back to backend/.env
+    keys = ["DATABASE_HOSTNAME", "DATABASE_PORT", "DATABASE_NAME", "DATABASE_USERNAME", "DATABASE_PASSWORD"]
     script_dir = os.path.dirname(__file__)
-    # Go up one level to get to the alembic directory, then up another to get to the backend directory
     backend_dir = os.path.abspath(os.path.join(script_dir, "..", ".."))
-    # Path to the .env file in the backend directory
     env_path = os.path.join(backend_dir, "backend", ".env")
-    env_vars = dotenv_values(env_path)
+    file_vars = dotenv_values(env_path) if os.path.exists(env_path) else {}
+    vals = {k: os.environ.get(k) or file_vars.get(k) for k in keys}
 
-    # Construct the database URL
-    db_hostname = env_vars.get("DATABASE_HOSTNAME")
-    db_port = env_vars.get("DATABASE_PORT")
-    db_name = env_vars.get("DATABASE_NAME")
-    db_username = env_vars.get("DATABASE_USERNAME")
-    db_password = env_vars.get("DATABASE_PASSWORD")
+    if not all(vals.values()):
+        raise Exception(
+            "Missing database settings: set DATABASE_* environment variables or provide backend/.env"
+        )
 
-    if not all([db_hostname, db_port, db_name, db_username, db_password]):
-        raise Exception(f"Missing database environment variables in {env_path} file.")
-
-    return f"postgresql://{db_username}:{db_password}@{db_hostname}:{db_port}/{db_name}"
+    return (
+        f"postgresql://{vals['DATABASE_USERNAME']}:{vals['DATABASE_PASSWORD']}"
+        f"@{vals['DATABASE_HOSTNAME']}:{vals['DATABASE_PORT']}/{vals['DATABASE_NAME']}"
+    )
 
 # Set the database URL in the config object
 config.set_main_option("sqlalchemy.url", get_database_url())
