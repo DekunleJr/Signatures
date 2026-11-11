@@ -19,16 +19,6 @@ from .config import settings
 
 models.Base.metadata.create_all(bind=engine)
 
-# create_all does not add indexes to tables that already exist; do it idempotently.
-with engine.begin() as _conn:
-    for _stmt in (
-        "CREATE INDEX IF NOT EXISTS ix_works_created_at ON works (created_at DESC)",
-        "CREATE INDEX IF NOT EXISTS ix_users_verification_token ON users (verification_token)",
-        "CREATE INDEX IF NOT EXISTS ix_password_resets_user_id ON password_resets (user_id)",
-        "CREATE INDEX IF NOT EXISTS ix_liked_works_work_id ON liked_works (work_id)",
-    ):
-        _conn.execute(text(_stmt))
-
 # Gunicorn runs with --preload: drop connections opened above so forked workers
 # don't share the master's sockets (each worker opens its own).
 engine.dispose()
