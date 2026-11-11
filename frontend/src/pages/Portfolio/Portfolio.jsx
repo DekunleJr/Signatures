@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import "./Portfolio.css";
 import { customAxios } from "../../utils/customAxios";
 import Loader from "../../components/Loader/Loader";
+import ProjectCard from "../../components/ProjectCard/ProjectCard";
 
 const ITEMS_PER_PAGE = 12; // Maximum of 12 products at a time
 
@@ -79,12 +80,13 @@ function Portfolio() {
   const handlePageChange = (pageNumber) => {
     if (pageNumber > 0 && pageNumber <= totalPages) {
       setCurrentPage(pageNumber);
+      window.scrollTo({ top: 0, behavior: "smooth" });
     }
   };
 
   return (
     <section className='page portfolio'>
-      <h2>Our Work</h2>
+      <h1>Our Work</h1>
       <p className='intro'>
         Explore some of our recent interior decoration projects, each designed
         with precision, creativity, and elegance.
@@ -105,52 +107,20 @@ function Portfolio() {
           <p>No projects found.</p>
         ) : (
           projects.map((project) => (
-            <div
+            <ProjectCard
               key={project.id}
-              className='portfolio-item'
-              style={{ backgroundImage: `url(${project.img_url})` }}
-            >
-              <h3>{project.title}</h3>
-              <p>{project.description}</p>
-              <div
-                className='portfolio-actions'
-                style={{ display: "flex", alignItems: "center", width: "100%" }}
-              >
-                <div style={{ flexGrow: 1, textAlign: "center" }}>
-                  {" "}
-                  {/* Wrapper for centering */}
-                  <Link to={`/portfolio/${project.id}`}>
-                    <button className='btn view-details-btn'>
-                      View Details
-                    </button>
-                  </Link>
-                </div>
-                {user && ( // Only show like icon if user is logged in
-                  <span
-                    className={`like-icon ${
-                      project.liked_by_user ? "liked" : ""
-                    }`}
-                    onClick={() =>
-                      handleLikeToggle(project.id, project.liked_by_user)
-                    }
-                    style={{
-                      cursor: "pointer",
-                      fontSize: "1.8em",
-                      marginLeft: "auto",
-                    }} // Increased size and pushed to the right
-                  >
-                    {project.liked_by_user ? "❤️" : "♡"}
-                  </span>
-                )}
-              </div>
-            </div>
+              project={project}
+              canLike={!!user}
+              onLike={handleLikeToggle}
+            />
           ))
         )}
       </div>
 
       {totalPages > 1 && (
-        <div className='pagination-controls'>
+        <nav className='pagination-controls' aria-label='Portfolio pages'>
           <button
+            type='button'
             className='btn'
             onClick={() => handlePageChange(currentPage - 1)}
             disabled={currentPage === 1}
@@ -159,21 +129,25 @@ function Portfolio() {
           </button>
           {[...Array(totalPages)].map((_, index) => (
             <button
+              type='button'
               key={index + 1}
               className={`btn ${currentPage === index + 1 ? "active" : ""}`}
               onClick={() => handlePageChange(index + 1)}
+              aria-label={`Page ${index + 1}`}
+              aria-current={currentPage === index + 1 ? "page" : undefined}
             >
               {index + 1}
             </button>
           ))}
           <button
+            type='button'
             className='btn'
             onClick={() => handlePageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
           >
             Next
           </button>
-        </div>
+        </nav>
       )}
     </section>
   );

@@ -29,7 +29,6 @@ export default function VerifyEmail() {
       hasVerified.current = true;
 
       try {
-        const url = import.meta.env.VITE_API_URL;
         const { data } = await customAxios.get(`/verify-email?token=${token}`);
         
         login(data.access_token, {
@@ -64,14 +63,14 @@ export default function VerifyEmail() {
         <div className="success-message">
           <h2>Verification Successful!</h2>
           <p>{message}</p>
-          <button onClick={() => navigate("/")}>Go to Dashboard</button>
+          <button type="button" className="btn-primary" onClick={() => navigate("/")}>Continue</button>
         </div>
       )}
       {verificationStatus === "error" && (
         <div className="error-message">
           <h2>Verification Failed</h2>
           <p>{message}</p>
-          <button onClick={() => navigate("/login")}>Go to Login</button>
+          <button type="button" className="btn-primary" onClick={() => navigate("/login")}>Go to Login</button>
         </div>
       )}
     </div>

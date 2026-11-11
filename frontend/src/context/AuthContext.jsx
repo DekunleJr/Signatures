@@ -6,7 +6,7 @@ import React, {
   useCallback,
   useMemo,
 } from "react";
-import { notification } from "antd";
+import ToastContainer from "../components/Toast/Toast";
 
 const AuthContext = createContext(null);
 
@@ -37,45 +37,25 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   }, []);
 
-  const [api, toastContextHolder] = notification.useNotification();
+  const [toasts, setToasts] = useState([]);
 
-  const toast = useMemo(
-    () => ({
-      success: (message, description) => {
-        api.success({
-          message,
-          description,
-          placement: "topRight",
-          duration: 3,
-        });
-      },
-      info: (message, description) => {
-        api.info({
-          message,
-          description,
-          placement: "topRight",
-          duration: 3,
-        });
-      },
-      warning: (message, description) => {
-        api.warning({
-          message,
-          description,
-          placement: "topRight",
-          duration: 3,
-        });
-      },
-      error: (message, description) => {
-        api.error({
-          message,
-          description,
-          placement: "topRight",
-          duration: 3,
-        });
-      },
-    }),
-    [api]
-  );
+  const dismiss = useCallback((id) => {
+    setToasts((prev) => prev.filter((t) => t.id !== id));
+  }, []);
+
+  const toast = useMemo(() => {
+    const push = (type) => (message, description) => {
+      const id = `${Date.now()}-${Math.random()}`;
+      setToasts((prev) => [...prev, { id, type, message, description }]);
+      setTimeout(() => dismiss(id), 3000);
+    };
+    return {
+      success: push("success"),
+      info: push("info"),
+      warning: push("warning"),
+      error: push("error"),
+    };
+  }, [dismiss]);
 
   const value = useMemo(
     () => ({
@@ -90,7 +70,7 @@ export const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={value}>
-      {toastContextHolder}
+      <ToastContainer toasts={toasts} onClose={dismiss} />
       {children}
     </AuthContext.Provider>
   );

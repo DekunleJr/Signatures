@@ -1,3 +1,4 @@
+import asyncio
 import httpx
 import os
 from typing import List
@@ -12,6 +13,14 @@ RESEND_API_KEY = settings.resend_api_key  # Add this field in your settings/conf
 
 # ✅ Default sender address
 DEFAULT_FROM = "info@nonreply.2125signature.com"  # change this to your verified sender
+
+_client: httpx.AsyncClient | None = None
+
+def _get_client() -> httpx.AsyncClient:
+    global _client
+    if _client is None or _client.is_closed:
+        _client = httpx.AsyncClient(timeout=30)
+    return _client
 
 async def send_email_via_resend(sender_email: str, recipient_email: str, subject: str, body: str):
     """
@@ -29,19 +38,19 @@ async def send_email_via_resend(sender_email: str, recipient_email: str, subject
         "html": body,
     }
 
-    async with httpx.AsyncClient(timeout=30) as client:
-        try:
-            response = await client.post(RESEND_API_URL, headers=headers, json=payload)
-            response.raise_for_status()
-            return {"message": "Email sent successfully!"}
-        except httpx.HTTPStatusError as e:
-            print(f"❌ Error sending email: {e.response.text}")
-            raise Exception(f"Failed to send email: {e.response.text}")
-        except Exception as e:
-            import traceback
-            print(f"❌ Unexpected error: {e}")
-            traceback.print_exc()
-            raise Exception(f"Unexpected error: {e}")
+    client = _get_client()
+    try:
+        response = await client.post(RESEND_API_URL, headers=headers, json=payload)
+        response.raise_for_status()
+        return {"message": "Email sent successfully!"}
+    except httpx.HTTPStatusError as e:
+        print(f"❌ Error sending email: {e.response.text}")
+        raise Exception(f"Failed to send email: {e.response.text}")
+    except Exception as e:
+        import traceback
+        print(f"❌ Unexpected error: {e}")
+        traceback.print_exc()
+        raise Exception(f"Unexpected error: {e}")
 
 
 # 🔹 Reuse your existing wrappers with no change to your codebase
@@ -66,9 +75,13 @@ async def send_contact_email(name: str, sender_email: str, message: str):
 
 
 async def send_email(recipient_emails: List[EmailStr], subject: str, message: str):
-    for email in recipient_emails:
-        send_email = DEFAULT_FROM
-        await send_email_via_resend(send_email, email, subject, message)
+    sem = asyncio.Semaphore(5)
+
+    async def _one(address):
+        async with sem:
+            await send_email_via_resend(DEFAULT_FROM, address, subject, message)
+
+    await asyncio.gather(*(_one(e) for e in recipient_emails))
     return {"message": "Emails sent successfully!"}
 
 

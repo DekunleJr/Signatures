@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import "./Services.css";
 import { customAxios } from "../../utils/customAxios";
 import Loader from "../../components/Loader/Loader";
+import { optimizeImage } from "../../utils/optimizeImage";
 
 function Services() {
   const [services, setServices] = useState([]);
@@ -56,7 +57,7 @@ function Services() {
   return (
     <section className='services-section'>
       <div className='services-hero'>
-        <h2>Our Services</h2>
+        <h1>Our Services</h1>
         <p>
           We offer you tailored interior design services that blend aesthetics
           and function.
@@ -76,11 +77,14 @@ function Services() {
           <Loader />
         ) : (
           services?.map((svc) => (
-            <div
-              key={svc.id}
-              className='service-card'
-              style={{ backgroundImage: `url(${svc.img_url})` }}
-            >
+            <div key={svc.id} className='svc-card'>
+              <img
+                className='svc-card__img'
+                src={optimizeImage(svc.img_url, 600)}
+                alt={`${svc.title} service`}
+                loading='lazy'
+                decoding='async'
+              />
               <h3>{svc.title}</h3>
               <p>{svc.description}</p>
               {isAdmin && (

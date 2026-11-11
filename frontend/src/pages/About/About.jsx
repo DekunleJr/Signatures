@@ -5,12 +5,7 @@ function About() {
   const aboutInfo = {
     heading: "The Art of Signature Interiors and Seamless Execution",
     paragraphs: [
-      "At 2125 Signature, we believe in the transformative power of design.",
-      " Our expertise covers every major area from Kitchen, Living, Dining, and ",
-      "Bedroom, delivering a seamless experience from concept to completion. We don't",
-      "just design rooms, we execute refined environments where every detail contributes",
-      "to a comfortable and luxurious ambiance, allowing you to live exceptionally.",
-      "We stand by our work, ensuring a high standard of quality in every project",
+      "At 2125 Signature, we believe in the transformative power of design. Our expertise covers every major area from Kitchen, Living, Dining, and Bedroom, delivering a seamless experience from concept to completion. We don't just design rooms, we execute refined environments where every detail contributes to a comfortable and luxurious ambiance, allowing you to live exceptionally. We stand by our work, ensuring a high standard of quality in every project.",
     ],
     image: aboutHeader,
   };
@@ -19,13 +14,13 @@ function About() {
     <section className='about-section'>
       <div className='about-hero'>
         <div className='about-hero-text'>
-          <h2>{aboutInfo.heading}</h2>
+          <h1>{aboutInfo.heading}</h1>
           {aboutInfo.paragraphs.map((para, i) => (
             <p key={i}>{para}</p>
           ))}
         </div>
         <div className='about-hero-image'>
-          <img src={aboutInfo.image} alt='About 2125 Signatures' />
+          <img src={aboutInfo.image} alt='A bright living room designed by 2125 Signature' width='400' height='500' loading='lazy' decoding='async' />
         </div>
       </div>
 

@@ -45,31 +45,41 @@ function Contact() {
 
   return (
     <section className='page contact'>
-      <h2>Contact Us</h2>
+      <h1>Contact Us</h1>
       <p>We’d love to bring your dream space to life.</p>
       {loading && <Loader />}
-      {error && <p className='error-message'>{error}</p>}
-      {success && <p className='success-message'>{success}</p>}
+      <div aria-live='polite'>
+        {error && <p className='error-message' role='alert'>{error}</p>}
+        {success && <p className='success-message'>{success}</p>}
+      </div>
       <form className='contact-form' onSubmit={handleSubmit}>
+        <label htmlFor='contact-name'>Your name</label>
         <input
+          id='contact-name'
           type='text'
           name='name'
-          placeholder='Your Name'
+          autoComplete='name'
+          placeholder='e.g. Ada Obi'
           value={name}
           onChange={handleChange}
           required
         />
+        <label htmlFor='contact-email'>Your email</label>
         <input
+          id='contact-email'
           type='email'
           name='email'
-          placeholder='Your Email'
+          autoComplete='email'
+          placeholder='you@example.com'
           value={email}
           onChange={handleChange}
           required
         />
+        <label htmlFor='contact-message'>How can we help?</label>
         <textarea
+          id='contact-message'
           name='message'
-          placeholder='Your Message'
+          placeholder='Tell us about your space, timeline and budget'
           value={message}
           onChange={handleChange}
           required

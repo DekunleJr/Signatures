@@ -3,36 +3,35 @@ import { Link } from "react-router-dom";
 import "./home.css";
 
 import hero1 from "../../assets/hero-1.jpg";
-import hero2 from "../../assets/hero-2.jpg";
-import hero3 from "../../assets/hero-3.jpg";
 import { customAxios } from "../../utils/customAxios";
 import VideoPlayer from "../../components/VideoPlayer/VideoPlayer";
+import ProjectCard from "../../components/ProjectCard/ProjectCard";
 
-const heroImages = [hero1, hero2, hero3];
+// Load the Vimeo background only on capable connections / motion preferences,
+// and after the poster has painted.
+function useAllowVideo() {
+  const [allow, setAllow] = useState(false);
+  useEffect(() => {
+    const reduce = window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    const saveData = navigator.connection?.saveData;
+    if (reduce || saveData) return;
+    const t = setTimeout(() => setAllow(true), 800);
+    return () => clearTimeout(t);
+  }, []);
+  return allow;
+}
 
 export default function Home() {
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const [recentProjects, setRecentProjects] = useState([]);
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentImageIndex((prevIndex) =>
-        prevIndex === heroImages.length - 1 ? 0 : prevIndex + 1
-      );
-    }, 5000); // Change image every 5 seconds
-
-    return () => clearInterval(timer);
-  }, []);
+  const allowVideo = useAllowVideo();
 
   useEffect(() => {
     (async () => {
       try {
-        const { data } = await customAxios.get("/portfolio/");
+        const { data } = await customAxios.get("/portfolio/?limit=3");
         let projectsToSet = [];
         if (Array.isArray(data.works)) {
-          projectsToSet = data.works
-            .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
-            .slice(0, 3);
+          projectsToSet = data.works.slice(0, 3); // API returns newest first
         }
         setRecentProjects(projectsToSet);
       } catch (error) {
@@ -43,35 +42,13 @@ export default function Home() {
 
   return (
     <div className='home'>
-      {/* Old Hero Section (commented out) */}
-      {/*
-      <section className='hero'>
-        {heroImages.map((image, index) => (
-          <div
-            key={index}
-            className={`hero-slide ${
-              index === currentImageIndex ? "active" : ""
-            }`}
-            style={{ backgroundImage: `url(${image})` }}
-          />
-        ))}
-        <div className='hero-overlay' />
-        <div className='hero-content'>
-          <h1>Creative Interior Design</h1>
-          <p>
-            Transforming spaces with modern and elegant interior decoration
-            solutions.
-          </p>
-          <Link to='/portfolio'>
-            <button className='btn-primary'>Check Out Our Projects</button>
-          </Link>
-        </div>
-      </section>
-      */}
-
       {/* New Video Hero Section */}
-      <section className='hero-video'>
-        <VideoPlayer videoId={1130371383} />
+      <section
+        className='hero-video'
+        style={{ backgroundImage: `url(${hero1})` }}
+        aria-label='Introduction'
+      >
+        {allowVideo && <VideoPlayer videoId={1130371383} />}
         <div className='hero-overlay' />
         <div className='hero-content'>
           <h1>Creative Interior Design</h1>
@@ -80,7 +57,7 @@ export default function Home() {
             solutions.
           </p>
           <Link to='/portfolio'>
-            <button className='btn-primary'>Check Out Our Projects</button>
+            <button type='button' className='btn-primary btn-lg'>Check Out Our Projects</button>
           </Link>
         </div>
       </section>
@@ -140,25 +117,16 @@ export default function Home() {
           <h2>Recent Projects</h2>
           <div className='portfolio-grid'>
             {recentProjects?.length === 0 ? (
-              <p>Loading recent projects...</p>
+              <p role='status'>Loading recent projects…</p>
             ) : (
               recentProjects?.map((project) => (
-                <div
-                  key={project.id}
-                  className='portfolio-item'
-                  style={{ backgroundImage: `url(${project.img_url})` }}
-                >
-                  <div className='portfolio-info'>
-                    <h3>{project.title}</h3>
-                    <p>{project.description}</p>
-                  </div>
-                </div>
+                <ProjectCard key={project.id} project={project} width={800} />
               ))
             )}
           </div>
           <div className='pro_btn'>
             <Link to='/portfolio'>
-              <button className='btn-primary'>View More...</button>
+              <button className='btn-primary btn-lg'>View all projects</button>
             </Link>
           </div>
         </div>
@@ -169,7 +137,7 @@ export default function Home() {
         <div className='container'>
           <h2>Ready to Transform Your Space?</h2>
           <Link to='/contact'>
-            <button className='btn-primary'>Contact Us</button>
+            <button className='btn-primary btn-lg'>Contact Us</button>
           </Link>
         </div>
       </section>

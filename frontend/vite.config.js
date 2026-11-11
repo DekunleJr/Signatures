@@ -4,6 +4,7 @@ import react from '@vitejs/plugin-react'
 // ✅ Correct configuration for serving with FastAPI
 export default defineConfig({
   base: '/static/',
+  esbuild: { drop: ['console', 'debugger'] },
   plugins: [
     react({
       babel: {
@@ -14,6 +15,14 @@ export default defineConfig({
   build: {
     outDir: '../backend/static',   // ✅ builds your app into FastAPI's static folder
     emptyOutDir: true,     // ✅ cleans old files before building
+    sourcemap: false,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ['react', 'react-dom', 'react-router-dom'],
+        },
+      },
+    },
   },
   server: {
     port: 5173,            // dev server port

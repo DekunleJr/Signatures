@@ -31,3 +31,6 @@ npm-debug.log
 
 # Environment variables
 .env
+backend/.env
+backend/static
+frontend/.env*

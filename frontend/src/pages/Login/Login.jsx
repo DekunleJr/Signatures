@@ -7,6 +7,7 @@ import { jwtDecode } from "jwt-decode";
 import "./Login.css";
 import axios from "axios";
 import Loader from "../../components/Loader/Loader";
+import { useTheme } from "../../utils/theme";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -19,6 +20,7 @@ export default function Login() {
   const navigate = useNavigate();
   const location = useLocation();
   const { login, toast } = useAuth();
+  const theme = useTheme();
   const from = location.state?.from?.pathname || "/";
 
   const handleSubmit = async (e) => {
@@ -162,6 +164,9 @@ export default function Login() {
         )}
         <div className='google-login-button-container'>
           <GoogleLogin
+            theme={theme === "light" ? "outline" : "filled_black"}
+            shape="rectangular"
+            width="280"
             onSuccess={handleGoogleLoginSuccess}
             onError={handleGoogleLoginError}
             useOneTap
