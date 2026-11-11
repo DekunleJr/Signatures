@@ -21,5 +21,6 @@ RUN pip install -r requirements.txt
 COPY backend/ .
 COPY --from=frontend /dist ./static
 
+# Fixed port: Railway domains target 8000, and an injected PORT (e.g. 8080) made the proxy miss the app
 EXPOSE 8000
-CMD ["sh", "-c", "gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w ${WEB_CONCURRENCY:-2} -b 0.0.0.0:${PORT:-8000} --timeout 60 --preload"]
+CMD ["sh", "-c", "gunicorn app.main:app -k uvicorn.workers.UvicornWorker -w ${WEB_CONCURRENCY:-2} -b 0.0.0.0:8000 --timeout 60 --preload"]
