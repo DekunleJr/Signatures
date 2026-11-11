@@ -94,8 +94,8 @@ export default function EditUser() {
 
   return (
     <div className="admin-page-container">
-      <h1>Edit User: {formData.first_name} {formData.last_name}</h1>
       <form onSubmit={handleSubmit} className="user-edit-form">
+        <h1>Edit User: {formData.first_name} {formData.last_name}</h1>
         <div className="form-group">
           <label htmlFor="first_name">First Name</label>
           <input

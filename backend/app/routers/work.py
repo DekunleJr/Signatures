@@ -1,8 +1,4 @@
-import requests
-import base64
-from io import BytesIO
-from PIL import Image # Import Pillow
-from fastapi import APIRouter, Depends, status, HTTPException, UploadFile, File, Form
+from fastapi import APIRouter, BackgroundTasks, Depends, status, HTTPException, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
@@ -16,7 +12,7 @@ router = APIRouter(tags=['Portfolio'], prefix="/api/portfolio")
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.WorkEdit)
-async def create_work(
+def create_work(
     title: str = Form(...),
     description: str = Form(...),
     category_id: int = Form(...),
@@ -48,8 +44,9 @@ async def create_work(
     return db_work
 
 @router.post("/{work_id}/order", status_code=status.HTTP_200_OK)
-async def order_work(
+def order_work(
     work_id: int,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(oauth2.get_current_user)
 ):
@@ -57,34 +54,12 @@ async def order_work(
     if not db_work:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Work not found")
 
-    # Download, compress, and embed the image
-    image_html = ""
-    try:
-        response = requests.get(db_work.img_url)
-        response.raise_for_status() # Raise an exception for bad status codes
-        image_content = response.content
-
-        # Open image with Pillow
-        img = Image.open(BytesIO(image_content))
-
-        # Resize and compress image
-        max_size = (800, 600) # Max dimensions for email
-        img.thumbnail(max_size, Image.Resampling.LANCZOS) # Use LANCZOS for high-quality downsampling
-
-        # Save to a BytesIO object to get compressed content
-        img_byte_arr = BytesIO()
-        img.save(img_byte_arr, format=img.format if img.format else "JPEG", quality=75) # Adjust quality as needed
-        img_byte_arr = img_byte_arr.getvalue()
-
-        # Encode compressed image to base64
-        encoded_image = base64.b64encode(img_byte_arr).decode("utf-8")
-        image_html = f'<img src="data:image/{img.format.lower() if img.format else "jpeg"};base64,{encoded_image}" alt="{db_work.title}" style="max-width: 100%; height: auto;">'
-    except requests.exceptions.RequestException as e:
-        print(f"Error downloading image for compression: {e}")
-        image_html = f'<p>Could not load image: {db_work.img_url}</p>'
-    except Exception as e:
-        print(f"Error processing image with Pillow: {e}")
-        image_html = f'<p>Could not process image: {db_work.img_url}</p>'
+    # Link to the (CDN-hosted) image instead of downloading and embedding it
+    image_html = (
+        f'<img src="{db_work.img_url.replace("/image/upload/", "/image/upload/f_auto,q_auto,w_800/")}" '
+        f'alt="{db_work.title}" style="max-width: 100%; height: auto;">'
+        if db_work.img_url else ""
+    )
 
     sender_email = "order@nonreply.2125signature.com"
     subject = f"{current_user.first_name} {current_user.last_name} orders {db_work.title}"
@@ -97,14 +72,8 @@ async def order_work(
     {image_html}
     """
 
-    try:
-        await send_email_via_resend(sender_email, settings.mail_to, subject, body)
-        return {"message": "Order request sent successfully!"}
-    except Exception as e:
-        import traceback
-        print(f"Error sending order email: {e}")
-        traceback.print_exc() # Print full traceback
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to send order email.")
+    background_tasks.add_task(send_email_via_resend, sender_email, settings.mail_to, subject, body)
+    return {"message": "Order request sent successfully!"}
 
 
 @router.get("/", response_model=schemas.WorkPaginationResponse)
@@ -121,8 +90,15 @@ def get_works(
     
     # Get the user's liked work IDs for efficient checking if the user is logged in
     liked_work_ids = set()
-    if current_user and current_user.liked_works:
-        liked_work_ids = {like.work_id for like in current_user.liked_works}
+    if current_user and works:
+        page_ids = [w.id for w in works]
+        liked_work_ids = {
+            row[0]
+            for row in db.query(models.LikedWork.work_id).filter(
+                models.LikedWork.user_id == current_user.id,
+                models.LikedWork.work_id.in_(page_ids),
+            )
+        }
 
     # Map SQLAlchemy Work objects to Pydantic schemas.Work, populating liked_by_user
     response_works = []
@@ -144,7 +120,7 @@ def get_works(
 
 
 @router.post("/categories", status_code=status.HTTP_201_CREATED)
-async def create_category(
+def create_category(
     title: str, 
     db: Session = Depends(get_db), 
     current_user: models.User = Depends(oauth2.get_current_admin_user)
@@ -156,24 +132,32 @@ async def create_category(
     return db_category
 
 @router.get("/categories", response_model=List[schemas.Category])
-async def get_categories(db: Session = Depends(get_db)):
+def get_categories(db: Session = Depends(get_db)):
     categories = db.query(models.Category).all()
     return categories
 
 @router.get("/search/{category_id}", response_model=schemas.WorkPaginationResponse)
-async def search_by_category(
+def search_by_category(
     category_id: int,
     skip: int = 0, 
     limit: int = 12,
     db: Session = Depends(get_db),
     current_user: Optional[models.User] = Depends(oauth2.get_current_user_optional)
 ):
-    works = db.query(models.Work).filter(models.Work.category_id == category_id).offset(skip).limit(limit).all()
+    base = db.query(models.Work).filter(models.Work.category_id == category_id)
+    total = base.count()
+    works = base.order_by(models.Work.created_at.desc()).offset(skip).limit(limit).all()
 
-    # Get the user's liked work IDs for efficient checking if the user is logged in
+    # Only the likes for the works on this page (one small query, not every like the user has)
     liked_work_ids = set()
-    if current_user and current_user.liked_works:
-        liked_work_ids = {like.work_id for like in current_user.liked_works}
+    if current_user and works:
+        liked_work_ids = {
+            row[0]
+            for row in db.query(models.LikedWork.work_id).filter(
+                models.LikedWork.user_id == current_user.id,
+                models.LikedWork.work_id.in_([w.id for w in works]),
+            )
+        }
 
     response_works = []
     for work in works:
@@ -189,10 +173,10 @@ async def search_by_category(
         )
         response_works.append(work_schema)
 
-    return {"total_works": len(response_works), "works": response_works}
+    return {"total_works": total, "works": response_works}
 
 @router.get("/category/{category_id}", response_model=schemas.Category)
-async def get_category(
+def get_category(
     category_id: int,
     db: Session = Depends(get_db)
 ):
@@ -202,7 +186,7 @@ async def get_category(
     return db_category
 
 @router.put("/category/{category_id}", status_code=status.HTTP_200_OK)
-async def update_category(
+def update_category(
     category_id: int,
     title: str = Form(...),
     db: Session = Depends(get_db),
@@ -218,7 +202,7 @@ async def update_category(
     return db_category
 
 @router.delete("/category/{category_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_category(
+def delete_category(
     category_id: int,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(oauth2.get_current_admin_user)
@@ -231,9 +215,24 @@ async def delete_category(
     db.commit()
     return
 
+@router.delete("/{work_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_work(work_id: int, background_tasks: BackgroundTasks, db: Session = Depends(get_db), current_user: models.User = Depends(oauth2.get_current_admin_user)):
+    db_work = db.query(models.Work).filter(models.Work.id == work_id).first()
+    if not db_work:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Work not found")
+
+    urls = ([db_work.img_url] if db_work.img_url else []) + list(db_work.other_image_urls or [])
+    # Likes are removed by the ORM cascade on Work.liked_by_users
+    db.delete(db_work)
+    db.commit()
+    for url in urls:
+        background_tasks.add_task(delete_image, url)
+    return
+
 @router.put("/{work_id}", response_model=schemas.WorkEdit)
-async def update_work(
+def update_work(
     work_id: int,
+    background_tasks: BackgroundTasks,
     title: str = Form(...),
     category_id: int = Form(...),
     description: str = Form(...),
@@ -254,7 +253,7 @@ async def update_work(
     if img_url:
         # Delete old main image from Cloudinary if a new one is provided
         if db_work.img_url:
-            delete_image(db_work.img_url)
+            background_tasks.add_task(delete_image, db_work.img_url)
         db_work.img_url = upload_image(img_url)
     
     # Initialize other_image_urls if it's None
@@ -264,7 +263,7 @@ async def update_work(
     # Handle image deletion
     if images_to_delete:
         for url_to_delete in images_to_delete:
-            delete_image(url_to_delete) # Delete from Cloudinary
+            background_tasks.add_task(delete_image, url_to_delete)
         db_work.other_image_urls = [
             url for url in db_work.other_image_urls if url not in images_to_delete
         ]
@@ -311,24 +310,3 @@ def get_work(work_id: int, db: Session = Depends(get_db), current_user: Optional
         liked_by_user=liked_by_user
     )
     return response_work
-
-@router.delete("/{work_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_work(work_id: int, db: Session = Depends(get_db), current_user: models.User = Depends(oauth2.get_current_admin_user)):
-    liked_work = db.query(models.LikedWork).filter(models.LikedWork.work_id == work_id).all()
-    if liked_work:
-        for like in liked_work:
-            db.delete(like)
-        db.commit()
-    db_work = db.query(models.Work).filter(models.Work.id == work_id).first()
-    if db_work.img_url:
-        delete_image(db_work.img_url)
-        
-    if db_work.other_image_urls:
-        for url in db_work.other_image_urls:
-            delete_image(url)
-
-    if not db_work:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Work not found")
-    db.delete(db_work)
-    db.commit()
-    return

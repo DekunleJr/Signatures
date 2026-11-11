@@ -104,7 +104,6 @@ function EditProfile() {
             name='email'
             value={formData.email}
             onChange={handleChange}
-            style={{ background: "#222", color: "#fff" }}
           />
         </div>
         <div className='form-group'>

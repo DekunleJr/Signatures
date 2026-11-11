@@ -1,17 +1,24 @@
 .video-container {
-  width: 100%;
-  height: 80vh;
+  position: absolute;
+  inset: 0;
   overflow: hidden;
-  position: relative;
-  margin-bottom: 20px;
+  opacity: 0;
+  transition: opacity 0.8s ease;
 }
 
+.video-container.is-playing {
+  opacity: 1;
+}
+
+/* Cover the box at any aspect ratio (16:9 video, any hero size) */
 .video-container iframe {
-  width: 100%;
-  height: 100%;
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 50%;
+  left: 50%;
+  width: max(100%, calc(var(--hero-height, 70vh) * 16 / 9));
+  height: max(var(--hero-height, 70vh), calc(100vw * 9 / 16));
+  transform: translate(-50%, -50%);
+  border: 0;
   pointer-events: none;
 }
 

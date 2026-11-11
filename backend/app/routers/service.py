@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status, HTTPException, UploadFile, File, Form
+from fastapi import APIRouter, BackgroundTasks, Depends, status, HTTPException, UploadFile, File, Form
 from sqlalchemy.orm import Session
 from typing import List, Optional
 
@@ -9,7 +9,7 @@ from ..cloudinary_utils import upload_image, delete_image
 router = APIRouter(tags=['Service'], prefix="/api/services")
 
 @router.post("/",status_code=status.HTTP_201_CREATED, response_model=schemas.Service)
-async def create_service(
+def create_service(
     title: str = Form(...),
     description: str = Form(...),
     img_url: UploadFile = File(...),
@@ -38,23 +38,26 @@ def get_services(db: Session = Depends(get_db)):
     return services
 
 @router.delete("/{service_id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_service(
+def delete_service(
     service_id: int,
+    background_tasks: BackgroundTasks,
     db: Session = Depends(get_db),
     current_user: models.User = Depends(oauth2.get_current_admin_user)):
     db_service = db.query(models.Service).filter(models.Service.id == service_id).first()
     if not db_service:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Service not found")
     
-    if db_service.img_url:
-        delete_image(db_service.img_url)
+    old_url = db_service.img_url
     db.delete(db_service)
     db.commit()
+    if old_url:
+        background_tasks.add_task(delete_image, old_url)
     return
 
 @router.put("/{service_id}", response_model=schemas.Service)
-async def update_service(
+def update_service(
     service_id: int,
+    background_tasks: BackgroundTasks,
     title: str = Form(...),
     description: str = Form(...),
     img_url: Optional[UploadFile] = File(None),
@@ -70,7 +73,7 @@ async def update_service(
 
     if img_url:
         if db_service.img_url:
-            delete_image(db_service.img_url)
+            background_tasks.add_task(delete_image, db_service.img_url)
         db_service.img_url = upload_image(img_url)
 
     db.commit()

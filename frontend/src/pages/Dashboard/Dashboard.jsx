@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import { customAxios } from "../../utils/customAxios";
 import "./Dashboard.css";
 import Loader from "../../components/Loader/Loader";
+import { optimizeImage } from "../../utils/optimizeImage";
 
 function Dashboard() {
   const [dashboardData, setDashboardData] = useState(null);
@@ -66,7 +67,7 @@ function Dashboard() {
           <button className='btn edit-profile-btn'>Edit Profile</button>
         </Link>
       </aside>
-      <main className='liked-works'>
+      <section className='liked-works'>
         <h2>Designs Liked</h2>
         <div className='liked-works-grid'>
           {dashboardData.liked_works.length > 0 ? (
@@ -74,7 +75,7 @@ function Dashboard() {
               <div
                 key={work.id}
                 className='liked-works-item'
-                style={{ backgroundImage: `url(${work.img_url})` }}
+                style={{ backgroundImage: `url(${optimizeImage(work.img_url, 600)})` }}
               >
                 <div className='liked-works-info'>
                   <h3>{work.title}</h3>
@@ -91,7 +92,7 @@ function Dashboard() {
             <p>You haven't liked any works yet.</p>
           )}
         </div>
-      </main>
+      </section>
     </div>
   );
 }

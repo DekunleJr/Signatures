@@ -8,7 +8,7 @@ from ..config import settings
 router = APIRouter(prefix="/api/home", tags=["Home routes"])
 
 @router.get("/", status_code=status.HTTP_200_OK, response_model=schemas.HomeWorksResponse)
-async def show_works_by_category(db: Session = Depends(get_db)):
+def show_works_by_category(db: Session = Depends(get_db)):
     """Fetch and return works, optionally filtered by category."""
     categories = db.query(models.Category).all()
     if not categories:

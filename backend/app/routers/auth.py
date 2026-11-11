@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi import APIRouter, BackgroundTasks, Depends, status, HTTPException
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from google.oauth2 import id_token
@@ -16,16 +16,11 @@ router = APIRouter(tags=['Authentication'], prefix="/api")
 
 @router.post('/login', response_model=schemas.Token)
 def login(user: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
-    print("login started")
     db_user = db.query(models.User).filter(models.User.email == user.username).first()
-    print(f"sent email: {user.username}")  # Debugging statement
-    print(f"Fetched user from DB: {db_user.email}")  # Debugging statement
     if not db_user:
-        print("User not found")  # Debugging statement
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid Credentials")
 
     if not utils.verify_password(user.password, db_user.password):
-        print("Invalid password")  # Debugging statement
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Invalid password Credentials")
 
     if db_user.status == "pending":
@@ -37,7 +32,7 @@ def login(user: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get
     return {"access_token": access_token, "token_type": "bearer", "is_admin": db_user.is_admin, "first_name": db_user.first_name, "status": db_user.status}
 
 @router.post('/signup', status_code=status.HTTP_201_CREATED, response_model=schemas.UserOut)
-async def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
+async def signup(user: schemas.UserCreate, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     db_user = db.query(models.User).filter(models.User.email == user.email).first()
     if db_user:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Email already registered")
@@ -66,7 +61,7 @@ async def signup(user: schemas.UserCreate, db: Session = Depends(get_db)):
 
     # Send verification email
     verification_url = f"{settings.frontend_url}/verify-email?token={verification_token}"
-    await send_verification_email(new_user.email, "Verify Your Account", verification_url)
+    background_tasks.add_task(send_verification_email, new_user.email, "Verify Your Account", verification_url)
 
     return new_user
 
@@ -118,7 +113,7 @@ def google_signup_login(google_user: schemas.GoogleUserCreate, db: Session = Dep
 
 
 @router.post('/forgot-password', status_code=status.HTTP_200_OK)
-async def forgot_password(request: schemas.ForgotPasswordRequest, db: Session = Depends(get_db)):
+async def forgot_password(request: schemas.ForgotPasswordRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.email == request.email).first()
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
@@ -134,7 +129,7 @@ async def forgot_password(request: schemas.ForgotPasswordRequest, db: Session = 
     db.add(password_reset)
     db.commit()
 
-    await send_otp_email(user.email, otp)
+    background_tasks.add_task(send_otp_email, user.email, otp)
 
     return {"message": "OTP sent to your email"}
 
@@ -165,7 +160,7 @@ async def verify_email(token: str, db: Session = Depends(get_db)):
 
 
 @router.post('/resend-verification', status_code=status.HTTP_200_OK)
-async def resend_verification_link(request: schemas.ForgotPasswordRequest, db: Session = Depends(get_db)):
+async def resend_verification_link(request: schemas.ForgotPasswordRequest, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     user = db.query(models.User).filter(models.User.email == request.email).first()
 
     if not user:
@@ -182,7 +177,7 @@ async def resend_verification_link(request: schemas.ForgotPasswordRequest, db: S
 
     # Send new verification email
     verification_url = f"{settings.frontend_url}/verify-email?token={new_verification_token}"
-    await send_verification_email(user.email, "Verify Your Account", verification_url)
+    background_tasks.add_task(send_verification_email, user.email, "Verify Your Account", verification_url)
 
     return {"message": "New verification link sent to your email."}
 
